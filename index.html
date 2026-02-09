@@ -159,6 +159,7 @@
     </div>
 
     <div id="screen-game" class="screen">
+        
         <div id="success-msg" class="success-banner" style="display:none;">
             <h3 id="lbl-congrats">🎉 CORRECT!</h3>
             <p><span id="lbl-char-was">Your character was:</span> <strong id="reveal-char-win" style="font-size:1.2em;"></strong></p>
@@ -477,7 +478,15 @@
             const btn = document.querySelector('#admin-panel button');
             if(btn) { btn.innerText = translations[currentLang].txt_starting; btn.disabled = true; }
 
-            update(ref(db, `rooms/${myRoomCode}`), { gameState: 'setup' })
+            // 1. Shuffle Players
+            const playerIds = playersData.map(p => p.id);
+            shuffleArray(playerIds);
+
+            const updates = {};
+            updates[`rooms/${myRoomCode}/gameState`] = 'setup';
+            updates[`rooms/${myRoomCode}/playerOrder`] = playerIds; // Save new order
+
+            update(ref(db), updates)
             .catch((error) => {
                 alert("Error: " + error.message);
                 if(btn) { btn.innerText = translations[currentLang].btn_start; btn.disabled = false; }
@@ -496,6 +505,16 @@
                 playersData = Object.keys(data.players || {}).map(key => ({
                     id: key, ...data.players[key]
                 }));
+
+                // ** CRITICAL: SORT BY SAVED ORDER IF EXISTS **
+                if (data.playerOrder && Array.isArray(data.playerOrder)) {
+                    playersData.sort((a, b) => {
+                        return data.playerOrder.indexOf(a.id) - data.playerOrder.indexOf(b.id);
+                    });
+                } else {
+                    // Fallback to alphabetical if no order saved
+                    playersData.sort((a,b) => a.id.localeCompare(b.id));
+                }
 
                 const resetBtn = document.getElementById('reset-btn');
                 if(resetBtn) resetBtn.style.display = (data.admin === myPlayerId) ? 'block' : 'none';
@@ -518,12 +537,13 @@
                     document.getElementById('btn-submit-char').innerText = translations[currentLang].btn_submit;
                     document.getElementById('character-input').value = "";
 
-                    playersData.sort((a,b) => a.id.localeCompare(b.id));
+                    // Assign Target: Next person in the (now shuffled) list
                     const myIndex = playersData.findIndex(p => p.id === myPlayerId);
-                    if (myIndex === -1) return;
-                    const targetPlayer = playersData[(myIndex + 1) % playersData.length];
-                    myTargetId = targetPlayer.id;
-                    document.getElementById('target-player-name').innerText = targetPlayer.name;
+                    if (myIndex !== -1) {
+                        const targetPlayer = playersData[(myIndex + 1) % playersData.length];
+                        myTargetId = targetPlayer.id;
+                        document.getElementById('target-player-name').innerText = targetPlayer.name;
+                    }
 
                     // --- UPDATE SETUP LIST ---
                     const setupList = document.getElementById('setup-player-list');
@@ -871,6 +891,10 @@
 
         function resetGame() {
             if (confirm(translations[currentLang].alert_reset)) {
+                // SHUFFLE PLAYERS FOR NEW GAME
+                const playerIds = playersData.map(p => p.id);
+                shuffleArray(playerIds);
+
                 const updates = {};
                 updates[`rooms/${myRoomCode}/gameState`] = 'setup';
                 updates[`rooms/${myRoomCode}/turnIndex`] = 0;
@@ -878,6 +902,7 @@
                 updates[`rooms/${myRoomCode}/currentQuestion`] = null;
                 updates[`rooms/${myRoomCode}/votes`] = null;
                 updates[`rooms/${myRoomCode}/winner`] = null;
+                updates[`rooms/${myRoomCode}/playerOrder`] = playerIds; // Save new order
                 
                 playersData.forEach(p => {
                     updates[`rooms/${myRoomCode}/players/${p.id}/lives`] = 3;
@@ -886,6 +911,14 @@
                 });
 
                 update(ref(db), updates);
+            }
+        }
+
+        // --- HELPER: SHUFFLE ARRAY ---
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
         }
     </script>
