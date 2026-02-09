@@ -59,10 +59,15 @@
         .char-card-val { font-size: 1.1em; font-weight: bold; color: #fff; }
         .char-card-val.hidden { color: #f1c40f; letter-spacing: 2px; font-size: 1.4em; }
         
-        /* Status Badges on Cards */
+        /* Status Badges */
         .status-badge { position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; }
         .status-won { background: #27ae60; color: white; content: '✓'; }
         .status-dead { background: #c0392b; color: white; content: 'X'; }
+
+        /* SETUP LIST STYLES */
+        .setup-list-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .setup-player-badge { background: #35354a; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; display: flex; align-items: center; gap: 6px; border: 1px solid #444; }
+        .setup-player-badge.done { border-color: #27ae60; background: rgba(39, 174, 96, 0.2); }
 
         /* HISTORY BOARD */
         .history-board { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; align-items: flex-start; }
@@ -76,7 +81,7 @@
         .group-unsure .q-item { background: rgba(243, 156, 18, 0.2); border-left: 3px solid #f39c12; }
         .guess-item { border: 1px dashed #f1c40f !important; font-weight: bold; }
 
-        /* LEADERBOARD STYLES */
+        /* LEADERBOARD */
         .lb-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #444; align-items: center; }
         .lb-rank { font-size: 1.5em; font-weight: bold; width: 40px; }
         .lb-info { text-align: left; flex-grow: 1; margin-left: 10px; }
@@ -146,10 +151,14 @@
             <button id="btn-submit-char" class="btn-blue" onclick="submitCharacter()">Submit</button>
             <p id="setup-status" style="color: #aaa; margin-top: 10px;">Waiting for others...</p>
         </div>
+        
+        <div class="box" style="background: #232330;">
+            <p id="lbl-room-players" style="font-size: 0.9em; color: #888; margin-top:0;">Players in Room</p>
+            <div id="setup-player-list" class="setup-list-container"></div>
+        </div>
     </div>
 
     <div id="screen-game" class="screen">
-        
         <div id="success-msg" class="success-banner" style="display:none;">
             <h3 id="lbl-congrats">🎉 CORRECT!</h3>
             <p><span id="lbl-char-was">Your character was:</span> <strong id="reveal-char-win" style="font-size:1.2em;"></strong></p>
@@ -217,7 +226,7 @@
         import { getDatabase, ref, set, onValue, update, get, remove, push } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- FIREBASE CONFIG (Use VITE env or your keys) ---
+        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
             authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -257,6 +266,7 @@
                 btn_yes: "YES", btn_no: "NO", btn_unsure: "UNSURE", lbl_hist: "Game History",
                 msg_wait_vote: "Vote received. Waiting...", msg_friends_vote: "Friends are voting...",
                 lbl_game_over: "🏆 GAME OVER!", btn_new_game: "🔄 New Game",
+                lbl_room_players: "Players in Room",
                 alert_name: "Please enter a name!", alert_code: "Please enter details!", alert_room404: "Room not found!",
                 alert_min_pl: "Need at least 2 players!", alert_leave: "Are you sure you want to leave?",
                 alert_reset: "Restart game for everyone?", alert_guess_confirm: "If wrong, you lose a life! Are you sure?",
@@ -280,6 +290,7 @@
                 btn_yes: "EVET", btn_no: "HAYIR", btn_unsure: "EMİN DEĞİLİM", lbl_hist: "Oyun Geçmişi",
                 msg_wait_vote: "Oyun alındı. Bekleniyor...", msg_friends_vote: "Arkadaşların oyluyor...",
                 lbl_game_over: "🏆 OYUN BİTTİ!", btn_new_game: "🔄 Yeni Oyun",
+                lbl_room_players: "Odada Olanlar",
                 alert_name: "Lütfen isim gir!", alert_code: "Lütfen bilgileri doldur!", alert_room404: "Oda bulunamadı!",
                 alert_min_pl: "En az 2 kişi gerekli!", alert_leave: "Odadan çıkmak istediğine emin misin?",
                 alert_reset: "Oyunu herkes için sıfırlamak istiyor musun?", alert_guess_confirm: "Yanlışsa 1 canın gider! Emin misin?",
@@ -303,6 +314,7 @@
                 btn_yes: "JA", btn_no: "NEIN", btn_unsure: "UNSICHER", lbl_hist: "Spielverlauf",
                 msg_wait_vote: "Stimme empfangen. Warten...", msg_friends_vote: "Freunde stimmen ab...",
                 lbl_game_over: "🏆 SPIEL VORBEI!", btn_new_game: "🔄 Neues Spiel",
+                lbl_room_players: "Spieler im Raum",
                 alert_name: "Bitte Namen eingeben!", alert_code: "Bitte Details eingeben!", alert_room404: "Raum nicht gefunden!",
                 alert_min_pl: "Mindestens 2 Spieler nötig!", alert_leave: "Möchtest du den Raum wirklich verlassen?",
                 alert_reset: "Spiel für alle neu starten?", alert_guess_confirm: "Bei Fehler verlierst du ein Leben! Sicher?",
@@ -326,6 +338,7 @@
                 btn_yes: "SÍ", btn_no: "NO", btn_unsure: "NO SÉ", lbl_hist: "Historial",
                 msg_wait_vote: "Voto recibido. Esperando...", msg_friends_vote: "Los amigos están votando...",
                 lbl_game_over: "🏆 ¡JUEGO TERMINADO!", btn_new_game: "🔄 Nuevo Juego",
+                lbl_room_players: "Jugadores en Sala",
                 alert_name: "¡Por favor introduce un nombre!", alert_code: "¡Por favor introduce detalles!", alert_room404: "¡Sala no encontrada!",
                 alert_min_pl: "¡Se necesitan al menos 2 jugadores!", alert_leave: "¿Seguro que quieres salir?",
                 alert_reset: "¿Reiniciar el juego para todos?", alert_guess_confirm: "¡Si fallas pierdes una vida! ¿Seguro?",
@@ -393,6 +406,7 @@
             setText('btn-unsure', t.btn_unsure);
             setText('lbl-history', t.lbl_hist);
             setText('lbl-game-over-title', t.lbl_game_over);
+            setText('lbl-room-players', t.lbl_room_players);
         }
 
         function setText(id, text) {
@@ -510,6 +524,15 @@
                     const targetPlayer = playersData[(myIndex + 1) % playersData.length];
                     myTargetId = targetPlayer.id;
                     document.getElementById('target-player-name').innerText = targetPlayer.name;
+
+                    // --- UPDATE SETUP LIST ---
+                    const setupList = document.getElementById('setup-player-list');
+                    setupList.innerHTML = "";
+                    playersData.forEach(p => {
+                        const statusIcon = p.assignedChar ? "✅" : "⏳";
+                        const doneClass = p.assignedChar ? "done" : "";
+                        setupList.innerHTML += `<div class="setup-player-badge ${doneClass}">${p.name} ${statusIcon}</div>`;
+                    });
 
                     if (playersData.every(p => p.assignedChar) && data.admin === myPlayerId) {
                         update(ref(db, `rooms/${myRoomCode}`), { gameState: 'game' });
