@@ -136,6 +136,7 @@
                     <div onclick="setLanguage('en')">🇺🇸 English</div>
                     <div onclick="setLanguage('tr')">🇹🇷 Türkçe</div>
                     <div onclick="setLanguage('de')">🇩🇪 Deutsch</div>
+                    <div onclick="setLanguage('es')">🇪🇸 Español</div>
                 </div>
             </div>
         </div>
@@ -233,10 +234,13 @@
 
 
     <script type="module">
-        import { initializeApp } from "firebase/app";
-        import { getDatabase, ref, set, onValue, update, get, remove, push } from "firebase/database";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, update, get, remove, push } 
+        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // --- FIREBASE CONFIG ---
+        // (Burasi senin Vite yapinla calisiyorsa aynen kalsin, 
+        // calismazsa eski hard-coded config'i geri yapistir)
         const firebaseConfig = {
             apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
             authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -410,6 +414,57 @@
                 txt_submit_wait: "Warten...",
                 hist_yes: "JA",
                 hist_no: "NEIN",
+                hist_unsure: "?"
+            },
+            es: {
+                flag: "🇪🇸",
+                langName: "Español",
+                lbl_intro: "Reúne a tus amigos, asigna personajes famosos (p. ej., cantantes, deportistas) y adivina quién eres.<br>Haz preguntas de Sí/No. ¡Las suposiciones incorrectas cuestan vidas! ❤️",
+                ph_name: "Introduce tu nombre",
+                btn_create: "Crear Nueva Sala",
+                ph_room: "Código de Sala",
+                btn_join: "Unirse",
+                lbl_room: "Código de Sala:",
+                lbl_wait: "Esperando jugadores...",
+                lbl_admin: "Eres el Administrador",
+                btn_start: "Iniciar Juego",
+                lbl_wait_admin: "Esperando al administrador...",
+                lbl_assign_t: "Asignar Personaje",
+                lbl_assign_d: "Asigna un personaje para:",
+                ph_char: "Ej. Elvis, Batman...",
+                btn_submit: "Enviar",
+                msg_wait_others: "Esperando a otros...",
+                btn_leave: "🚪 Salir",
+                btn_reset: "🔄 Reiniciar",
+                lbl_out: "💀 ¡ESTÁS ELIMINADO!",
+                lbl_was: "Tu personaje era:",
+                lbl_jury: "¡Aún puedes votar como Jurado!",
+                lbl_all_chars: "JUGADORES Y PERSONAJES",
+                lbl_turn: "¿Turno de quién?",
+                ph_q: "Haz una pregunta (Ej. ¿Soy cantante?)",
+                btn_ask: "Enviar Pregunta",
+                ph_guess: "Adivina (Ej. ¡Soy Elvis!)",
+                btn_guess: "ADIVINAR (Arriesgas Vida)",
+                lbl_q: "Pregunta Actual:",
+                lbl_guess_alert: "⚠️ ¡ALERTA DE SUPOSICIÓN!",
+                btn_yes: "SÍ",
+                btn_no: "NO",
+                btn_unsure: "NO SÉ",
+                lbl_hist: "Historial",
+                msg_wait_vote: "Voto recibido. Esperando...",
+                msg_friends_vote: "Los amigos están votando...",
+                alert_name: "¡Por favor introduce un nombre!",
+                alert_code: "¡Por favor introduce detalles!",
+                alert_room404: "¡Sala no encontrada!",
+                alert_min_pl: "¡Se necesitan al menos 2 jugadores!",
+                alert_game_over: "¡JUEGO TERMINADO! GANADOR: ",
+                alert_leave: "¿Seguro que quieres salir?",
+                alert_reset: "¿Reiniciar el juego para todos?",
+                alert_guess_confirm: "¡Si fallas pierdes una vida! ¿Seguro?",
+                txt_starting: "Iniciando...",
+                txt_submit_wait: "Esperando...",
+                hist_yes: "SÍ",
+                hist_no: "NO",
                 hist_unsure: "?"
             }
         };
