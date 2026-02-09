@@ -27,87 +27,42 @@
         .btn-guess { background: #8e44ad; color: white; } 
         
         /* HEADER CONTROLS */
-        .game-controls { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            width: 100%; 
-            max-width: 600px; 
-            margin-bottom: 10px; 
-            position: relative; 
-            z-index: 100; 
-        }
-
-        .control-btn { 
-            background: #333; 
-            color: #fff; 
-            border: 1px solid #555; 
-            padding: 8px 12px; 
-            font-size: 0.9em; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 5px; 
-            width: auto; 
-            margin: 0;
-        }
+        .game-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 600px; margin-bottom: 10px; position: relative; z-index: 100; }
+        .control-btn { background: #333; color: #fff; border: 1px solid #555; padding: 8px 12px; font-size: 0.9em; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; width: auto; margin: 0; }
         .control-btn:hover { background: #444; }
-
         .right-controls { display: flex; gap: 10px; align-items: center; }
 
         /* DROPDOWN MENU */
         .dropdown { position: relative; display: inline-block; }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 110%;
-            background-color: #2b2b40;
-            min-width: 140px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-            border-radius: 8px;
-            border: 1px solid #444;
-            overflow: hidden;
-            z-index: 999;
-        }
-        .dropdown-content div {
-            color: white;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            text-align: left;
-            font-size: 0.9em;
-        }
+        .dropdown-content { display: none; position: absolute; right: 0; top: 110%; background-color: #2b2b40; min-width: 140px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid #444; overflow: hidden; z-index: 999; }
+        .dropdown-content div { color: white; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left; font-size: 0.9em; }
         .dropdown-content div:hover { background-color: #35354a; }
         .show { display: block; animation: fadeIn 0.2s; }
 
         /* INTRO TEXT */
-        .game-intro {
-            font-size: 0.95em;
-            color: #ccc;
-            line-height: 1.5;
-            margin-bottom: 20px;
-            font-style: italic;
-        }
+        .game-intro { font-size: 0.95em; color: #ccc; line-height: 1.5; margin-bottom: 20px; font-style: italic; }
 
         /* GAME LAYOUT */
         .vote-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
         ul { list-style: none; padding: 0; }
         li { background: #35354a; padding: 10px; margin: 5px 0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
         .lives-display { font-size: 1.5em; margin: 10px 0; letter-spacing: 5px; }
+        
         .eliminated-banner { background: #c0392b; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; animation: fadeIn 0.5s; }
+        .success-banner { background: #27ae60; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; animation: fadeIn 0.5s; border: 2px solid #2ecc71; }
 
         /* CHARACTERS LIST */
         .char-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .char-card { background: #1f1f2e; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; flex-direction: column; align-items: center; }
+        .char-card { background: #1f1f2e; padding: 10px; border-radius: 8px; border: 1px solid #444; display: flex; flex-direction: column; align-items: center; position: relative; }
         .char-card.is-me { border: 2px solid #f1c40f; background: #2d2d3f; } 
         .char-card-name { font-size: 0.8em; color: #aaa; margin-bottom: 5px; }
         .char-card-val { font-size: 1.1em; font-weight: bold; color: #fff; }
         .char-card-val.hidden { color: #f1c40f; letter-spacing: 2px; font-size: 1.4em; }
+        
+        /* Status Badges on Cards */
+        .status-badge { position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; }
+        .status-won { background: #27ae60; color: white; content: '✓'; }
+        .status-dead { background: #c0392b; color: white; content: 'X'; }
 
         /* HISTORY BOARD */
         .history-board { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; align-items: flex-start; }
@@ -120,6 +75,16 @@
         .group-no .q-item { background: rgba(192, 57, 43, 0.3); border-left: 3px solid #c0392b; }
         .group-unsure .q-item { background: rgba(243, 156, 18, 0.2); border-left: 3px solid #f39c12; }
         .guess-item { border: 1px dashed #f1c40f !important; font-weight: bold; }
+
+        /* LEADERBOARD STYLES */
+        .lb-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #444; align-items: center; }
+        .lb-rank { font-size: 1.5em; font-weight: bold; width: 40px; }
+        .lb-info { text-align: left; flex-grow: 1; margin-left: 10px; }
+        .lb-name { font-size: 1.1em; color: #fff; }
+        .lb-char { font-size: 0.9em; color: #f1c40f; }
+        .lb-medal-1 { color: #f1c40f; }
+        .lb-medal-2 { color: #bdc3c7; }
+        .lb-medal-3 { color: #cd7f32; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -149,7 +114,6 @@
     <div id="screen-login" class="screen active">
         <div class="box">
             <p id="lbl-game-intro" class="game-intro"></p>
-
             <input type="text" id="username" placeholder="Enter your name">
             <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
             <div style="display: flex; gap: 5px; margin-top: 10px;">
@@ -185,6 +149,13 @@
     </div>
 
     <div id="screen-game" class="screen">
+        
+        <div id="success-msg" class="success-banner" style="display:none;">
+            <h3 id="lbl-congrats">🎉 CORRECT!</h3>
+            <p><span id="lbl-char-was">Your character was:</span> <strong id="reveal-char-win" style="font-size:1.2em;"></strong></p>
+            <small id="lbl-wait-end">Waiting for others to finish...</small>
+        </div>
+
         <div id="eliminated-msg" class="eliminated-banner" style="display:none;">
             <h3 id="lbl-eliminated">💀 YOU ARE OUT!</h3>
             <p><span id="lbl-was">Your character was:</span> <strong id="reveal-char" style="color:#f1c40f; font-size:1.2em;"></strong></p>
@@ -232,15 +203,21 @@
         </div>
     </div>
 
+    <div id="screen-leaderboard" class="screen">
+        <div class="box">
+            <h2 id="lbl-game-over-title">🏆 GAME OVER!</h2>
+            <div id="leaderboard-list"></div>
+            <button class="btn-green" onclick="resetGame()" style="margin-top:20px;">🔄 New Game</button>
+        </div>
+    </div>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, get, remove, push } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- FIREBASE CONFIG ---
-        // (Burasi senin Vite yapinla calisiyorsa aynen kalsin, 
-        // calismazsa eski hard-coded config'i geri yapistir)
+        // --- FIREBASE CONFIG (Use VITE env or your keys) ---
         const firebaseConfig = {
             apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
             authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -264,230 +241,111 @@
         // --- TRANSLATION DICTIONARY ---
         const translations = {
             en: {
-                flag: "🇺🇸",
-                langName: "English",
+                flag: "🇺🇸", langName: "English",
                 lbl_intro: "Gather your friends, assign famous characters (e.g. Singers, Athletes) and guess who you are!<br>Ask Yes/No questions. Wrong guesses cost lives! ❤️",
-                ph_name: "Enter your name",
-                btn_create: "Create New Room",
-                ph_room: "Room Code",
-                btn_join: "Join",
-                lbl_room: "Room Code:",
-                lbl_wait: "Waiting for players...",
-                lbl_admin: "You are the Admin",
-                btn_start: "Start Game",
-                lbl_wait_admin: "Waiting for admin to start...",
-                lbl_assign_t: "Assign Character",
-                lbl_assign_d: "Assign a character for:",
-                ph_char: "E.g. Elvis, Batman...",
-                btn_submit: "Submit",
-                msg_wait_others: "Waiting for others...",
-                btn_leave: "🚪 Leave",
-                btn_reset: "🔄 Reset",
-                lbl_out: "💀 YOU ARE OUT!",
-                lbl_was: "Your character was:",
-                lbl_jury: "You can still vote as a Jury!",
-                lbl_all_chars: "PLAYERS & CHARACTERS",
-                lbl_turn: "Whose Turn?",
-                ph_q: "Ask a question (E.g. Am I a singer?)",
-                btn_ask: "Send Question",
-                ph_guess: "Make a guess (E.g. I am Elvis!)",
-                btn_guess: "GUESS (Risk a Life)",
-                lbl_q: "Current Question:",
-                lbl_guess_alert: "⚠️ GUESS ALERT!",
-                btn_yes: "YES",
-                btn_no: "NO",
-                btn_unsure: "UNSURE",
-                lbl_hist: "Game History",
-                msg_wait_vote: "Vote received. Waiting...",
-                msg_friends_vote: "Friends are voting...",
-                alert_name: "Please enter a name!",
-                alert_code: "Please enter details!",
-                alert_room404: "Room not found!",
-                alert_min_pl: "Need at least 2 players!",
-                alert_game_over: "GAME OVER! WINNER: ",
-                alert_leave: "Are you sure you want to leave?",
-                alert_reset: "Restart game for everyone?",
-                alert_guess_confirm: "If wrong, you lose a life! Are you sure?",
-                txt_starting: "Starting...",
-                txt_submit_wait: "Waiting...",
-                hist_yes: "YES",
-                hist_no: "NO",
-                hist_unsure: "?"
+                ph_name: "Enter your name", btn_create: "Create New Room", ph_room: "Room Code", btn_join: "Join",
+                lbl_room: "Room Code:", lbl_wait: "Waiting for players...", lbl_admin: "You are the Admin", btn_start: "Start Game",
+                lbl_wait_admin: "Waiting for admin to start...", lbl_assign_t: "Assign Character", lbl_assign_d: "Assign a character for:",
+                ph_char: "E.g. Elvis, Batman...", btn_submit: "Submit", msg_wait_others: "Waiting for others...",
+                btn_leave: "🚪 Leave", btn_reset: "🔄 Reset",
+                lbl_out: "💀 YOU ARE OUT!", lbl_was: "Your character was:", lbl_jury: "You can still vote as a Jury!",
+                lbl_congrats: "🎉 CORRECT!", lbl_wait_end: "Waiting for others to finish...",
+                lbl_all_chars: "PLAYERS & CHARACTERS", lbl_turn: "Whose Turn?",
+                ph_q: "Ask a question (E.g. Am I a singer?)", btn_ask: "Send Question",
+                ph_guess: "Make a guess (E.g. I am Elvis!)", btn_guess: "GUESS (Risk a Life)",
+                lbl_q: "Current Question:", lbl_guess_alert: "⚠️ GUESS ALERT!",
+                btn_yes: "YES", btn_no: "NO", btn_unsure: "UNSURE", lbl_hist: "Game History",
+                msg_wait_vote: "Vote received. Waiting...", msg_friends_vote: "Friends are voting...",
+                lbl_game_over: "🏆 GAME OVER!", btn_new_game: "🔄 New Game",
+                alert_name: "Please enter a name!", alert_code: "Please enter details!", alert_room404: "Room not found!",
+                alert_min_pl: "Need at least 2 players!", alert_leave: "Are you sure you want to leave?",
+                alert_reset: "Restart game for everyone?", alert_guess_confirm: "If wrong, you lose a life! Are you sure?",
+                txt_starting: "Starting...", txt_submit_wait: "Waiting...",
+                hist_yes: "YES", hist_no: "NO", hist_unsure: "?"
             },
             tr: {
-                flag: "🇹🇷",
-                langName: "Türkçe",
+                flag: "🇹🇷", langName: "Türkçe",
                 lbl_intro: "Arkadaşlarını topla, ünlü karakterler ata (Örn: Şarkıcı, Sporcu, Tarihi Kişi) ve kim olduğunu bul!<br>Sırayla Evet/Hayır soruları sor. Yanlış tahmin can yakar! ❤️",
-                ph_name: "Adını gir",
-                btn_create: "Yeni Oda Kur",
-                ph_room: "Oda Kodu",
-                btn_join: "Katıl",
-                lbl_room: "Oda Kodu:",
-                lbl_wait: "Oyuncular bekleniyor...",
-                lbl_admin: "Yöneticisin",
-                btn_start: "Oyunu Başlat",
-                lbl_wait_admin: "Yönetici bekleniyor...",
-                lbl_assign_t: "Karakter Belirle",
-                lbl_assign_d: "Şu kişi için bir karakter yaz:",
-                ph_char: "Örn: Tarkan, Batman...",
-                btn_submit: "Gönder",
-                msg_wait_others: "Diğerleri bekleniyor...",
-                btn_leave: "🚪 Ayrıl",
-                btn_reset: "🔄 Sıfırla",
-                lbl_out: "💀 ELENDİN!",
-                lbl_was: "Karakterin şuydu:",
-                lbl_jury: "Jüri olarak oy verebilirsin!",
-                lbl_all_chars: "OYUNCULAR VE KARAKTERLER",
-                lbl_turn: "Sıra Kimde?",
-                ph_q: "Bir soru sor (Örn: Şarkıcı mıyım?)",
-                btn_ask: "Soruyu Gönder",
-                ph_guess: "Tahmin yap (Örn: Ben Tarkanım!)",
-                btn_guess: "TAHMİN ET (Can Gider)",
-                lbl_q: "Sorulan Soru:",
-                lbl_guess_alert: "⚠️ TAHMİN GELDİ!",
-                btn_yes: "EVET",
-                btn_no: "HAYIR",
-                btn_unsure: "EMİN DEĞİLİM",
-                lbl_hist: "Oyun Geçmişi",
-                msg_wait_vote: "Oyun alındı. Bekleniyor...",
-                msg_friends_vote: "Arkadaşların oyluyor...",
-                alert_name: "Lütfen isim gir!",
-                alert_code: "Lütfen bilgileri doldur!",
-                alert_room404: "Oda bulunamadı!",
-                alert_min_pl: "En az 2 kişi gerekli!",
-                alert_game_over: "OYUN BİTTİ! KAZANAN: ",
-                alert_leave: "Odadan çıkmak istediğine emin misin?",
-                alert_reset: "Oyunu herkes için sıfırlamak istiyor musun?",
-                alert_guess_confirm: "Yanlışsa 1 canın gider! Emin misin?",
-                txt_starting: "Başlatılıyor...",
-                txt_submit_wait: "Bekleniyor...",
-                hist_yes: "EVET",
-                hist_no: "HAYIR",
-                hist_unsure: "?"
+                ph_name: "Adını gir", btn_create: "Yeni Oda Kur", ph_room: "Oda Kodu", btn_join: "Katıl",
+                lbl_room: "Oda Kodu:", lbl_wait: "Oyuncular bekleniyor...", lbl_admin: "Yöneticisin", btn_start: "Oyunu Başlat",
+                lbl_wait_admin: "Yönetici bekleniyor...", lbl_assign_t: "Karakter Belirle", lbl_assign_d: "Şu kişi için bir karakter yaz:",
+                ph_char: "Örn: Tarkan, Batman...", btn_submit: "Gönder", msg_wait_others: "Diğerleri bekleniyor...",
+                btn_leave: "🚪 Ayrıl", btn_reset: "🔄 Sıfırla",
+                lbl_out: "💀 ELENDİN!", lbl_was: "Karakterin şuydu:", lbl_jury: "Jüri olarak oy verebilirsin!",
+                lbl_congrats: "🎉 DOĞRU BİLDİN!", lbl_wait_end: "Diğerlerinin bitirmesi bekleniyor...",
+                lbl_all_chars: "OYUNCULAR VE KARAKTERLER", lbl_turn: "Sıra Kimde?",
+                ph_q: "Bir soru sor (Örn: Şarkıcı mıyım?)", btn_ask: "Soruyu Gönder",
+                ph_guess: "Tahmin yap (Örn: Ben Tarkanım!)", btn_guess: "TAHMİN ET (Can Gider)",
+                lbl_q: "Sorulan Soru:", lbl_guess_alert: "⚠️ TAHMİN GELDİ!",
+                btn_yes: "EVET", btn_no: "HAYIR", btn_unsure: "EMİN DEĞİLİM", lbl_hist: "Oyun Geçmişi",
+                msg_wait_vote: "Oyun alındı. Bekleniyor...", msg_friends_vote: "Arkadaşların oyluyor...",
+                lbl_game_over: "🏆 OYUN BİTTİ!", btn_new_game: "🔄 Yeni Oyun",
+                alert_name: "Lütfen isim gir!", alert_code: "Lütfen bilgileri doldur!", alert_room404: "Oda bulunamadı!",
+                alert_min_pl: "En az 2 kişi gerekli!", alert_leave: "Odadan çıkmak istediğine emin misin?",
+                alert_reset: "Oyunu herkes için sıfırlamak istiyor musun?", alert_guess_confirm: "Yanlışsa 1 canın gider! Emin misin?",
+                txt_starting: "Başlatılıyor...", txt_submit_wait: "Bekleniyor...",
+                hist_yes: "EVET", hist_no: "HAYIR", hist_unsure: "?"
             },
             de: {
-                flag: "🇩🇪",
-                langName: "Deutsch",
+                flag: "🇩🇪", langName: "Deutsch",
                 lbl_intro: "Versammle deine Freunde, weise berühmte Charaktere zu (z.B. Sänger, Sportler) und rate, wer du bist!<br>Stelle Ja/Nein-Fragen. Falsche Tipps kosten Leben! ❤️",
-                ph_name: "Namen eingeben",
-                btn_create: "Raum erstellen",
-                ph_room: "Raumcode",
-                btn_join: "Beitreten",
-                lbl_room: "Raumcode:",
-                lbl_wait: "Warte auf Spieler...",
-                lbl_admin: "Du bist Admin",
-                btn_start: "Spiel starten",
-                lbl_wait_admin: "Warte auf Admin...",
-                lbl_assign_t: "Charakter wählen",
-                lbl_assign_d: "Wähle einen Charakter für:",
-                ph_char: "z.B. Einstein, Batman...",
-                btn_submit: "Senden",
-                msg_wait_others: "Warte auf andere...",
-                btn_leave: "🚪 Verlassen",
-                btn_reset: "🔄 Neustart",
-                lbl_out: "💀 DU BIST RAUS!",
-                lbl_was: "Dein Charakter war:",
-                lbl_jury: "Du kannst als Jury abstimmen!",
-                lbl_all_chars: "SPIELER & CHARAKTERE",
-                lbl_turn: "Wer ist dran?",
-                ph_q: "Stelle eine Frage (z.B. Bin ich ein Sänger?)",
-                btn_ask: "Frage senden",
-                ph_guess: "Rate mal (z.B. Ich bin Einstein!)",
-                btn_guess: "RATEN (Leben riskieren)",
-                lbl_q: "Aktuelle Frage:",
-                lbl_guess_alert: "⚠️ RATEVERSUCH!",
-                btn_yes: "JA",
-                btn_no: "NEIN",
-                btn_unsure: "UNSICHER",
-                lbl_hist: "Spielverlauf",
-                msg_wait_vote: "Stimme empfangen. Warten...",
-                msg_friends_vote: "Freunde stimmen ab...",
-                alert_name: "Bitte Namen eingeben!",
-                alert_code: "Bitte Details eingeben!",
-                alert_room404: "Raum nicht gefunden!",
-                alert_min_pl: "Mindestens 2 Spieler nötig!",
-                alert_game_over: "SPIEL VORBEI! GEWINNER: ",
-                alert_leave: "Möchtest du den Raum wirklich verlassen?",
-                alert_reset: "Spiel für alle neu starten?",
-                alert_guess_confirm: "Bei Fehler verlierst du ein Leben! Sicher?",
-                txt_starting: "Startet...",
-                txt_submit_wait: "Warten...",
-                hist_yes: "JA",
-                hist_no: "NEIN",
-                hist_unsure: "?"
+                ph_name: "Namen eingeben", btn_create: "Raum erstellen", ph_room: "Raumcode", btn_join: "Beitreten",
+                lbl_room: "Raumcode:", lbl_wait: "Warte auf Spieler...", lbl_admin: "Du bist Admin", btn_start: "Spiel starten",
+                lbl_wait_admin: "Warte auf Admin...", lbl_assign_t: "Charakter wählen", lbl_assign_d: "Wähle einen Charakter für:",
+                ph_char: "z.B. Einstein, Batman...", btn_submit: "Senden", msg_wait_others: "Warte auf andere...",
+                btn_leave: "🚪 Verlassen", btn_reset: "🔄 Neustart",
+                lbl_out: "💀 DU BIST RAUS!", lbl_was: "Dein Charakter war:", lbl_jury: "Du kannst als Jury abstimmen!",
+                lbl_congrats: "🎉 RICHTIG!", lbl_wait_end: "Warte auf die anderen...",
+                lbl_all_chars: "SPIELER & CHARAKTERE", lbl_turn: "Wer ist dran?",
+                ph_q: "Stelle eine Frage (z.B. Bin ich ein Sänger?)", btn_ask: "Frage senden",
+                ph_guess: "Rate mal (z.B. Ich bin Einstein!)", btn_guess: "RATEN (Leben riskieren)",
+                lbl_q: "Aktuelle Frage:", lbl_guess_alert: "⚠️ RATEVERSUCH!",
+                btn_yes: "JA", btn_no: "NEIN", btn_unsure: "UNSICHER", lbl_hist: "Spielverlauf",
+                msg_wait_vote: "Stimme empfangen. Warten...", msg_friends_vote: "Freunde stimmen ab...",
+                lbl_game_over: "🏆 SPIEL VORBEI!", btn_new_game: "🔄 Neues Spiel",
+                alert_name: "Bitte Namen eingeben!", alert_code: "Bitte Details eingeben!", alert_room404: "Raum nicht gefunden!",
+                alert_min_pl: "Mindestens 2 Spieler nötig!", alert_leave: "Möchtest du den Raum wirklich verlassen?",
+                alert_reset: "Spiel für alle neu starten?", alert_guess_confirm: "Bei Fehler verlierst du ein Leben! Sicher?",
+                txt_starting: "Startet...", txt_submit_wait: "Warten...",
+                hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?"
             },
             es: {
-                flag: "🇪🇸",
-                langName: "Español",
+                flag: "🇪🇸", langName: "Español",
                 lbl_intro: "Reúne a tus amigos, asigna personajes famosos (p. ej., cantantes, deportistas) y adivina quién eres.<br>Haz preguntas de Sí/No. ¡Las suposiciones incorrectas cuestan vidas! ❤️",
-                ph_name: "Introduce tu nombre",
-                btn_create: "Crear Nueva Sala",
-                ph_room: "Código de Sala",
-                btn_join: "Unirse",
-                lbl_room: "Código de Sala:",
-                lbl_wait: "Esperando jugadores...",
-                lbl_admin: "Eres el Administrador",
-                btn_start: "Iniciar Juego",
-                lbl_wait_admin: "Esperando al administrador...",
-                lbl_assign_t: "Asignar Personaje",
-                lbl_assign_d: "Asigna un personaje para:",
-                ph_char: "Ej. Elvis, Batman...",
-                btn_submit: "Enviar",
-                msg_wait_others: "Esperando a otros...",
-                btn_leave: "🚪 Salir",
-                btn_reset: "🔄 Reiniciar",
-                lbl_out: "💀 ¡ESTÁS ELIMINADO!",
-                lbl_was: "Tu personaje era:",
-                lbl_jury: "¡Aún puedes votar como Jurado!",
-                lbl_all_chars: "JUGADORES Y PERSONAJES",
-                lbl_turn: "¿Turno de quién?",
-                ph_q: "Haz una pregunta (Ej. ¿Soy cantante?)",
-                btn_ask: "Enviar Pregunta",
-                ph_guess: "Adivina (Ej. ¡Soy Elvis!)",
-                btn_guess: "ADIVINAR (Arriesgas Vida)",
-                lbl_q: "Pregunta Actual:",
-                lbl_guess_alert: "⚠️ ¡ALERTA DE SUPOSICIÓN!",
-                btn_yes: "SÍ",
-                btn_no: "NO",
-                btn_unsure: "NO SÉ",
-                lbl_hist: "Historial",
-                msg_wait_vote: "Voto recibido. Esperando...",
-                msg_friends_vote: "Los amigos están votando...",
-                alert_name: "¡Por favor introduce un nombre!",
-                alert_code: "¡Por favor introduce detalles!",
-                alert_room404: "¡Sala no encontrada!",
-                alert_min_pl: "¡Se necesitan al menos 2 jugadores!",
-                alert_game_over: "¡JUEGO TERMINADO! GANADOR: ",
-                alert_leave: "¿Seguro que quieres salir?",
-                alert_reset: "¿Reiniciar el juego para todos?",
-                alert_guess_confirm: "¡Si fallas pierdes una vida! ¿Seguro?",
-                txt_starting: "Iniciando...",
-                txt_submit_wait: "Esperando...",
-                hist_yes: "SÍ",
-                hist_no: "NO",
-                hist_unsure: "?"
+                ph_name: "Introduce tu nombre", btn_create: "Crear Nueva Sala", ph_room: "Código de Sala", btn_join: "Unirse",
+                lbl_room: "Código de Sala:", lbl_wait: "Esperando jugadores...", lbl_admin: "Eres el Administrador", btn_start: "Iniciar Juego",
+                lbl_wait_admin: "Esperando al administrador...", lbl_assign_t: "Asignar Personaje", lbl_assign_d: "Asigna un personaje para:",
+                ph_char: "Ej. Elvis, Batman...", btn_submit: "Enviar", msg_wait_others: "Esperando a otros...",
+                btn_leave: "🚪 Salir", btn_reset: "🔄 Reiniciar",
+                lbl_out: "💀 ¡ESTÁS ELIMINADO!", lbl_was: "Tu personaje era:", lbl_jury: "¡Aún puedes votar como Jurado!",
+                lbl_congrats: "🎉 ¡CORRECTO!", lbl_wait_end: "Esperando a que otros terminen...",
+                lbl_all_chars: "JUGADORES Y PERSONAJES", lbl_turn: "¿Turno de quién?",
+                ph_q: "Haz una pregunta (Ej. ¿Soy cantante?)", btn_ask: "Enviar Pregunta",
+                ph_guess: "Adivina (Ej. ¡Soy Elvis!)", btn_guess: "ADIVINAR (Arriesgas Vida)",
+                lbl_q: "Pregunta Actual:", lbl_guess_alert: "⚠️ ¡ALERTA DE SUPOSICIÓN!",
+                btn_yes: "SÍ", btn_no: "NO", btn_unsure: "NO SÉ", lbl_hist: "Historial",
+                msg_wait_vote: "Voto recibido. Esperando...", msg_friends_vote: "Los amigos están votando...",
+                lbl_game_over: "🏆 ¡JUEGO TERMINADO!", btn_new_game: "🔄 Nuevo Juego",
+                alert_name: "¡Por favor introduce un nombre!", alert_code: "¡Por favor introduce detalles!", alert_room404: "¡Sala no encontrada!",
+                alert_min_pl: "¡Se necesitan al menos 2 jugadores!", alert_leave: "¿Seguro que quieres salir?",
+                alert_reset: "¿Reiniciar el juego para todos?", alert_guess_confirm: "¡Si fallas pierdes una vida! ¿Seguro?",
+                txt_starting: "Iniciando...", txt_submit_wait: "Esperando...",
+                hist_yes: "SÍ", hist_no: "NO", hist_unsure: "?"
             }
         };
 
         // --- LANGUAGE MANAGEMENT ---
         let currentLang = localStorage.getItem('whoami_lang') || 'en';
         
-        window.toggleLang = function() {
-            document.getElementById("langDropdown").classList.toggle("show");
-        }
-
+        window.toggleLang = function() { document.getElementById("langDropdown").classList.toggle("show"); }
         window.onclick = function(event) {
             if (!event.target.matches('#lang-btn-display')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 for (var i = 0; i < dropdowns.length; i++) {
-                    var openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
+                    if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
                 }
             }
         }
-
         window.setLanguage = function(lang) {
             currentLang = lang;
             localStorage.setItem('whoami_lang', lang);
@@ -496,19 +354,15 @@
 
         function updateUITexts() {
             const t = translations[currentLang];
-
-            // Header Button
             const langBtn = document.getElementById('lang-btn-display');
             if(langBtn) langBtn.innerHTML = `${t.flag} ${t.langName} ▾`;
 
-            // PLACEHOLDERS
             if(document.getElementById('username')) document.getElementById('username').placeholder = t.ph_name;
             if(document.getElementById('room-code-input')) document.getElementById('room-code-input').placeholder = t.ph_room;
             if(document.getElementById('character-input')) document.getElementById('character-input').placeholder = t.ph_char;
             if(document.getElementById('question-input')) document.getElementById('question-input').placeholder = t.ph_q;
             if(document.getElementById('guess-input')) document.getElementById('guess-input').placeholder = t.ph_guess;
 
-            // TEXT CONTENT
             setText('lbl-game-intro', t.lbl_intro);
             setText('btn-create', t.btn_create);
             setText('btn-join', t.btn_join);
@@ -525,7 +379,10 @@
             setText('reset-btn', t.btn_reset);
             setText('lbl-eliminated', t.lbl_out);
             setText('lbl-was', t.lbl_was);
+            setText('lbl-char-was', t.lbl_was);
             setText('lbl-jury-mode', t.lbl_jury);
+            setText('lbl-congrats', t.lbl_congrats);
+            setText('lbl-wait-end', t.lbl_wait_end);
             setText('lbl-players-chars', t.lbl_all_chars);
             setText('lbl-whose-turn', t.lbl_turn);
             setText('btn-send-q', t.btn_ask);
@@ -535,17 +392,15 @@
             setText('btn-no', t.btn_no);
             setText('btn-unsure', t.btn_unsure);
             setText('lbl-history', t.lbl_hist);
+            setText('lbl-game-over-title', t.lbl_game_over);
         }
 
-        // --- FIX: USE innerHTML to render <br> ---
         function setText(id, text) {
             const el = document.getElementById(id);
-            if (el && text) el.innerHTML = text; // Changed from innerText to innerHTML
+            if (el && text) el.innerHTML = text; 
         }
 
-        // Initialize Language on Load
         window.setLanguage(currentLang);
-
 
         // --- GAME LOGIC ---
         let myRoomCode = "";
@@ -569,7 +424,6 @@
         window.resetGame = resetGame;
         window.leaveRoom = leaveRoom;
 
-        // 1. CREATE ROOM
         function createRoom() {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
@@ -579,13 +433,12 @@
                 gameState: 'lobby',
                 admin: myPlayerId,
                 turnIndex: 0,
-                players: { [myPlayerId]: { name: myName, score: 0, lives: 3 } }
+                players: { [myPlayerId]: { name: myName, score: 0, lives: 3, finishedRank: 0 } }
             }).catch(e => alert("Error: " + e.message));
             
             listenRoom();
         }
 
-        // 2. JOIN ROOM
         function joinRoom() {
             myName = document.getElementById('username').value.trim();
             const code = document.getElementById('room-code-input').value.trim().toUpperCase();
@@ -595,7 +448,7 @@
                 if (snap.exists()) {
                     myRoomCode = code;
                     update(ref(db, `rooms/${code}/players/${myPlayerId}`), {
-                        name: myName, score: 0, lives: 3
+                        name: myName, score: 0, lives: 3, finishedRank: 0
                     }).then(() => listenRoom());
                 } else {
                     alert(translations[currentLang].alert_room404);
@@ -603,28 +456,20 @@
             }).catch(e => alert("Error: " + e.message));
         }
 
-        // 3. START GAME
         function startSetup() {
             if (!myRoomCode) return;
             if (playersData.length < 2) return alert(translations[currentLang].alert_min_pl);
 
             const btn = document.querySelector('#admin-panel button');
-            if(btn) {
-                btn.innerText = translations[currentLang].txt_starting;
-                btn.disabled = true;
-            }
+            if(btn) { btn.innerText = translations[currentLang].txt_starting; btn.disabled = true; }
 
             update(ref(db, `rooms/${myRoomCode}`), { gameState: 'setup' })
             .catch((error) => {
                 alert("Error: " + error.message);
-                if(btn) {
-                    btn.innerText = translations[currentLang].btn_start;
-                    btn.disabled = false;
-                }
+                if(btn) { btn.innerText = translations[currentLang].btn_start; btn.disabled = false; }
             });
         }
 
-        // 4. LISTEN ROOM
         function listenRoom() {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('screen-lobby').classList.add('active');
@@ -643,17 +488,16 @@
 
                 updateUITexts();
 
-                // STATE: LOBBY
+                // 1. LOBBY
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
                     playersData.forEach(p => ul.innerHTML += `<li>${p.name}</li>`);
-                    
                     if (data.admin === myPlayerId) document.getElementById('admin-panel').style.display = 'block';
                     else document.getElementById('waiting-msg').style.display = 'block';
                 }
 
-                // STATE: SETUP
+                // 2. SETUP
                 if (data.gameState === 'setup') {
                     changeScreen('screen-setup');
                     document.getElementById('btn-submit-char').disabled = false;
@@ -672,15 +516,17 @@
                     }
                 }
 
-                // STATE: GAME
+                // 3. GAME
                 if (data.gameState === 'game') {
                     changeScreen('screen-game');
                     renderGame(data);
                     renderHistoryBoard(data.history, playersData);
-                    
-                    if(data.winner) {
-                        alert(translations[currentLang].alert_game_over + data.winner);
-                    }
+                }
+
+                // 4. LEADERBOARD
+                if (data.gameState === 'leaderboard') {
+                    changeScreen('screen-leaderboard');
+                    renderLeaderboard(playersData);
                 }
             });
         }
@@ -696,22 +542,21 @@
             const lives = me.lives !== undefined ? me.lives : 3;
             document.getElementById('my-lives').innerText = "❤️".repeat(lives);
 
-            // RENDER CHARACTERS
+            // RENDER CHARACTERS & BADGES
             const charListEl = document.getElementById('characters-list');
-            
             charListEl.innerHTML = ""; 
-
             playersData.forEach(p => {
                 const isMe = p.id === myPlayerId;
-                const charVal = isMe ? "???" : (p.assignedChar || "...");
-                const hiddenClass = isMe ? "hidden" : ""; 
+                const isFinished = p.finishedRank > 0;
+                
+                // If I finished, I can see my character. Otherwise ???
+                const charVal = (isMe && !isFinished) ? "???" : (p.assignedChar || "...");
+                const hiddenClass = (isMe && !isFinished) ? "hidden" : ""; 
                 const meClass = isMe ? "is-me" : "";     
 
-                
                 const cardDiv = document.createElement("div");
                 cardDiv.className = `char-card ${meClass}`; 
 
-                
                 const nameDiv = document.createElement("div");
                 nameDiv.className = "char-card-name";
                 nameDiv.textContent = p.name; 
@@ -720,27 +565,58 @@
                 valDiv.className = `char-card-val ${hiddenClass}`;
                 valDiv.textContent = charVal; 
 
+                // Badges
+                if (p.finishedRank > 0) {
+                    const badge = document.createElement("div");
+                    badge.className = "status-badge status-won";
+                    badge.innerText = "✓";
+                    cardDiv.appendChild(badge);
+                } else if (p.lives <= 0) {
+                    const badge = document.createElement("div");
+                    badge.className = "status-badge status-dead";
+                    badge.innerText = "X";
+                    cardDiv.appendChild(badge);
+                }
+
                 cardDiv.appendChild(nameDiv);
                 cardDiv.appendChild(valDiv);
-
                 charListEl.appendChild(cardDiv);
             });
 
-            // ELIMINATED UI
+            // LOGIC FOR BANNERS
             const amIDead = (lives <= 0);
-            if (amIDead) {
+            const amIWon = (me.finishedRank > 0);
+
+            // Reset banners first
+            document.getElementById('eliminated-msg').style.display = 'none';
+            document.getElementById('success-msg').style.display = 'none';
+            document.getElementById('my-turn-area').style.display = 'none';
+            document.getElementById('voting-area').style.display = 'none';
+            document.getElementById('waiting-vote-msg').style.display = 'none';
+
+            if (amIWon) {
+                document.getElementById('success-msg').style.display = 'block';
+                document.getElementById('reveal-char-win').innerText = me.assignedChar;
+            } 
+            else if (amIDead) {
                 document.getElementById('eliminated-msg').style.display = 'block';
                 document.getElementById('reveal-char').innerText = me.assignedChar;
-                document.getElementById('my-turn-area').style.display = 'none';
-            } else {
-                document.getElementById('eliminated-msg').style.display = 'none';
             }
 
-            // AUTO SKIP
-            if (data.admin === myPlayerId && (currentPlayer.lives !== undefined && currentPlayer.lives <= 0) && !data.currentQuestion && !data.winner) {
-                setTimeout(() => {
-                    update(ref(db, `rooms/${myRoomCode}`), { turnIndex: data.turnIndex + 1 });
-                }, 1000);
+            // AUTO SKIP LOGIC (ADMIN)
+            // Skip player if: Dead OR Won
+            const currentIsDone = (currentPlayer.lives <= 0) || (currentPlayer.finishedRank > 0);
+            
+            if (data.admin === myPlayerId && currentIsDone && !data.currentQuestion && data.gameState === 'game') {
+                // Check if EVERYONE is done before skipping indefinitely
+                const activePlayers = playersData.filter(p => p.lives > 0 && p.finishedRank === 0);
+                if (activePlayers.length === 0) {
+                    update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
+                } else {
+                    setTimeout(() => {
+                        update(ref(db, `rooms/${myRoomCode}`), { turnIndex: data.turnIndex + 1 });
+                    }, 1000);
+                }
                 return;
             }
 
@@ -749,14 +625,10 @@
             const isGuessAction = data.isGuess === true;
 
             // UI STATES
-            if (isMyTurn && !activeQuestion && !amIDead) {
+            if (isMyTurn && !activeQuestion && !amIDead && !amIWon) {
                 document.getElementById('my-turn-area').style.display = 'block';
-                document.getElementById('voting-area').style.display = 'none';
-                document.getElementById('waiting-vote-msg').style.display = 'none';
             } 
             else if (!isMyTurn && activeQuestion) {
-                document.getElementById('my-turn-area').style.display = 'none';
-                
                 const titleEl = document.getElementById('vote-title');
                 titleEl.innerText = isGuessAction ? t.lbl_guess_alert : t.lbl_q;
                 titleEl.style.color = isGuessAction ? "#8e44ad" : "#fff";
@@ -765,24 +637,18 @@
                 
                 if (!myVote) {
                     document.getElementById('voting-area').style.display = 'block';
-                    document.getElementById('waiting-vote-msg').style.display = 'none';
                     document.getElementById('voting-question').innerText = activeQuestion;
                 } else {
-                    document.getElementById('voting-area').style.display = 'none';
                     document.getElementById('waiting-vote-msg').style.display = 'block';
                     document.getElementById('waiting-vote-msg').innerText = t.msg_wait_vote;
                 }
             } 
-            else {
-                document.getElementById('my-turn-area').style.display = 'none';
-                document.getElementById('voting-area').style.display = 'none';
-                if (isMyTurn && activeQuestion) {
-                    document.getElementById('waiting-vote-msg').style.display = 'block';
-                    document.getElementById('waiting-vote-msg').innerText = t.msg_friends_vote;
-                }
+            else if (isMyTurn && activeQuestion) {
+                document.getElementById('waiting-vote-msg').style.display = 'block';
+                document.getElementById('waiting-vote-msg').innerText = t.msg_friends_vote;
             }
 
-            // VOTE PROCESSING
+            // VOTE PROCESSING (ADMIN ONLY)
             if (activeQuestion && data.votes && data.admin === myPlayerId && !data.processing) {
                 const totalPlayers = playersData.length;
                 const voteCount = Object.keys(data.votes).length;
@@ -796,8 +662,32 @@
 
                     if (isGuessAction) {
                         if (result === 'yes') {
-                            update(ref(db, `rooms/${myRoomCode}`), { winner: currentPlayer.name });
+                            // CORRECT GUESS!
+                            // Calculate rank
+                            const alreadyWon = playersData.filter(p => p.finishedRank > 0).length;
+                            const newRank = alreadyWon + 1;
+
+                            update(ref(db, `rooms/${myRoomCode}/players/${currentPlayer.id}`), { finishedRank: newRank });
+                            
+                            push(ref(db, `rooms/${myRoomCode}/history`), {
+                                playerId: currentPlayer.id,
+                                question: "[GUESS] " + activeQuestion,
+                                result: 'yes', // Won
+                                timestamp: Date.now()
+                            });
+
+                            // Check if game should end immediately (if no actives left)
+                            setTimeout(() => {
+                                const actives = playersData.filter(p => p.id !== currentPlayer.id && p.lives > 0 && p.finishedRank === 0);
+                                if(actives.length === 0) {
+                                    update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
+                                } else {
+                                    passTurn(data.turnIndex);
+                                }
+                            }, 2000);
+
                         } else {
+                            // WRONG GUESS
                             const newLives = (currentPlayer.lives !== undefined ? currentPlayer.lives : 3) - 1;
                             update(ref(db, `rooms/${myRoomCode}/players/${currentPlayer.id}`), { lives: newLives });
                             
@@ -807,9 +697,19 @@
                                 result: 'no',
                                 timestamp: Date.now()
                             });
-                            setTimeout(() => passTurn(data.turnIndex), 2000);
+                            
+                            setTimeout(() => {
+                                // Check active players count
+                                const actives = playersData.filter(p => (p.id === currentPlayer.id ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0);
+                                if(actives.length === 0) {
+                                    update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
+                                } else {
+                                    passTurn(data.turnIndex);
+                                }
+                            }, 2000);
                         }
                     } else {
+                        // NORMAL QUESTION
                         push(ref(db, `rooms/${myRoomCode}/history`), {
                             playerId: currentPlayer.id,
                             question: activeQuestion,
@@ -820,6 +720,39 @@
                     }
                 }
             }
+        }
+
+        function renderLeaderboard(players) {
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = "";
+
+            // Sort: Rank 1, 2, 3... then those who didn't finish (rank 0)
+            const sorted = [...players].sort((a, b) => {
+                if (a.finishedRank > 0 && b.finishedRank > 0) return a.finishedRank - b.finishedRank;
+                if (a.finishedRank > 0) return -1;
+                if (b.finishedRank > 0) return 1;
+                return 0;
+            });
+
+            sorted.forEach(p => {
+                let rankDisplay = "";
+                let medalClass = "";
+                if (p.finishedRank === 1) { rankDisplay = "1."; medalClass = "lb-medal-1"; }
+                else if (p.finishedRank === 2) { rankDisplay = "2."; medalClass = "lb-medal-2"; }
+                else if (p.finishedRank === 3) { rankDisplay = "3."; medalClass = "lb-medal-3"; }
+                else if (p.finishedRank > 3) { rankDisplay = p.finishedRank + "."; }
+                else { rankDisplay = "-"; }
+
+                list.innerHTML += `
+                    <div class="lb-row">
+                        <div class="lb-rank ${medalClass}">${rankDisplay}</div>
+                        <div class="lb-info">
+                            <div class="lb-name">${p.name}</div>
+                            <div class="lb-char">${p.assignedChar}</div>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function passTurn(currentIndex) {
@@ -925,6 +858,7 @@
                 
                 playersData.forEach(p => {
                     updates[`rooms/${myRoomCode}/players/${p.id}/lives`] = 3;
+                    updates[`rooms/${myRoomCode}/players/${p.id}/finishedRank`] = 0;
                     updates[`rooms/${myRoomCode}/players/${p.id}/assignedChar`] = null;
                 });
 
