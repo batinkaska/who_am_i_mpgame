@@ -930,10 +930,9 @@
         function makeGuess() {
             const guess = document.getElementById('guess-input').value.trim();
             if (!guess) return;
-            if (confirm(translations[currentLang].alert_guess_confirm)) {
-                update(ref(db, `rooms/${myRoomCode}`), { currentQuestion: guess, isGuess: true, votes: null, processing: null });
-                document.getElementById('guess-input').value = "";
-            }
+            // Removed confirm dialog for faster gameplay
+            update(ref(db, `rooms/${myRoomCode}`), { currentQuestion: guess, isGuess: true, votes: null, processing: null });
+            document.getElementById('guess-input').value = "";
         }
 
         function submitCharacter() {
