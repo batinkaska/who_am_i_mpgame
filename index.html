@@ -611,27 +611,34 @@
 
                 if (data.gameState === 'setup') {
                     changeScreen('screen-setup');
-                    document.getElementById('btn-submit-char').disabled = false;
-                    document.getElementById('btn-submit-char').innerText = translations[currentLang].btn_submit;
-                    document.getElementById('character-input').value = "";
-
+                    // Removed input clearing from here to fix the bug
+                    
                     const myIndex = playersData.findIndex(p => p.id === myPlayerId);
+                    const me = playersData.find(p => p.id === myPlayerId);
+
                     if (myIndex !== -1) {
                         const targetPlayer = playersData[(myIndex + 1) % playersData.length];
                         myTargetId = targetPlayer.id;
                         document.getElementById('target-player-name').innerText = targetPlayer.name;
                     }
 
+                    // Button Logic
+                    if (me && me.hasSubmitted) {
+                        document.getElementById('btn-submit-char').disabled = true;
+                        document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
+                    } else {
+                        document.getElementById('btn-submit-char').disabled = false;
+                        document.getElementById('btn-submit-char').innerText = translations[currentLang].btn_submit;
+                    }
+
                     const setupList = document.getElementById('setup-player-list');
                     setupList.innerHTML = "";
                     playersData.forEach(p => {
-                        // Check 'hasSubmitted' instead of 'assignedChar'
                         const statusIcon = p.hasSubmitted ? "✅" : "⏳";
                         const doneClass = p.hasSubmitted ? "done" : "";
                         setupList.innerHTML += `<div class="setup-player-badge ${doneClass}">${p.name} ${statusIcon}</div>`;
                     });
 
-                    // Start when everyone HAS SUBMITTED (not just received)
                     if (playersData.every(p => p.hasSubmitted) && data.admin === myPlayerId) {
                         update(ref(db, `rooms/${myRoomCode}`), { gameState: 'game' });
                     }
@@ -893,6 +900,9 @@
             update(ref(db), updates);
             document.getElementById('btn-submit-char').disabled = true;
             document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
+            
+            // CLEAR INPUT HERE (Added this line to fix the bug)
+            document.getElementById('character-input').value = "";
         }
 
         function changeScreen(screenId) {
