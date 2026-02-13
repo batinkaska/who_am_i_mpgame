@@ -32,52 +32,13 @@
         .control-btn:hover { background: #444; }
         .right-controls { display: flex; gap: 10px; align-items: center; }
 
-        /* MENU BUTTONS (NEW STYLE) */
-        .menu-btn {
-            background-color: #2b2b40;
-            color: #fff;
-            padding: 20px;
-            margin: 10px 0;
-            border-radius: 15px;
-            border: 1px solid #444;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 15px;
-            font-size: 1.1em;
-            text-align: left;
-            transition: transform 0.2s, background 0.2s;
-        }
-        .menu-btn:hover {
-            transform: scale(1.02);
-            background-color: #35354a;
-            border-color: #f1c40f;
-        }
-        .menu-icon {
-            font-size: 1.5em;
-            background: rgba(255,255,255,0.1);
-            padding: 10px;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+        /* MENU BUTTONS */
+        .menu-btn { background-color: #2b2b40; color: #fff; padding: 20px; margin: 10px 0; border-radius: 15px; border: 1px solid #444; display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-size: 1.1em; text-align: left; transition: transform 0.2s, background 0.2s; }
+        .menu-btn:hover { transform: scale(1.02); background-color: #35354a; border-color: #f1c40f; }
+        .menu-icon { font-size: 1.5em; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; }
 
         /* BACK BUTTON */
-        .btn-back {
-            background: transparent;
-            color: #aaa;
-            border: none;
-            text-align: left;
-            padding: 0;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .btn-back { background: transparent; color: #aaa; border: none; text-align: left; padding: 0; margin-bottom: 10px; font-size: 0.9em; display: flex; align-items: center; gap: 5px; }
         .btn-back:hover { color: #fff; }
 
         /* DROPDOWN MENU */
@@ -166,7 +127,6 @@
 
     <div id="screen-welcome" class="screen active">
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
-            
             <button class="menu-btn" onclick="goToLogin()">
                 <div class="menu-icon">🎮</div>
                 <div style="display:flex; flex-direction:column;">
@@ -174,7 +134,6 @@
                     <span id="btn-menu-play-sub" style="font-size:0.8em; color:#aaa;">Create or Join a Room</span>
                 </div>
             </button>
-
             <button class="menu-btn" onclick="showHowToPlay()">
                 <div class="menu-icon">❓</div>
                 <div style="display:flex; flex-direction:column;">
@@ -182,7 +141,6 @@
                     <span style="font-size:0.8em; color:#aaa;">Game Rules</span>
                 </div>
             </button>
-
             <button class="menu-btn" onclick="showLanguages()">
                 <div class="menu-icon">🌐</div>
                 <div style="display:flex; flex-direction:column;">
@@ -190,7 +148,6 @@
                     <span id="btn-menu-lang-sub" style="font-size:0.8em; color:#aaa;">Change App Language</span>
                 </div>
             </button>
-
         </div>
     </div>
 
@@ -200,7 +157,6 @@
             <h3 id="lbl-enter-details">Enter Details</h3>
             <input type="text" id="username" placeholder="Enter your name">
             <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
-            
             <div style="display: flex; gap: 5px; margin-top: 10px;">
                 <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
                 <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
@@ -212,8 +168,7 @@
         <div class="box">
             <button class="btn-back" onclick="goBackToWelcome()">‹ Back</button>
             <h3 id="lbl-rules-title" style="border-bottom:1px solid #444; padding-bottom:10px;">How to Play</h3>
-            <div id="lbl-rules-text" class="game-intro">
-                </div>
+            <div id="lbl-rules-text" class="game-intro"></div>
         </div>
     </div>
 
@@ -462,7 +417,6 @@
         // --- LANGUAGE MANAGEMENT ---
         let currentLang = localStorage.getItem('whoami_lang') || 'en';
         
-        // Functions exposed to window for onclick events
         window.toggleLang = function() { document.getElementById("langDropdown").classList.toggle("show"); }
         window.onclick = function(event) {
             if (!event.target.matches('#lang-btn-display')) {
@@ -479,18 +433,10 @@
         };
 
         // NAVIGATION FUNCTIONS
-        window.goToLogin = function() {
-            changeScreen('screen-login');
-        }
-        window.showHowToPlay = function() {
-            changeScreen('screen-howtoplay');
-        }
-        window.showLanguages = function() {
-            changeScreen('screen-languages');
-        }
-        window.goBackToWelcome = function() {
-            changeScreen('screen-welcome');
-        }
+        window.goToLogin = function() { changeScreen('screen-login'); }
+        window.showHowToPlay = function() { changeScreen('screen-howtoplay'); }
+        window.showLanguages = function() { changeScreen('screen-languages'); }
+        window.goBackToWelcome = function() { changeScreen('screen-welcome'); }
 
         function updateUITexts() {
             const t = translations[currentLang];
@@ -503,7 +449,6 @@
             if(document.getElementById('question-input')) document.getElementById('question-input').placeholder = t.ph_q;
             if(document.getElementById('guess-input')) document.getElementById('guess-input').placeholder = t.ph_guess;
 
-            // Update New Menu Texts
             setText('btn-menu-play', t.btn_menu_play);
             setText('btn-menu-play-sub', t.btn_menu_play_sub);
             setText('btn-menu-rules', t.btn_menu_rules);
@@ -586,7 +531,7 @@
                 gameState: 'lobby',
                 admin: myPlayerId,
                 turnIndex: 0,
-                players: { [myPlayerId]: { name: myName, score: 0, lives: 3, finishedRank: 0 } }
+                players: { [myPlayerId]: { name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false } }
             }).catch(e => alert("Error: " + e.message));
             
             listenRoom();
@@ -601,7 +546,7 @@
                 if (snap.exists()) {
                     myRoomCode = code;
                     update(ref(db, `rooms/${code}/players/${myPlayerId}`), {
-                        name: myName, score: 0, lives: 3, finishedRank: 0
+                        name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false
                     }).then(() => listenRoom());
                 } else {
                     alert(translations[currentLang].alert_room404);
@@ -632,7 +577,6 @@
         }
 
         function listenRoom() {
-            // NOTE: Here we direct to Lobby, not Welcome, because user is already joined
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
 
@@ -681,12 +625,14 @@
                     const setupList = document.getElementById('setup-player-list');
                     setupList.innerHTML = "";
                     playersData.forEach(p => {
-                        const statusIcon = p.assignedChar ? "✅" : "⏳";
-                        const doneClass = p.assignedChar ? "done" : "";
+                        // Check 'hasSubmitted' instead of 'assignedChar'
+                        const statusIcon = p.hasSubmitted ? "✅" : "⏳";
+                        const doneClass = p.hasSubmitted ? "done" : "";
                         setupList.innerHTML += `<div class="setup-player-badge ${doneClass}">${p.name} ${statusIcon}</div>`;
                     });
 
-                    if (playersData.every(p => p.assignedChar) && data.admin === myPlayerId) {
+                    // Start when everyone HAS SUBMITTED (not just received)
+                    if (playersData.every(p => p.hasSubmitted) && data.admin === myPlayerId) {
                         update(ref(db, `rooms/${myRoomCode}`), { gameState: 'game' });
                     }
                 }
@@ -930,7 +876,7 @@
         function makeGuess() {
             const guess = document.getElementById('guess-input').value.trim();
             if (!guess) return;
-            // Removed confirm dialog for faster gameplay
+            // No confirm needed
             update(ref(db, `rooms/${myRoomCode}`), { currentQuestion: guess, isGuess: true, votes: null, processing: null });
             document.getElementById('guess-input').value = "";
         }
@@ -938,7 +884,13 @@
         function submitCharacter() {
             const charName = document.getElementById('character-input').value.trim();
             if (!charName) return;
-            update(ref(db, `rooms/${myRoomCode}/players/${myTargetId}`), { assignedChar: charName });
+            
+            // Mark myself as submitted
+            const updates = {};
+            updates[`rooms/${myRoomCode}/players/${myTargetId}/assignedChar`] = charName;
+            updates[`rooms/${myRoomCode}/players/${myPlayerId}/hasSubmitted`] = true; // Mark ME as done
+
+            update(ref(db), updates);
             document.getElementById('btn-submit-char').disabled = true;
             document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
         }
@@ -947,7 +899,6 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
             
-            // Toggle Header Visibility
             const header = document.getElementById('main-header');
             if (screenId === 'screen-welcome' || screenId === 'screen-howtoplay' || screenId === 'screen-languages' || screenId === 'screen-login') {
                 header.style.display = 'none';
@@ -980,6 +931,7 @@
                     updates[`rooms/${myRoomCode}/players/${p.id}/lives`] = 3;
                     updates[`rooms/${myRoomCode}/players/${p.id}/finishedRank`] = 0;
                     updates[`rooms/${myRoomCode}/players/${p.id}/assignedChar`] = null;
+                    updates[`rooms/${myRoomCode}/players/${p.id}/hasSubmitted`] = false; // Reset status
                 });
                 update(ref(db), updates);
             }
