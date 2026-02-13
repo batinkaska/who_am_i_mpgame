@@ -32,13 +32,52 @@
         .control-btn:hover { background: #444; }
         .right-controls { display: flex; gap: 10px; align-items: center; }
 
-        /* MENU BUTTONS */
-        .menu-btn { background-color: #2b2b40; color: #fff; padding: 20px; margin: 10px 0; border-radius: 15px; border: 1px solid #444; display: flex; align-items: center; justify-content: flex-start; gap: 15px; font-size: 1.1em; text-align: left; transition: transform 0.2s, background 0.2s; }
-        .menu-btn:hover { transform: scale(1.02); background-color: #35354a; border-color: #f1c40f; }
-        .menu-icon { font-size: 1.5em; background: rgba(255,255,255,0.1); padding: 10px; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; }
+        /* MENU BUTTONS (NEW STYLE) */
+        .menu-btn {
+            background-color: #2b2b40;
+            color: #fff;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 15px;
+            border: 1px solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+            font-size: 1.1em;
+            text-align: left;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .menu-btn:hover {
+            transform: scale(1.02);
+            background-color: #35354a;
+            border-color: #f1c40f;
+        }
+        .menu-icon {
+            font-size: 1.5em;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
         /* BACK BUTTON */
-        .btn-back { background: transparent; color: #aaa; border: none; text-align: left; padding: 0; margin-bottom: 10px; font-size: 0.9em; display: flex; align-items: center; gap: 5px; }
+        .btn-back {
+            background: transparent;
+            color: #aaa;
+            border: none;
+            text-align: left;
+            padding: 0;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
         .btn-back:hover { color: #fff; }
 
         /* DROPDOWN MENU */
@@ -127,6 +166,7 @@
 
     <div id="screen-welcome" class="screen active">
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
+            
             <button class="menu-btn" onclick="goToLogin()">
                 <div class="menu-icon">🎮</div>
                 <div style="display:flex; flex-direction:column;">
@@ -134,6 +174,7 @@
                     <span id="btn-menu-play-sub" style="font-size:0.8em; color:#aaa;">Create or Join a Room</span>
                 </div>
             </button>
+
             <button class="menu-btn" onclick="showHowToPlay()">
                 <div class="menu-icon">❓</div>
                 <div style="display:flex; flex-direction:column;">
@@ -141,6 +182,7 @@
                     <span style="font-size:0.8em; color:#aaa;">Game Rules</span>
                 </div>
             </button>
+
             <button class="menu-btn" onclick="showLanguages()">
                 <div class="menu-icon">🌐</div>
                 <div style="display:flex; flex-direction:column;">
@@ -148,6 +190,7 @@
                     <span id="btn-menu-lang-sub" style="font-size:0.8em; color:#aaa;">Change App Language</span>
                 </div>
             </button>
+
         </div>
     </div>
 
@@ -157,6 +200,7 @@
             <h3 id="lbl-enter-details">Enter Details</h3>
             <input type="text" id="username" placeholder="Enter your name">
             <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
+            
             <div style="display: flex; gap: 5px; margin-top: 10px;">
                 <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
                 <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
@@ -168,7 +212,8 @@
         <div class="box">
             <button class="btn-back" onclick="goBackToWelcome()">‹ Back</button>
             <h3 id="lbl-rules-title" style="border-bottom:1px solid #444; padding-bottom:10px;">How to Play</h3>
-            <div id="lbl-rules-text" class="game-intro"></div>
+            <div id="lbl-rules-text" class="game-intro">
+                </div>
         </div>
     </div>
 
@@ -302,7 +347,7 @@
                 btn_menu_rules: "How to Play", btn_menu_lang: "Language", btn_menu_lang_sub: "Change Language",
                 lbl_rules_title: "How to Play",
                 lbl_enter_details: "Enter Details", btn_back: "‹ Back",
-                lbl_rules_text: "1. Gather friends.<br>2. Assign famous characters to each other.<br>3. Guess who you are by asking Yes/No questions!<br>4. Be careful, wrong guesses cost lives! ❤️",
+                lbl_rules_text: "1. <b>Assign Character:</b> At the start, you'll be given a friend's name. Write a challenging and fun <b>famous character</b> (Singer, Athlete, Movie Character, etc.) for them.<br><br>2. <b>Ask Questions:</b> When it's your turn, ask the group Yes/No questions to find out who you are (e.g. 'Am I real?', 'Am I a singer?', 'Am I male?'). Your friends will vote <b>Yes</b>, <b>No</b>, or <b>Unsure</b>.<br><br>3. <b>Voting Result:</b> The majority vote determines the answer.<br><br>4. <b>Guess & Lives:</b> If you know who you are, use the <b>'Guess'</b> button. Be careful! A wrong guess costs <b>1 Life (❤️)</b>.<br><br>5. <b>Jury Mode:</b> If you lose all 3 lives, you are out. But don't worry! You stay as a 'Jury' and continue voting on others' questions.<br><br>6. <b>Winning:</b> Players who guess correctly are ranked on the leaderboard by speed!",
                 
                 ph_name: "Enter your name", btn_create: "Create New Room", ph_room: "Room Code", btn_join: "Join",
                 lbl_room: "Room Code:", lbl_wait: "Waiting for players...", lbl_admin: "You are the Admin", btn_start: "Start Game",
@@ -331,7 +376,7 @@
                 btn_menu_rules: "Nasıl Oynanır?", btn_menu_lang: "Dil", btn_menu_lang_sub: "Dili Değiştir",
                 lbl_rules_title: "Nasıl Oynanır?",
                 lbl_enter_details: "Giriş Yap", btn_back: "‹ Geri",
-                lbl_rules_text: "1. Arkadaşlarını topla.<br>2. Birbirinize ünlü karakterler atayın.<br>3. Evet/Hayır soruları sorarak kim olduğunu bul!<br>4. Dikkat et, yanlış tahmin can yakar! ❤️",
+                lbl_rules_text: "1. <b>Karakter Atama:</b> Oyun başladığında ekranda sana, karakter belirlemen gereken arkadaşının ismi verilecek. O kişi için zorlu ve eğlenceli bir <b>ünlü karakter</b> (Şarkıcı, Sporcu, Film Karakteri vb.) yaz ve gönder.<br><br>2. <b>Soru Sorma:</b> Sıra sana geldiğinde kim olduğunu bulmak için gruba sorular sor (Örn: 'Gerçek biri miyim?', 'Şarkıcı mıyım?', 'Erkek miyim?'). Arkadaşların bu soruna <b>Evet</b>, <b>Hayır</b> veya <b>Emin Değilim</b> oyu vererek cevaplayacaklar.<br><br>3. <b>Oylama Sonucu:</b> Oyuncuların verdiği oyların çoğunluğu ne derse, sistem cevabı o şekilde kabul eder.<br><br>4. <b>Tahmin & Canlar:</b> Kim olduğunu anladıysan <b>'Tahmin Et'</b> butonunu kullan. Ama dikkatli ol! Yanlış tahmin yaparsan <b>1 Can (❤️)</b> kaybedersin.<br><br>5. <b>Jüri Modu:</b> Eğer 3 canın biterse elenirsin. Ama üzülme! Oyun bitmez, 'Jüri' olarak diğerlerinin sorularını oylamaya devam edersin.<br><br>6. <b>Kazanma:</b> Karakterini doğru bilen oyuncular, bilme sıralarına göre liderlik tablosuna yerleşir!",
 
                 ph_name: "Adını gir", btn_create: "Yeni Oda Kur", ph_room: "Oda Kodu", btn_join: "Katıl",
                 lbl_room: "Oda Kodu:", lbl_wait: "Oyuncular bekleniyor...", lbl_admin: "Yöneticisin", btn_start: "Oyunu Başlat",
@@ -360,7 +405,7 @@
                 btn_menu_rules: "Spielregeln", btn_menu_lang: "Sprache", btn_menu_lang_sub: "Sprache ändern",
                 lbl_rules_title: "Spielregeln",
                 lbl_enter_details: "Details eingeben", btn_back: "‹ Zurück",
-                lbl_rules_text: "1. Freunde versammeln.<br>2. Weise Charaktere zu.<br>3. Rate wer du bist mit Ja/Nein Fragen!<br>4. Vorsicht, falsche Tipps kosten Leben! ❤️",
+                lbl_rules_text: "1. <b>Charakter zuweisen:</b> Zu Beginn wird dir der Name eines Freundes angezeigt. Schreibe einen schwierigen und lustigen <b>berühmten Charakter</b> (Sänger, Sportler, Filmfigur usw.) für ihn auf.<br><br>2. <b>Fragen stellen:</b> Wenn du dran bist, stelle der Gruppe Ja/Nein-Fragen (z. B. 'Bin ich real?', 'Bin ich ein Sänger?', 'Bin ich männlich?'). Deine Freunde stimmen mit <b>Ja</b>, <b>Nein</b> oder <b>Unsicher</b> ab.<br><br>3. <b>Abstimmungsergebnis:</b> Die Mehrheit der Stimmen bestimmt die Antwort.<br><br>4. <b>Raten & Leben:</b> Wenn du weißt, wer du bist, benutze den <b>'Raten'</b>-Button. Vorsicht! Ein falscher Tipp kostet <b>1 Leben (❤️)</b>.<br><br>5. <b>Jury-Modus:</b> Wenn alle 3 Leben weg sind, bist du raus. Aber keine Sorge! Du bleibst als 'Jury' und stimmst weiter ab.<br><br>6. <b>Gewinnen:</b> Wer seinen Charakter errät, landet auf der Bestenliste!",
 
                 ph_name: "Namen eingeben", btn_create: "Raum erstellen", ph_room: "Raumcode", btn_join: "Beitreten",
                 lbl_room: "Raumcode:", lbl_wait: "Warte auf Spieler...", lbl_admin: "Du bist Admin", btn_start: "Spiel starten",
@@ -389,7 +434,7 @@
                 btn_menu_rules: "Cómo Jugar", btn_menu_lang: "Idioma", btn_menu_lang_sub: "Cambiar Idioma",
                 lbl_rules_title: "Cómo Jugar",
                 lbl_enter_details: "Ingresar Datos", btn_back: "‹ Volver",
-                lbl_rules_text: "1. Reúne amigos.<br>2. Asigna personajes.<br>3. ¡Adivina quién eres con preguntas de Sí/No!<br>4. ¡Cuidado, fallar cuesta vidas! ❤️",
+                lbl_rules_text: "1. <b>Asignar Personaje:</b> Al inicio, verás el nombre de un amigo. Escribe un <b>personaje famoso</b> difícil y divertido (Cantante, Deportista, Personaje de Película, etc.) para él.<br><br>2. <b>Hacer Preguntas:</b> En tu turno, haz preguntas de Sí/No al grupo (Ej. '¿Soy real?', '¿Soy cantante?', '¿Soy hombre?'). Tus amigos votarán <b>Sí</b>, <b>No</b> o <b>No sé</b>.<br><br>3. <b>Resultado de Votación:</b> La mayoría de los votos determina la respuesta.<br><br>4. <b>Adivinar y Vidas:</b> Si sabes quién eres, usa el botón <b>'Adivinar'</b>. ¡Cuidado! Una suposición incorrecta cuesta <b>1 Vida (❤️)</b>.<br><br>5. <b>Modo Jurado:</b> Si pierdes tus 3 vidas, estás eliminado. ¡Pero no te preocupes! Sigues como 'Jurado' votando las preguntas de los demás.<br><br>6. <b>Ganar:</b> ¡Los jugadores que adivinen correctamente aparecerán en la tabla de clasificación!",
 
                 ph_name: "Introduce tu nombre", btn_create: "Crear Nueva Sala", ph_room: "Código de Sala", btn_join: "Unirse",
                 lbl_room: "Código de Sala:", lbl_wait: "Esperando jugadores...", lbl_admin: "Eres el Administrador", btn_start: "Iniciar Juego",
@@ -577,6 +622,7 @@
         }
 
         function listenRoom() {
+            // NOTE: Here we direct to Lobby, not Welcome, because user is already joined
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
 
