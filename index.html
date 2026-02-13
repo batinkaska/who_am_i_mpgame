@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Who Am I?</title>
     <link rel="icon" href="https://fav.farm/❓" />
-    <script>
-        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQ54TB4TQZ"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-ZQ54TB4TQZ');
-    </script>
     <style>
         /* --- GENERAL STYLES --- */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1e1e2e; color: #fff; text-align: center; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #1e1e2e; 
+            color: #fff; 
+            text-align: center; 
+            margin: 0; 
+            padding: 10px; 
+            padding-bottom: 70px; /* Footer için boşluk */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            box-sizing: border-box;
+        }
         
         .screen { display: none; width: 100%; max-width: 600px; animation: fadeIn 0.4s; }
         .active { display: block; }
@@ -151,6 +151,21 @@
         .lb-medal-2 { color: #bdc3c7; }
         .lb-medal-3 { color: #cd7f32; }
 
+        /* FOOTER STYLES */
+        .app-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 0;
+            background-color: #1e1e2e;
+            color: #555;
+            font-size: 0.90em;
+            text-align: center;
+            z-index: 50;
+            border-top: 1px solid #333;
+        }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -179,7 +194,6 @@
 
     <div id="screen-welcome" class="screen active">
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
-            
             <button class="menu-btn" onclick="goToLogin()">
                 <div class="menu-icon">🎮</div>
                 <div style="display:flex; flex-direction:column;">
@@ -187,7 +201,6 @@
                     <span id="btn-menu-play-sub" style="font-size:0.8em; color:#aaa;">Create or Join a Room</span>
                 </div>
             </button>
-
             <button class="menu-btn" onclick="showHowToPlay()">
                 <div class="menu-icon">❓</div>
                 <div style="display:flex; flex-direction:column;">
@@ -195,7 +208,6 @@
                     <span style="font-size:0.8em; color:#aaa;">Game Rules</span>
                 </div>
             </button>
-
             <button class="menu-btn" onclick="showLanguages()">
                 <div class="menu-icon">🌐</div>
                 <div style="display:flex; flex-direction:column;">
@@ -203,7 +215,6 @@
                     <span id="btn-menu-lang-sub" style="font-size:0.8em; color:#aaa;">Change App Language</span>
                 </div>
             </button>
-
         </div>
     </div>
 
@@ -213,7 +224,6 @@
             <h3 id="lbl-enter-details">Enter Details</h3>
             <input type="text" id="username" placeholder="Enter your name">
             <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
-            
             <div style="display: flex; gap: 5px; margin-top: 10px;">
                 <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
                 <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
@@ -225,8 +235,7 @@
         <div class="box">
             <button class="btn-back" onclick="goBackToWelcome()">‹ Back</button>
             <h3 id="lbl-rules-title" style="border-bottom:1px solid #444; padding-bottom:10px;">How to Play</h3>
-            <div id="lbl-rules-text" class="game-intro">
-                </div>
+            <div id="lbl-rules-text" class="game-intro"></div>
         </div>
     </div>
 
@@ -323,6 +332,11 @@
             <div id="leaderboard-list"></div>
             <button class="btn-green" onclick="resetGame()" style="margin-top:20px;">🔄 New Game</button>
         </div>
+    </div>
+
+    <div class="app-footer">
+        2026 Who Am I Game. All rights reserved.<br>
+        Designed & Developed by Batin Kaska
     </div>
 
 
@@ -635,7 +649,6 @@
         }
 
         function listenRoom() {
-            // NOTE: Here we direct to Lobby, not Welcome, because user is already joined
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
 
