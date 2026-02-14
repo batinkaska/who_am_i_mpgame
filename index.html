@@ -83,7 +83,7 @@
         .btn-back { background: transparent; color: #aaa; border: none; text-align: left; padding: 0; margin-bottom: 10px; font-size: 0.9em; display: flex; align-items: center; gap: 5px; }
         .btn-back:hover { color: #fff; }
 
-        /* DROPDOWN MENU (HEADER) */
+        /* DROPDOWN MENU */
         .dropdown { position: relative; display: inline-block; }
         .dropdown-content { display: none; position: absolute; right: 0; top: 110%; background-color: #2b2b40; min-width: 140px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid #444; overflow: hidden; z-index: 999; }
         .dropdown-content div { color: white; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left; font-size: 0.9em; }
@@ -248,9 +248,9 @@
 
             <label id="lbl-mm-size" style="font-size:0.9em; color:#aaa; display:block; text-align:left; margin-top:10px;">Players Count</label>
             <select id="mm-size" onchange="updateOnlineCount()">
-                <option value="2">2 Players</option>
+                <option value="2" selected>2 Players</option>
                 <option value="3">3 Players</option>
-                <option value="4" selected>4 Players</option>
+                <option value="4">4 Players</option>
             </select>
 
             <div id="mm-online-count" class="mm-counter">Online: ...</div>
@@ -565,16 +565,13 @@
             
             const privateDiv = document.getElementById('private-controls');
             const publicDiv = document.getElementById('public-controls');
-            const title = document.getElementById('lbl-enter-details');
             
             if (isPublic) {
                 privateDiv.style.display = 'none';
                 publicDiv.style.display = 'block';
-                //title.innerText = "Enter Name for Matchmaking"; // handled in updateUITexts if needed
             } else {
                 privateDiv.style.display = 'block';
                 publicDiv.style.display = 'none';
-                //title.innerText = "Enter Details";
             }
         }
 
@@ -583,7 +580,7 @@
             if(!myName) return alert(translations[currentLang].alert_name);
             
             changeScreen('screen-matchmaking');
-            updateOnlineCount(); // Trigger count check
+            updateOnlineCount(); 
         }
 
         window.showHowToPlay = function() { changeScreen('screen-howtoplay'); }
@@ -686,7 +683,6 @@
         window.updateOnlineCount = updateOnlineCount;
 
         // MATCHMAKING COUNTER LOGIC
-        // We use a temporary node 'searching/{lang}_{size}/{playerId}' to count users on this screen
         let currentSearchPath = null;
 
         function updateOnlineCount() {
@@ -711,7 +707,6 @@
             });
         }
 
-        // MATCHMAKING LOGIC
         function findPublicGame() {
             const lang = document.getElementById('mm-lang').value;
             const size = parseInt(document.getElementById('mm-size').value);
@@ -719,10 +714,6 @@
             document.getElementById('btn-mm-search').disabled = true;
             document.getElementById('mm-status').style.display = 'block';
 
-            // Query all rooms to find a suitable public room
-            // Note: In a production app, we would use Cloud Functions for this.
-            // Here we do client-side filtering which is okay for small scale.
-            
             get(ref(db, 'rooms')).then(snap => {
                 let foundRoom = null;
                 
@@ -741,13 +732,11 @@
                 }
 
                 if (foundRoom) {
-                    // JOIN EXISTING
                     myRoomCode = foundRoom;
                     update(ref(db, `rooms/${foundRoom}/players/${myPlayerId}`), {
                         name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false
                     }).then(() => listenRoom());
                 } else {
-                    // CREATE NEW PUBLIC ROOM
                     createRoom(true, lang, size);
                 }
             });
@@ -764,7 +753,6 @@
                 admin: myPlayerId,
                 turnIndex: 0,
                 players: { [myPlayerId]: { name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false } },
-                // Public Room specific fields
                 isPublic: isPublic,
                 lang: isPublic ? lang : null,
                 targetSize: isPublic ? targetSize : null
@@ -800,7 +788,6 @@
             const btn = document.querySelector('#admin-panel button');
             if(btn) { btn.innerText = translations[currentLang].txt_starting; btn.disabled = true; }
 
-            // 1. Shuffle Players
             const playerIds = playersData.map(p => p.id);
             shuffleArray(playerIds);
 
@@ -816,12 +803,6 @@
         }
 
         function listenRoom() {
-            // Remove from search queue if we entered a room
-            if (currentSearchPath) {
-                remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
-                currentSearchPath = null;
-            }
-
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
 
@@ -841,32 +822,39 @@
                     playersData.sort((a,b) => a.id.localeCompare(b.id));
                 }
 
-                // Check for Admin Rights
+                // --- SEARCH LOGIC FIX ---
+                // Only remove from searching list if Game Started OR Private Room
+                if (data.isPublic && data.gameState === 'lobby') {
+                    // Do nothing (Keep user in searching node to count as waiter)
+                } else {
+                    // Remove from searching node
+                    if (currentSearchPath) {
+                        remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
+                        currentSearchPath = null;
+                    }
+                }
+                // -----------------------
+
                 const resetBtn = document.getElementById('reset-btn');
                 if(resetBtn) resetBtn.style.display = (data.admin === myPlayerId) ? 'block' : 'none';
 
                 updateUITexts();
 
-                // LOBBY STATE
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
                     playersData.forEach(p => ul.innerHTML += `<li>${p.name}</li>`);
                     
-                    // Public Room Logic: Auto Start
                     if (data.isPublic) {
                         document.getElementById('admin-panel').style.display = 'none';
                         document.getElementById('waiting-msg').style.display = 'none';
                         document.getElementById('public-wait-msg').style.display = 'block';
                         document.getElementById('public-wait-msg').innerText = `Waiting for players... (${playersData.length}/${data.targetSize})`;
 
-                        // If I am admin AND room is full, start it automatically
                         if (data.admin === myPlayerId && playersData.length >= data.targetSize) {
                             startSetup();
                         }
-                    } 
-                    // Private Room Logic
-                    else {
+                    } else {
                         document.getElementById('public-wait-msg').style.display = 'none';
                         if (data.admin === myPlayerId) document.getElementById('admin-panel').style.display = 'block';
                         else document.getElementById('waiting-msg').style.display = 'block';
@@ -875,7 +863,7 @@
 
                 if (data.gameState === 'setup') {
                     changeScreen('screen-setup');
-                    document.getElementById('character-input').value = ""; // Clear input on screen change (fixed logic)
+                    document.getElementById('character-input').value = ""; 
                     
                     const myIndex = playersData.findIndex(p => p.id === myPlayerId);
                     const me = playersData.find(p => p.id === myPlayerId);
@@ -902,7 +890,6 @@
                         setupList.innerHTML += `<div class="setup-player-badge ${doneClass}">${p.name} ${statusIcon}</div>`;
                     });
 
-                    // Only admin triggers start game when everyone is ready
                     if (playersData.every(p => p.hasSubmitted) && data.admin === myPlayerId) {
                         update(ref(db, `rooms/${myRoomCode}`), { gameState: 'game' });
                     }
@@ -1181,6 +1168,10 @@
         function leaveRoom() {
             if (!myRoomCode || !myPlayerId) return location.reload();
             if (confirm(translations[currentLang].alert_leave)) {
+                // Ensure removed from searching list if leaving
+                if (currentSearchPath) {
+                    remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
+                }
                 remove(ref(db, `rooms/${myRoomCode}/players/${myPlayerId}`))
                 .then(() => location.reload());
             }
