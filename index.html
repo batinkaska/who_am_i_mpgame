@@ -14,7 +14,7 @@
             text-align: center; 
             margin: 0; 
             padding: 10px; 
-            padding-bottom: 70px; /* Footer için boşluk */
+            padding-bottom: 70px; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
@@ -28,7 +28,7 @@
         h1, h2, h3 { color: #f1c40f; margin: 10px 0; }
         .box { background: #2b2b40; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); position: relative; }
         
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #161622; color: white; font-size: 16px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #444; background: #161622; color: white; font-size: 16px; box-sizing: border-box; }
         
         button { width: 100%; padding: 14px; margin: 8px 0; border-radius: 8px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -38,14 +38,15 @@
         .btn-red { background: #c0392b; }
         .btn-yellow { background: #f39c12; color: #222; }
         .btn-guess { background: #8e44ad; color: white; } 
-        
+        .btn-purple { background: #8e44ad; color: white; }
+
         /* HEADER CONTROLS */
         .game-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 600px; margin-bottom: 10px; position: relative; z-index: 100; }
         .control-btn { background: #333; color: #fff; border: 1px solid #555; padding: 8px 12px; font-size: 0.9em; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; width: auto; margin: 0; }
         .control-btn:hover { background: #444; }
         .right-controls { display: flex; gap: 10px; align-items: center; }
 
-        /* MENU BUTTONS (NEW STYLE) */
+        /* MENU BUTTONS */
         .menu-btn {
             background-color: #2b2b40;
             color: #fff;
@@ -79,21 +80,10 @@
         }
 
         /* BACK BUTTON */
-        .btn-back {
-            background: transparent;
-            color: #aaa;
-            border: none;
-            text-align: left;
-            padding: 0;
-            margin-bottom: 10px;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .btn-back { background: transparent; color: #aaa; border: none; text-align: left; padding: 0; margin-bottom: 10px; font-size: 0.9em; display: flex; align-items: center; gap: 5px; }
         .btn-back:hover { color: #fff; }
 
-        /* DROPDOWN MENU */
+        /* DROPDOWN MENU (HEADER) */
         .dropdown { position: relative; display: inline-block; }
         .dropdown-content { display: none; position: absolute; right: 0; top: 110%; background-color: #2b2b40; min-width: 140px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); border-radius: 8px; border: 1px solid #444; overflow: hidden; z-index: 999; }
         .dropdown-content div { color: white; padding: 12px 16px; text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left; font-size: 0.9em; }
@@ -151,20 +141,12 @@
         .lb-medal-2 { color: #bdc3c7; }
         .lb-medal-3 { color: #cd7f32; }
 
-        /* FOOTER STYLES */
-        .app-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 10px 0;
-            background-color: #1e1e2e;
-            color: #555;
-            font-size: 0.90em;
-            text-align: center;
-            z-index: 50;
-            border-top: 1px solid #333;
-        }
+        /* FOOTER */
+        .app-footer { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px 0; background-color: #1e1e2e; color: #555; font-size: 0.75em; text-align: center; z-index: 50; border-top: 1px solid #333; }
+
+        /* MATCHMAKING COUNTER */
+        .mm-counter { color: #2ecc71; font-size: 0.9em; margin-top: 5px; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -194,13 +176,23 @@
 
     <div id="screen-welcome" class="screen active">
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
-            <button class="menu-btn" onclick="goToLogin()">
-                <div class="menu-icon">🎮</div>
+            
+            <button class="menu-btn" onclick="goToLogin(false)">
+                <div class="menu-icon">👥</div>
                 <div style="display:flex; flex-direction:column;">
-                    <span id="btn-menu-play" style="font-weight:bold;">Start Game</span>
-                    <span id="btn-menu-play-sub" style="font-size:0.8em; color:#aaa;">Create or Join a Room</span>
+                    <span id="btn-menu-play" style="font-weight:bold;">Play with Friends</span>
+                    <span id="btn-menu-play-sub" style="font-size:0.8em; color:#aaa;">Create or Join a Private Room</span>
                 </div>
             </button>
+
+            <button class="menu-btn" onclick="goToLogin(true)">
+                <div class="menu-icon">🌍</div>
+                <div style="display:flex; flex-direction:column;">
+                    <span id="btn-menu-find" style="font-weight:bold;">Find Game</span>
+                    <span id="btn-menu-find-sub" style="font-size:0.8em; color:#aaa;">Match with Random Players</span>
+                </div>
+            </button>
+
             <button class="menu-btn" onclick="showHowToPlay()">
                 <div class="menu-icon">❓</div>
                 <div style="display:flex; flex-direction:column;">
@@ -208,6 +200,7 @@
                     <span style="font-size:0.8em; color:#aaa;">Game Rules</span>
                 </div>
             </button>
+
             <button class="menu-btn" onclick="showLanguages()">
                 <div class="menu-icon">🌐</div>
                 <div style="display:flex; flex-direction:column;">
@@ -215,6 +208,7 @@
                     <span id="btn-menu-lang-sub" style="font-size:0.8em; color:#aaa;">Change App Language</span>
                 </div>
             </button>
+
         </div>
     </div>
 
@@ -223,11 +217,46 @@
             <button class="btn-back" onclick="goBackToWelcome()">‹ Back</button>
             <h3 id="lbl-enter-details">Enter Details</h3>
             <input type="text" id="username" placeholder="Enter your name">
-            <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
-            <div style="display: flex; gap: 5px; margin-top: 10px;">
-                <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
-                <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
+            
+            <div id="private-controls">
+                <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
+                <div style="display: flex; gap: 5px; margin-top: 10px;">
+                    <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
+                    <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
+                </div>
             </div>
+
+            <div id="public-controls" style="display:none;">
+                <button class="btn-purple" onclick="goToMatchmakingSetup()">Next: Matchmaking ➔</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="screen-matchmaking" class="screen">
+        <div class="box">
+            <button class="btn-back" onclick="goToLogin(true)">‹ Back</button>
+            <h3 id="lbl-mm-title">Matchmaking</h3>
+            
+            <label id="lbl-mm-lang" style="font-size:0.9em; color:#aaa; display:block; text-align:left;">Language Preference</label>
+            <select id="mm-lang" onchange="updateOnlineCount()">
+                <option value="en">🇺🇸 English (Global)</option>
+                <option value="tr">🇹🇷 Türkçe</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="es">🇪🇸 Español</option>
+            </select>
+
+            <label id="lbl-mm-size" style="font-size:0.9em; color:#aaa; display:block; text-align:left; margin-top:10px;">Players Count</label>
+            <select id="mm-size" onchange="updateOnlineCount()">
+                <option value="2">2 Players</option>
+                <option value="3">3 Players</option>
+                <option value="4" selected>4 Players</option>
+            </select>
+
+            <div id="mm-online-count" class="mm-counter">Online: ...</div>
+
+            <button id="btn-mm-search" class="btn-green" style="margin-top:20px;" onclick="findPublicGame()">🔍 Search Game</button>
+            <p id="mm-status" style="display:none; color:#f1c40f; margin-top:10px;">Searching for rooms...</p>
         </div>
     </div>
 
@@ -256,10 +285,13 @@
             <h1 id="lobby-code" style="letter-spacing: 5px; font-size: 40px; color: #fff;">----</h1>
             <p id="lbl-waiting-players">Waiting for players...</p>
             <ul id="player-list"></ul>
+            
             <div id="admin-panel" style="display:none; border-top: 1px solid #444; padding-top: 10px;">
                 <p id="lbl-you-admin" style="color: yellow; font-size: 0.9em;">You are the Admin</p>
                 <button id="btn-start" class="btn-green" onclick="startSetup()">Start Game</button>
             </div>
+            
+            <p id="public-wait-msg" style="display:none; color:#2ecc71;">Matchmaking... Game will start automatically when full.</p>
             <p id="waiting-msg" style="display:none; color:#aaa;">Waiting for admin to start...</p>
         </div>
     </div>
@@ -342,7 +374,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, get, remove, push } 
+        import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // --- FIREBASE CONFIG ---
@@ -370,7 +402,8 @@
         const translations = {
             en: {
                 flag: "🇺🇸", langName: "English",
-                btn_menu_play: "Start Game", btn_menu_play_sub: "Create or Join a Room",
+                btn_menu_play: "Play with Friends", btn_menu_play_sub: "Create or Join a Private Room",
+                btn_menu_find: "Find Game", btn_menu_find_sub: "Match with Random Players",
                 btn_menu_rules: "How to Play", btn_menu_lang: "Language", btn_menu_lang_sub: "Change Language",
                 lbl_rules_title: "How to Play",
                 lbl_enter_details: "Enter Details", btn_back: "‹ Back",
@@ -391,15 +424,19 @@
                 msg_wait_vote: "Vote received. Waiting...", msg_friends_vote: "Friends are voting...",
                 lbl_game_over: "🏆 GAME OVER!", btn_new_game: "🔄 New Game",
                 lbl_room_players: "Players in Room",
+                lbl_mm_title: "Matchmaking", lbl_mm_lang: "Language", lbl_mm_size: "Players Count",
+                btn_mm_search: "🔍 Search Game",
                 alert_name: "Please enter a name!", alert_code: "Please enter details!", alert_room404: "Room not found!",
                 alert_min_pl: "Need at least 2 players!", alert_leave: "Are you sure you want to leave?",
                 alert_reset: "Restart game for everyone?", alert_guess_confirm: "If wrong, you lose a life! Are you sure?",
-                txt_starting: "Starting...", txt_submit_wait: "Waiting...",
-                hist_yes: "YES", hist_no: "NO", hist_unsure: "?"
+                txt_starting: "Starting...", txt_submit_wait: "Waiting...", txt_searching: "Searching for rooms...",
+                hist_yes: "YES", hist_no: "NO", hist_unsure: "?",
+                txt_online: "Online Searching: "
             },
             tr: {
                 flag: "🇹🇷", langName: "Türkçe",
-                btn_menu_play: "Oyuna Başla", btn_menu_play_sub: "Oda Kur veya Katıl",
+                btn_menu_play: "Arkadaşlarla Oyna", btn_menu_play_sub: "Özel Oda Kur veya Katıl",
+                btn_menu_find: "Oyun Ara", btn_menu_find_sub: "Rastgele Eşleşme",
                 btn_menu_rules: "Nasıl Oynanır?", btn_menu_lang: "Dil", btn_menu_lang_sub: "Dili Değiştir",
                 lbl_rules_title: "Nasıl Oynanır?",
                 lbl_enter_details: "Giriş Yap", btn_back: "‹ Geri",
@@ -420,15 +457,19 @@
                 msg_wait_vote: "Oyun alındı. Bekleniyor...", msg_friends_vote: "Arkadaşların oyluyor...",
                 lbl_game_over: "🏆 OYUN BİTTİ!", btn_new_game: "🔄 Yeni Oyun",
                 lbl_room_players: "Odada Olanlar",
+                lbl_mm_title: "Oyun Bul", lbl_mm_lang: "Dil Tercihi", lbl_mm_size: "Oyuncu Sayısı",
+                btn_mm_search: "🔍 Oyun Ara",
                 alert_name: "Lütfen isim gir!", alert_code: "Lütfen bilgileri doldur!", alert_room404: "Oda bulunamadı!",
                 alert_min_pl: "En az 2 kişi gerekli!", alert_leave: "Odadan çıkmak istediğine emin misin?",
                 alert_reset: "Oyunu herkes için sıfırlamak istiyor musun?", alert_guess_confirm: "Yanlışsa 1 canın gider! Emin misin?",
-                txt_starting: "Başlatılıyor...", txt_submit_wait: "Bekleniyor...",
-                hist_yes: "EVET", hist_no: "HAYIR", hist_unsure: "?"
+                txt_starting: "Başlatılıyor...", txt_submit_wait: "Bekleniyor...", txt_searching: "Oda aranıyor...",
+                hist_yes: "EVET", hist_no: "HAYIR", hist_unsure: "?",
+                txt_online: "Bu modda arayan: "
             },
             de: {
                 flag: "🇩🇪", langName: "Deutsch",
-                btn_menu_play: "Spiel Starten", btn_menu_play_sub: "Raum erstellen oder beitreten",
+                btn_menu_play: "Mit Freunden", btn_menu_play_sub: "Privaten Raum erstellen",
+                btn_menu_find: "Spiel Suchen", btn_menu_find_sub: "Zufällige Spieler",
                 btn_menu_rules: "Spielregeln", btn_menu_lang: "Sprache", btn_menu_lang_sub: "Sprache ändern",
                 lbl_rules_title: "Spielregeln",
                 lbl_enter_details: "Details eingeben", btn_back: "‹ Zurück",
@@ -449,15 +490,19 @@
                 msg_wait_vote: "Stimme empfangen. Warten...", msg_friends_vote: "Freunde stimmen ab...",
                 lbl_game_over: "🏆 SPIEL VORBEI!", btn_new_game: "🔄 Neues Spiel",
                 lbl_room_players: "Spieler im Raum",
+                lbl_mm_title: "Spielsuche", lbl_mm_lang: "Sprache", lbl_mm_size: "Spielerzahl",
+                btn_mm_search: "🔍 Suchen",
                 alert_name: "Bitte Namen eingeben!", alert_code: "Bitte Details eingeben!", alert_room404: "Raum nicht gefunden!",
                 alert_min_pl: "Mindestens 2 Spieler nötig!", alert_leave: "Möchtest du den Raum wirklich verlassen?",
                 alert_reset: "Spiel für alle neu starten?", alert_guess_confirm: "Bei Fehler verlierst du ein Leben! Sicher?",
-                txt_starting: "Startet...", txt_submit_wait: "Warten...",
-                hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?"
+                txt_starting: "Startet...", txt_submit_wait: "Warten...", txt_searching: "Suche...",
+                hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?",
+                txt_online: "Online Suchen: "
             },
             es: {
                 flag: "🇪🇸", langName: "Español",
-                btn_menu_play: "Jugar", btn_menu_play_sub: "Crear o Unirse a Sala",
+                btn_menu_play: "Con Amigos", btn_menu_play_sub: "Sala Privada",
+                btn_menu_find: "Buscar Partida", btn_menu_find_sub: "Jugadores Aleatorios",
                 btn_menu_rules: "Cómo Jugar", btn_menu_lang: "Idioma", btn_menu_lang_sub: "Cambiar Idioma",
                 lbl_rules_title: "Cómo Jugar",
                 lbl_enter_details: "Ingresar Datos", btn_back: "‹ Volver",
@@ -478,11 +523,14 @@
                 msg_wait_vote: "Voto recibido. Esperando...", msg_friends_vote: "Los amigos están votando...",
                 lbl_game_over: "🏆 ¡JUEGO TERMINADO!", btn_new_game: "🔄 Nuevo Juego",
                 lbl_room_players: "Jugadores en Sala",
+                lbl_mm_title: "Buscar Partida", lbl_mm_lang: "Idioma", lbl_mm_size: "Jugadores",
+                btn_mm_search: "🔍 Buscar",
                 alert_name: "¡Por favor introduce un nombre!", alert_code: "¡Por favor introduce detalles!", alert_room404: "¡Sala no encontrada!",
                 alert_min_pl: "¡Se necesitan al menos 2 jugadores!", alert_leave: "¿Seguro que quieres salir?",
                 alert_reset: "¿Reiniciar el juego para todos?", alert_guess_confirm: "¡Si fallas pierdes una vida! ¿Seguro?",
-                txt_starting: "Iniciando...", txt_submit_wait: "Esperando...",
-                hist_yes: "SÍ", hist_no: "NO", hist_unsure: "?"
+                txt_starting: "Iniciando...", txt_submit_wait: "Esperando...", txt_searching: "Buscando...",
+                hist_yes: "SÍ", hist_no: "NO", hist_unsure: "?",
+                txt_online: "Buscando en línea: "
             }
         };
 
@@ -502,10 +550,42 @@
             currentLang = lang;
             localStorage.setItem('whoami_lang', lang);
             updateUITexts();
+            // Also update MM counter if on MM screen
+            if(document.getElementById('screen-matchmaking').classList.contains('active')){
+                updateOnlineCount();
+            }
         };
 
         // NAVIGATION FUNCTIONS
-        window.goToLogin = function() { changeScreen('screen-login'); }
+        let isPublicMode = false;
+
+        window.goToLogin = function(isPublic) {
+            isPublicMode = isPublic;
+            changeScreen('screen-login');
+            
+            const privateDiv = document.getElementById('private-controls');
+            const publicDiv = document.getElementById('public-controls');
+            const title = document.getElementById('lbl-enter-details');
+            
+            if (isPublic) {
+                privateDiv.style.display = 'none';
+                publicDiv.style.display = 'block';
+                //title.innerText = "Enter Name for Matchmaking"; // handled in updateUITexts if needed
+            } else {
+                privateDiv.style.display = 'block';
+                publicDiv.style.display = 'none';
+                //title.innerText = "Enter Details";
+            }
+        }
+
+        window.goToMatchmakingSetup = function() {
+            myName = document.getElementById('username').value.trim();
+            if(!myName) return alert(translations[currentLang].alert_name);
+            
+            changeScreen('screen-matchmaking');
+            updateOnlineCount(); // Trigger count check
+        }
+
         window.showHowToPlay = function() { changeScreen('screen-howtoplay'); }
         window.showLanguages = function() { changeScreen('screen-languages'); }
         window.goBackToWelcome = function() { changeScreen('screen-welcome'); }
@@ -523,6 +603,8 @@
 
             setText('btn-menu-play', t.btn_menu_play);
             setText('btn-menu-play-sub', t.btn_menu_play_sub);
+            setText('btn-menu-find', t.btn_menu_find);
+            setText('btn-menu-find-sub', t.btn_menu_find_sub);
             setText('btn-menu-rules', t.btn_menu_rules);
             setText('btn-menu-lang', t.btn_menu_lang);
             setText('btn-menu-lang-sub', t.btn_menu_lang_sub);
@@ -563,6 +645,13 @@
             setText('lbl-history', t.lbl_hist);
             setText('lbl-game-over-title', t.lbl_game_over);
             setText('lbl-room-players', t.lbl_room_players);
+            
+            // MM Texts
+            setText('lbl-mm-title', t.lbl_mm_title);
+            setText('lbl-mm-lang', t.lbl_mm_lang);
+            setText('lbl-mm-size', t.lbl_mm_size);
+            setText('btn-mm-search', t.btn_mm_search);
+            setText('mm-status', t.txt_searching);
         }
 
         function setText(id, text) {
@@ -593,18 +682,96 @@
         window.makeGuess = makeGuess;
         window.resetGame = resetGame;
         window.leaveRoom = leaveRoom;
+        window.findPublicGame = findPublicGame;
+        window.updateOnlineCount = updateOnlineCount;
 
-        function createRoom() {
+        // MATCHMAKING COUNTER LOGIC
+        // We use a temporary node 'searching/{lang}_{size}/{playerId}' to count users on this screen
+        let currentSearchPath = null;
+
+        function updateOnlineCount() {
+            const lang = document.getElementById('mm-lang').value;
+            const size = document.getElementById('mm-size').value;
+            const newPath = `searching/${lang}_${size}`;
+
+            // Remove from old path if changed
+            if (currentSearchPath && currentSearchPath !== newPath) {
+                remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
+            }
+            
+            // Add to new path
+            currentSearchPath = newPath;
+            set(ref(db, `${newPath}/${myPlayerId}`), true);
+            onDisconnect(ref(db, `${newPath}/${myPlayerId}`)).remove();
+
+            // Listen for count
+            onValue(ref(db, newPath), (snap) => {
+                const count = snap.exists() ? Object.keys(snap.val()).length : 0;
+                document.getElementById('mm-online-count').innerText = translations[currentLang].txt_online + count;
+            });
+        }
+
+        // MATCHMAKING LOGIC
+        function findPublicGame() {
+            const lang = document.getElementById('mm-lang').value;
+            const size = parseInt(document.getElementById('mm-size').value);
+            
+            document.getElementById('btn-mm-search').disabled = true;
+            document.getElementById('mm-status').style.display = 'block';
+
+            // Query all rooms to find a suitable public room
+            // Note: In a production app, we would use Cloud Functions for this.
+            // Here we do client-side filtering which is okay for small scale.
+            
+            get(ref(db, 'rooms')).then(snap => {
+                let foundRoom = null;
+                
+                if (snap.exists()) {
+                    const rooms = snap.val();
+                    for (const code in rooms) {
+                        const r = rooms[code];
+                        if (r.isPublic && r.lang === lang && r.targetSize === size && r.gameState === 'lobby') {
+                            const playerCount = Object.keys(r.players || {}).length;
+                            if (playerCount < size) {
+                                foundRoom = code;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (foundRoom) {
+                    // JOIN EXISTING
+                    myRoomCode = foundRoom;
+                    update(ref(db, `rooms/${foundRoom}/players/${myPlayerId}`), {
+                        name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false
+                    }).then(() => listenRoom());
+                } else {
+                    // CREATE NEW PUBLIC ROOM
+                    createRoom(true, lang, size);
+                }
+            });
+        }
+
+        function createRoom(isPublic = false, lang = 'en', targetSize = 4) {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
+            
             myRoomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
             
-            set(ref(db, `rooms/${myRoomCode}`), {
+            const roomData = {
                 gameState: 'lobby',
                 admin: myPlayerId,
                 turnIndex: 0,
-                players: { [myPlayerId]: { name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false } }
-            }).catch(e => alert("Error: " + e.message));
+                players: { [myPlayerId]: { name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false } },
+                // Public Room specific fields
+                isPublic: isPublic,
+                lang: isPublic ? lang : null,
+                targetSize: isPublic ? targetSize : null
+            };
+
+            set(ref(db, `rooms/${myRoomCode}`), roomData)
+                .catch(e => alert("Error: " + e.message));
             
             listenRoom();
         }
@@ -649,6 +816,12 @@
         }
 
         function listenRoom() {
+            // Remove from search queue if we entered a room
+            if (currentSearchPath) {
+                remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
+                currentSearchPath = null;
+            }
+
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
 
@@ -668,22 +841,41 @@
                     playersData.sort((a,b) => a.id.localeCompare(b.id));
                 }
 
+                // Check for Admin Rights
                 const resetBtn = document.getElementById('reset-btn');
                 if(resetBtn) resetBtn.style.display = (data.admin === myPlayerId) ? 'block' : 'none';
 
                 updateUITexts();
 
+                // LOBBY STATE
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
                     playersData.forEach(p => ul.innerHTML += `<li>${p.name}</li>`);
-                    if (data.admin === myPlayerId) document.getElementById('admin-panel').style.display = 'block';
-                    else document.getElementById('waiting-msg').style.display = 'block';
+                    
+                    // Public Room Logic: Auto Start
+                    if (data.isPublic) {
+                        document.getElementById('admin-panel').style.display = 'none';
+                        document.getElementById('waiting-msg').style.display = 'none';
+                        document.getElementById('public-wait-msg').style.display = 'block';
+                        document.getElementById('public-wait-msg').innerText = `Waiting for players... (${playersData.length}/${data.targetSize})`;
+
+                        // If I am admin AND room is full, start it automatically
+                        if (data.admin === myPlayerId && playersData.length >= data.targetSize) {
+                            startSetup();
+                        }
+                    } 
+                    // Private Room Logic
+                    else {
+                        document.getElementById('public-wait-msg').style.display = 'none';
+                        if (data.admin === myPlayerId) document.getElementById('admin-panel').style.display = 'block';
+                        else document.getElementById('waiting-msg').style.display = 'block';
+                    }
                 }
 
                 if (data.gameState === 'setup') {
                     changeScreen('screen-setup');
-                    // Removed input clearing from here to fix the bug
+                    document.getElementById('character-input').value = ""; // Clear input on screen change (fixed logic)
                     
                     const myIndex = playersData.findIndex(p => p.id === myPlayerId);
                     const me = playersData.find(p => p.id === myPlayerId);
@@ -694,7 +886,6 @@
                         document.getElementById('target-player-name').innerText = targetPlayer.name;
                     }
 
-                    // Button Logic
                     if (me && me.hasSubmitted) {
                         document.getElementById('btn-submit-char').disabled = true;
                         document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
@@ -711,6 +902,7 @@
                         setupList.innerHTML += `<div class="setup-player-badge ${doneClass}">${p.name} ${statusIcon}</div>`;
                     });
 
+                    // Only admin triggers start game when everyone is ready
                     if (playersData.every(p => p.hasSubmitted) && data.admin === myPlayerId) {
                         update(ref(db, `rooms/${myRoomCode}`), { gameState: 'game' });
                     }
@@ -955,7 +1147,6 @@
         function makeGuess() {
             const guess = document.getElementById('guess-input').value.trim();
             if (!guess) return;
-            // No confirm needed
             update(ref(db, `rooms/${myRoomCode}`), { currentQuestion: guess, isGuess: true, votes: null, processing: null });
             document.getElementById('guess-input').value = "";
         }
@@ -964,16 +1155,14 @@
             const charName = document.getElementById('character-input').value.trim();
             if (!charName) return;
             
-            // Mark myself as submitted
             const updates = {};
             updates[`rooms/${myRoomCode}/players/${myTargetId}/assignedChar`] = charName;
-            updates[`rooms/${myRoomCode}/players/${myPlayerId}/hasSubmitted`] = true; // Mark ME as done
+            updates[`rooms/${myRoomCode}/players/${myPlayerId}/hasSubmitted`] = true; 
 
             update(ref(db), updates);
             document.getElementById('btn-submit-char').disabled = true;
             document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
             
-            // CLEAR INPUT HERE (Added this line to fix the bug)
             document.getElementById('character-input').value = "";
         }
 
@@ -982,7 +1171,7 @@
             document.getElementById(screenId).classList.add('active');
             
             const header = document.getElementById('main-header');
-            if (screenId === 'screen-welcome' || screenId === 'screen-howtoplay' || screenId === 'screen-languages' || screenId === 'screen-login') {
+            if (screenId === 'screen-welcome' || screenId === 'screen-howtoplay' || screenId === 'screen-languages' || screenId === 'screen-login' || screenId === 'screen-matchmaking') {
                 header.style.display = 'none';
             } else {
                 header.style.display = 'flex';
@@ -1013,7 +1202,7 @@
                     updates[`rooms/${myRoomCode}/players/${p.id}/lives`] = 3;
                     updates[`rooms/${myRoomCode}/players/${p.id}/finishedRank`] = 0;
                     updates[`rooms/${myRoomCode}/players/${p.id}/assignedChar`] = null;
-                    updates[`rooms/${myRoomCode}/players/${p.id}/hasSubmitted`] = false; // Reset status
+                    updates[`rooms/${myRoomCode}/players/${p.id}/hasSubmitted`] = false; 
                 });
                 update(ref(db), updates);
             }
