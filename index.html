@@ -114,6 +114,12 @@
         .status-won { background: #27ae60; color: white; content: '✓'; }
         .status-dead { background: #c0392b; color: white; content: 'X'; }
 
+        /* STATUS BAR (NEW) */
+        .status-bar { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .player-status-badge { background: #333; padding: 5px 10px; border-radius: 15px; font-size: 0.85em; border: 1px solid #555; display: flex; align-items: center; gap: 5px; }
+        .player-status-badge.waiting { border-color: #f1c40f; color: #f1c40f; } /* Hourglass style */
+        .player-status-badge.done { border-color: #27ae60; color: #27ae60; } /* Check style */
+
         /* SETUP LIST STYLES */
         .setup-list-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
         .setup-player-badge { background: #35354a; padding: 6px 12px; border-radius: 20px; font-size: 0.9em; display: flex; align-items: center; gap: 6px; border: 1px solid #444; }
@@ -176,7 +182,6 @@
 
     <div id="screen-welcome" class="screen active">
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
-            
             <button class="menu-btn" onclick="goToLogin(false)">
                 <div class="menu-icon">👥</div>
                 <div style="display:flex; flex-direction:column;">
@@ -184,7 +189,6 @@
                     <span id="btn-menu-play-sub" style="font-size:0.8em; color:#aaa;">Create or Join a Private Room</span>
                 </div>
             </button>
-
             <button class="menu-btn" onclick="goToLogin(true)">
                 <div class="menu-icon">🌍</div>
                 <div style="display:flex; flex-direction:column;">
@@ -192,7 +196,6 @@
                     <span id="btn-menu-find-sub" style="font-size:0.8em; color:#aaa;">Match with Random Players</span>
                 </div>
             </button>
-
             <button class="menu-btn" onclick="showHowToPlay()">
                 <div class="menu-icon">❓</div>
                 <div style="display:flex; flex-direction:column;">
@@ -200,7 +203,6 @@
                     <span style="font-size:0.8em; color:#aaa;">Game Rules</span>
                 </div>
             </button>
-
             <button class="menu-btn" onclick="showLanguages()">
                 <div class="menu-icon">🌐</div>
                 <div style="display:flex; flex-direction:column;">
@@ -208,7 +210,6 @@
                     <span id="btn-menu-lang-sub" style="font-size:0.8em; color:#aaa;">Change App Language</span>
                 </div>
             </button>
-
         </div>
     </div>
 
@@ -229,7 +230,6 @@
             <div id="public-controls" style="display:none;">
                 <button class="btn-purple" onclick="goToMatchmakingSetup()">Next: Matchmaking ➔</button>
             </div>
-
         </div>
     </div>
 
@@ -237,7 +237,6 @@
         <div class="box">
             <button class="btn-back" onclick="goToLogin(true)">‹ Back</button>
             <h3 id="lbl-mm-title">Matchmaking</h3>
-            
             <label id="lbl-mm-lang" style="font-size:0.9em; color:#aaa; display:block; text-align:left;">Language Preference</label>
             <select id="mm-lang" onchange="updateOnlineCount()">
                 <option value="en">🇺🇸 English (Global)</option>
@@ -245,16 +244,13 @@
                 <option value="de">🇩🇪 Deutsch</option>
                 <option value="es">🇪🇸 Español</option>
             </select>
-
             <label id="lbl-mm-size" style="font-size:0.9em; color:#aaa; display:block; text-align:left; margin-top:10px;">Players Count</label>
             <select id="mm-size" onchange="updateOnlineCount()">
                 <option value="2" selected>2 Players</option>
                 <option value="3">3 Players</option>
                 <option value="4">4 Players</option>
             </select>
-
             <div id="mm-online-count" class="mm-counter">Online: ...</div>
-
             <button id="btn-mm-search" class="btn-green" style="margin-top:20px;" onclick="findPublicGame()">🔍 Search Game</button>
             <p id="mm-status" style="display:none; color:#f1c40f; margin-top:10px;">Searching for rooms...</p>
         </div>
@@ -285,12 +281,10 @@
             <h1 id="lobby-code" style="letter-spacing: 5px; font-size: 40px; color: #fff;">----</h1>
             <p id="lbl-waiting-players">Waiting for players...</p>
             <ul id="player-list"></ul>
-            
             <div id="admin-panel" style="display:none; border-top: 1px solid #444; padding-top: 10px;">
                 <p id="lbl-you-admin" style="color: yellow; font-size: 0.9em;">You are the Admin</p>
                 <button id="btn-start" class="btn-green" onclick="startSetup()">Start Game</button>
             </div>
-            
             <p id="public-wait-msg" style="display:none; color:#2ecc71;">Matchmaking... Game will start automatically when full.</p>
             <p id="waiting-msg" style="display:none; color:#aaa;">Waiting for admin to start...</p>
         </div>
@@ -327,10 +321,13 @@
             <div id="characters-list" class="char-grid"></div>
         </div>
         <div class="lives-display" id="my-lives">❤️❤️❤️</div>
+        
         <div class="box">
             <p id="lbl-whose-turn">Whose Turn?</p>
             <h2 id="current-turn-name" style="color: #27ae60;">...</h2>
+            <div id="turn-status-bar" class="status-bar"></div>
         </div>
+
         <div id="my-turn-area" style="display: none;">
             <div class="box">
                 <input type="text" id="question-input" placeholder="Ask a question...">
@@ -803,6 +800,12 @@
         }
 
         function listenRoom() {
+            // Remove from search queue if we entered a room
+            if (currentSearchPath) {
+                remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
+                currentSearchPath = null;
+            }
+
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
 
@@ -822,39 +825,32 @@
                     playersData.sort((a,b) => a.id.localeCompare(b.id));
                 }
 
-                // --- SEARCH LOGIC FIX ---
-                // Only remove from searching list if Game Started OR Private Room
-                if (data.isPublic && data.gameState === 'lobby') {
-                    // Do nothing (Keep user in searching node to count as waiter)
-                } else {
-                    // Remove from searching node
-                    if (currentSearchPath) {
-                        remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
-                        currentSearchPath = null;
-                    }
-                }
-                // -----------------------
-
+                // Check for Admin Rights
                 const resetBtn = document.getElementById('reset-btn');
                 if(resetBtn) resetBtn.style.display = (data.admin === myPlayerId) ? 'block' : 'none';
 
                 updateUITexts();
 
+                // LOBBY STATE
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
                     playersData.forEach(p => ul.innerHTML += `<li>${p.name}</li>`);
                     
+                    // Public Room Logic: Auto Start
                     if (data.isPublic) {
                         document.getElementById('admin-panel').style.display = 'none';
                         document.getElementById('waiting-msg').style.display = 'none';
                         document.getElementById('public-wait-msg').style.display = 'block';
                         document.getElementById('public-wait-msg').innerText = `Waiting for players... (${playersData.length}/${data.targetSize})`;
 
+                        // If I am admin AND room is full, start it automatically
                         if (data.admin === myPlayerId && playersData.length >= data.targetSize) {
                             startSetup();
                         }
-                    } else {
+                    } 
+                    // Private Room Logic
+                    else {
                         document.getElementById('public-wait-msg').style.display = 'none';
                         if (data.admin === myPlayerId) document.getElementById('admin-panel').style.display = 'block';
                         else document.getElementById('waiting-msg').style.display = 'block';
@@ -908,10 +904,59 @@
             });
         }
 
+        // --- NEW STATUS BAR FUNCTION ---
+        function updateTurnStatus(data) {
+            const bar = document.getElementById('turn-status-bar');
+            bar.innerHTML = "";
+            
+            const currentPlayer = playersData[data.turnIndex % playersData.length];
+            if (!currentPlayer) return;
+            const currentPlayerId = currentPlayer.id;
+            const isVotingPhase = !!data.currentQuestion;
+
+            playersData.forEach(p => {
+                let icon = "";
+                let statusClass = "";
+
+                if (!isVotingPhase) {
+                    // ASK PHASE: Turn player is thinking (⏳), others are waiting (✅)
+                    if (p.id === currentPlayerId) {
+                        icon = "⏳"; 
+                        statusClass = "waiting";
+                    } else {
+                        icon = "✅"; 
+                        statusClass = "done";
+                    }
+                } else {
+                    // VOTE PHASE: Turn player asked (✅), others voting
+                    if (p.id === currentPlayerId) {
+                        icon = "✅";
+                        statusClass = "done";
+                    } else {
+                        const hasVoted = data.votes && data.votes[p.id];
+                        if (hasVoted) {
+                            icon = "✅";
+                            statusClass = "done";
+                        } else {
+                            icon = "⏳";
+                            statusClass = "waiting";
+                        }
+                    }
+                }
+
+                bar.innerHTML += `<div class="player-status-badge ${statusClass}">
+                    ${p.name} ${icon}
+                </div>`;
+            });
+        }
+
         function renderGame(data) {
             if (!playersData.length) return;
             const t = translations[currentLang];
             
+            // Call the status bar update
+            updateTurnStatus(data);
+
             const currentPlayer = playersData[data.turnIndex % playersData.length];
             document.getElementById('current-turn-name').innerText = currentPlayer.name;
 
