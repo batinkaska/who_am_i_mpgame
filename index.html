@@ -114,11 +114,11 @@
         .status-won { background: #27ae60; color: white; content: '✓'; }
         .status-dead { background: #c0392b; color: white; content: 'X'; }
 
-        /* STATUS BAR */
+        /* STATUS BAR (NEW) */
         .status-bar { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
         .player-status-badge { background: #333; padding: 5px 10px; border-radius: 15px; font-size: 0.85em; border: 1px solid #555; display: flex; align-items: center; gap: 5px; }
-        .player-status-badge.waiting { border-color: #f1c40f; color: #f1c40f; } 
-        .player-status-badge.done { border-color: #27ae60; color: #27ae60; } 
+        .player-status-badge.waiting { border-color: #f1c40f; color: #f1c40f; } /* Hourglass style */
+        .player-status-badge.done { border-color: #27ae60; color: #27ae60; } /* Check style */
 
         /* SETUP LIST STYLES */
         .setup-list-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -220,7 +220,7 @@
             <input type="text" id="username" placeholder="Enter your name">
             
             <div id="private-controls">
-                <button id="btn-create" class="btn-green" onclick="createRoom(false)">Create New Room</button>
+                <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
                 <div style="display: flex; gap: 5px; margin-top: 10px;">
                     <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
                     <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
@@ -371,13 +371,10 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, get, remove, push, onDisconnect } 
+        import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        
-        // --- FIREBASE AUTHENTICATION (KİMLİK DOĞRULAMA) ---
-        import { getAuth, signInAnonymously, onAuthStateChanged } 
-        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
             authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -389,28 +386,11 @@
             measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
         };
 
-        let app, db, auth;
-        let myPlayerId = null; // Bu artık Firebase tarafından otomatik verilecek
-
+        let app, db;
         try {
             app = initializeApp(firebaseConfig);
             db = getDatabase(app);
-            auth = getAuth(app);
             console.log("Firebase connected.");
-
-            // KİMLİK DOĞRULAMA İŞLEMİ
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    myPlayerId = user.uid;
-                    console.log("Güvenli giriş yapıldı UID:", myPlayerId);
-                } else {
-                    signInAnonymously(auth).catch((error) => {
-                        console.error("Auth error:", error);
-                        alert("Firebase Hatası: " + error.message + "\n\nLütfen Firebase Console'dan 'Anonymous (Anonim)' girişi açtığınızdan emin olun!");
-                    });
-                }
-            });
-
         } catch (e) {
             alert("Firebase Error: " + e.message);
         }
@@ -448,8 +428,7 @@
                 alert_reset: "Restart game for everyone?", alert_guess_confirm: "If wrong, you lose a life! Are you sure?",
                 txt_starting: "Starting...", txt_submit_wait: "Waiting...", txt_searching: "Searching for rooms...",
                 hist_yes: "YES", hist_no: "NO", hist_unsure: "?",
-                txt_online: "Online Searching: ",
-                alert_auth_wait: "Connecting securely to the server... Please wait a second and try again."
+                txt_online: "Online Searching: "
             },
             tr: {
                 flag: "🇹🇷", langName: "Türkçe",
@@ -482,8 +461,7 @@
                 alert_reset: "Oyunu herkes için sıfırlamak istiyor musun?", alert_guess_confirm: "Yanlışsa 1 canın gider! Emin misin?",
                 txt_starting: "Başlatılıyor...", txt_submit_wait: "Bekleniyor...", txt_searching: "Oda aranıyor...",
                 hist_yes: "EVET", hist_no: "HAYIR", hist_unsure: "?",
-                txt_online: "Bu modda arayan: ",
-                alert_auth_wait: "Sunucuya güvenli bağlantı kuruluyor... Lütfen 1 saniye bekleyip tekrar dene."
+                txt_online: "Bu modda arayan: "
             },
             de: {
                 flag: "🇩🇪", langName: "Deutsch",
@@ -516,8 +494,7 @@
                 alert_reset: "Spiel für alle neu starten?", alert_guess_confirm: "Bei Fehler verlierst du ein Leben! Sicher?",
                 txt_starting: "Startet...", txt_submit_wait: "Warten...", txt_searching: "Suche...",
                 hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?",
-                txt_online: "Online Suchen: ",
-                alert_auth_wait: "Sichere Verbindung zum Server wird hergestellt... Bitte versuchen Sie es in einer Sekunde noch einmal."
+                txt_online: "Online Suchen: "
             },
             es: {
                 flag: "🇪🇸", langName: "Español",
@@ -550,8 +527,7 @@
                 alert_reset: "¿Reiniciar el juego para todos?", alert_guess_confirm: "¡Si fallas pierdes una vida! ¿Seguro?",
                 txt_starting: "Iniciando...", txt_submit_wait: "Esperando...", txt_searching: "Buscando...",
                 hist_yes: "SÍ", hist_no: "NO", hist_unsure: "?",
-                txt_online: "Buscando en línea: ",
-                alert_auth_wait: "Conectando de forma segura al servidor... Por favor espera un segundo."
+                txt_online: "Buscando en línea: "
             }
         };
 
@@ -571,14 +547,19 @@
             currentLang = lang;
             localStorage.setItem('whoami_lang', lang);
             updateUITexts();
+            // Also update MM counter if on MM screen
             if(document.getElementById('screen-matchmaking').classList.contains('active')){
                 updateOnlineCount();
             }
         };
 
-        // --- NAVIGATION FUNCTIONS ---
+        // NAVIGATION FUNCTIONS
+        let isPublicMode = false;
+
         window.goToLogin = function(isPublic) {
+            isPublicMode = isPublic;
             changeScreen('screen-login');
+            
             const privateDiv = document.getElementById('private-controls');
             const publicDiv = document.getElementById('public-controls');
             
@@ -594,7 +575,6 @@
         window.goToMatchmakingSetup = function() {
             myName = document.getElementById('username').value.trim();
             if(!myName) return alert(translations[currentLang].alert_name);
-            if(!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
             
             changeScreen('screen-matchmaking');
             updateOnlineCount(); 
@@ -660,6 +640,7 @@
             setText('lbl-game-over-title', t.lbl_game_over);
             setText('lbl-room-players', t.lbl_room_players);
             
+            // MM Texts
             setText('lbl-mm-title', t.lbl_mm_title);
             setText('lbl-mm-lang', t.lbl_mm_lang);
             setText('lbl-mm-size', t.lbl_mm_size);
@@ -674,11 +655,17 @@
 
         window.setLanguage(currentLang);
 
-        // --- GAME LOGIC & EXPORTED FUNCTIONS ---
+        // --- GAME LOGIC ---
         let myRoomCode = "";
+        let myPlayerId = localStorage.getItem('whoami_pid');
+        if (!myPlayerId) {
+            myPlayerId = "p_" + Date.now() + "_" + Math.floor(Math.random()*1000);
+            localStorage.setItem('whoami_pid', myPlayerId);
+        }
+
+        let myName = "";
         let myTargetId = ""; 
         let playersData = []; 
-        let currentSearchPath = null;
         
         window.createRoom = createRoom;
         window.joinRoom = joinRoom;
@@ -692,20 +679,25 @@
         window.findPublicGame = findPublicGame;
         window.updateOnlineCount = updateOnlineCount;
 
+        // MATCHMAKING COUNTER LOGIC
+        let currentSearchPath = null;
+
         function updateOnlineCount() {
-            if(!myPlayerId) return; 
             const lang = document.getElementById('mm-lang').value;
             const size = document.getElementById('mm-size').value;
             const newPath = `searching/${lang}_${size}`;
 
+            // Remove from old path if changed
             if (currentSearchPath && currentSearchPath !== newPath) {
                 remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
             }
             
+            // Add to new path
             currentSearchPath = newPath;
             set(ref(db, `${newPath}/${myPlayerId}`), true);
             onDisconnect(ref(db, `${newPath}/${myPlayerId}`)).remove();
 
+            // Listen for count
             onValue(ref(db, newPath), (snap) => {
                 const count = snap.exists() ? Object.keys(snap.val()).length : 0;
                 document.getElementById('mm-online-count').innerText = translations[currentLang].txt_online + count;
@@ -713,7 +705,6 @@
         }
 
         function findPublicGame() {
-            if(!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
             const lang = document.getElementById('mm-lang').value;
             const size = parseInt(document.getElementById('mm-size').value);
             
@@ -748,11 +739,9 @@
             });
         }
 
-        // isPublic parametresi ile çalışır (Özel oda için false)
         function createRoom(isPublic = false, lang = 'en', targetSize = 4) {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
-            if (!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
             
             myRoomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
             
@@ -766,7 +755,8 @@
                 targetSize: isPublic ? targetSize : null
             };
 
-            set(ref(db, `rooms/${myRoomCode}`), roomData).catch(e => alert("Error: " + e.message));
+            set(ref(db, `rooms/${myRoomCode}`), roomData)
+                .catch(e => alert("Error: " + e.message));
             
             listenRoom();
         }
@@ -775,7 +765,6 @@
             myName = document.getElementById('username').value.trim();
             const code = document.getElementById('room-code-input').value.trim().toUpperCase();
             if (!myName || !code) return alert(translations[currentLang].alert_code);
-            if (!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
 
             get(ref(db, `rooms/${code}`)).then(snap => {
                 if (snap.exists()) {
@@ -803,13 +792,20 @@
             updates[`rooms/${myRoomCode}/gameState`] = 'setup';
             updates[`rooms/${myRoomCode}/playerOrder`] = playerIds; 
 
-            update(ref(db), updates).catch((error) => {
+            update(ref(db), updates)
+            .catch((error) => {
                 alert("Error: " + error.message);
                 if(btn) { btn.innerText = translations[currentLang].btn_start; btn.disabled = false; }
             });
         }
 
         function listenRoom() {
+            // Remove from search queue if we entered a room
+            if (currentSearchPath) {
+                remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
+                currentSearchPath = null;
+            }
+
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
 
@@ -829,35 +825,32 @@
                     playersData.sort((a,b) => a.id.localeCompare(b.id));
                 }
 
-                if (data.isPublic && data.gameState === 'lobby') {
-                    // Bekliyor
-                } else {
-                    if (currentSearchPath) {
-                        remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
-                        currentSearchPath = null;
-                    }
-                }
-
+                // Check for Admin Rights
                 const resetBtn = document.getElementById('reset-btn');
                 if(resetBtn) resetBtn.style.display = (data.admin === myPlayerId) ? 'block' : 'none';
 
                 updateUITexts();
 
+                // LOBBY STATE
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
                     playersData.forEach(p => ul.innerHTML += `<li>${p.name}</li>`);
                     
+                    // Public Room Logic: Auto Start
                     if (data.isPublic) {
                         document.getElementById('admin-panel').style.display = 'none';
                         document.getElementById('waiting-msg').style.display = 'none';
                         document.getElementById('public-wait-msg').style.display = 'block';
                         document.getElementById('public-wait-msg').innerText = `Waiting for players... (${playersData.length}/${data.targetSize})`;
 
+                        // If I am admin AND room is full, start it automatically
                         if (data.admin === myPlayerId && playersData.length >= data.targetSize) {
                             startSetup();
                         }
-                    } else {
+                    } 
+                    // Private Room Logic
+                    else {
                         document.getElementById('public-wait-msg').style.display = 'none';
                         if (data.admin === myPlayerId) document.getElementById('admin-panel').style.display = 'block';
                         else document.getElementById('waiting-msg').style.display = 'block';
@@ -866,6 +859,7 @@
 
                 if (data.gameState === 'setup') {
                     changeScreen('screen-setup');
+                    document.getElementById('character-input').value = ""; 
                     
                     const myIndex = playersData.findIndex(p => p.id === myPlayerId);
                     const me = playersData.find(p => p.id === myPlayerId);
@@ -910,6 +904,7 @@
             });
         }
 
+        // --- NEW STATUS BAR FUNCTION ---
         function updateTurnStatus(data) {
             const bar = document.getElementById('turn-status-bar');
             bar.innerHTML = "";
@@ -924,6 +919,7 @@
                 let statusClass = "";
 
                 if (!isVotingPhase) {
+                    // ASK PHASE: Turn player is thinking (⏳), others are waiting (✅)
                     if (p.id === currentPlayerId) {
                         icon = "⏳"; 
                         statusClass = "waiting";
@@ -932,6 +928,7 @@
                         statusClass = "done";
                     }
                 } else {
+                    // VOTE PHASE: Turn player asked (✅), others voting
                     if (p.id === currentPlayerId) {
                         icon = "✅";
                         statusClass = "done";
@@ -957,6 +954,7 @@
             if (!playersData.length) return;
             const t = translations[currentLang];
             
+            // Call the status bar update
             updateTurnStatus(data);
 
             const currentPlayer = playersData[data.turnIndex % playersData.length];
@@ -1215,6 +1213,7 @@
         function leaveRoom() {
             if (!myRoomCode || !myPlayerId) return location.reload();
             if (confirm(translations[currentLang].alert_leave)) {
+                // Ensure removed from searching list if leaving
                 if (currentSearchPath) {
                     remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
                 }
