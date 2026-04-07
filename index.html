@@ -801,10 +801,10 @@
             shuffleArray(playerIds);
 
             const updates = {};
-            updates[`rooms/${myRoomCode}/gameState`] = 'setup';
-            updates[`rooms/${myRoomCode}/playerOrder`] = playerIds; 
+            updates['gameState'] = 'setup';
+            updates['playerOrder'] = playerIds;
 
-            update(ref(db), updates)
+            update(ref(db, `rooms/${myRoomCode}`), updates)
             .catch((error) => {
                 alert("Error: " + error.message);
                 if(btn) { btn.innerText = translations[currentLang].btn_start; btn.disabled = false; }
@@ -1092,7 +1092,13 @@
                         if (result === 'yes') {
                             const alreadyWon = playersData.filter(p => p.finishedRank > 0).length;
                             const newRank = alreadyWon + 1;
-                            update(ref(db, `rooms/${myRoomCode}/players/${currentPlayer.id}`), { finishedRank: newRank });
+                            update(ref(db, `rooms/${myRoomCode}/players/${currentPlayer.id}`), {
+                                name: currentPlayer.name,
+                                score: currentPlayer.score || 0,
+                                lives: currentPlayer.lives !== undefined ? currentPlayer.lives : 3,
+                                finishedRank: newRank,
+                                hasSubmitted: currentPlayer.hasSubmitted || false
+                            });
                             push(ref(db, `rooms/${myRoomCode}/history`), { playerId: currentPlayer.id, question: "[GUESS] " + activeQuestion, result: 'yes', timestamp: Date.now() });
                             setTimeout(() => {
                                 const actives = playersData.filter(p => p.id !== currentPlayer.id && p.lives > 0 && p.finishedRank === 0);
@@ -1101,7 +1107,13 @@
                             }, 2000);
                         } else {
                             const newLives = (currentPlayer.lives !== undefined ? currentPlayer.lives : 3) - 1;
-                            update(ref(db, `rooms/${myRoomCode}/players/${currentPlayer.id}`), { lives: newLives });
+                            update(ref(db, `rooms/${myRoomCode}/players/${currentPlayer.id}`), {
+                                name: currentPlayer.name,
+                                score: currentPlayer.score || 0,
+                                lives: newLives,
+                                finishedRank: currentPlayer.finishedRank || 0,
+                                hasSubmitted: currentPlayer.hasSubmitted || false
+                            });
                             push(ref(db, `rooms/${myRoomCode}/history`), { playerId: currentPlayer.id, question: "[GUESS] " + activeQuestion, result: 'no', timestamp: Date.now() });
                             setTimeout(() => {
                                 const actives = playersData.filter(p => (p.id === currentPlayer.id ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0);
@@ -1138,13 +1150,13 @@
         }
 
         function passTurn(currentIndex) {
-            const updates = {};
-            updates[`rooms/${myRoomCode}/turnIndex`] = currentIndex + 1;
-            updates[`rooms/${myRoomCode}/currentQuestion`] = null;
-            updates[`rooms/${myRoomCode}/votes`] = null;
-            updates[`rooms/${myRoomCode}/isGuess`] = null;
-            updates[`rooms/${myRoomCode}/processing`] = null;
-            update(ref(db), updates);
+            update(ref(db, `rooms/${myRoomCode}`), {
+                turnIndex: currentIndex + 1,
+                currentQuestion: null,
+                votes: null,
+                isGuess: null,
+                processing: null
+            });
         }
 
         function renderHistoryBoard(historyData, players) {
@@ -1202,12 +1214,19 @@
         function submitCharacter() {
             const charName = document.getElementById('character-input').value.trim();
             if (!charName) return;
-            
-            const updates = {};
-            updates[`rooms/${myRoomCode}/assignments/${myTargetId}`] = charName;
-            updates[`rooms/${myRoomCode}/players/${myPlayerId}/hasSubmitted`] = true;
 
-            update(ref(db), updates);
+            const me = playersData.find(p => p.id === myPlayerId);
+            const updates = {};
+            updates[`assignments/${myTargetId}`] = charName;
+            updates[`players/${myPlayerId}`] = {
+                name: me.name,
+                score: me.score || 0,
+                lives: me.lives !== undefined ? me.lives : 3,
+                finishedRank: me.finishedRank || 0,
+                hasSubmitted: true
+            };
+
+            update(ref(db, `rooms/${myRoomCode}`), updates);
             document.getElementById('btn-submit-char').disabled = true;
             document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
             
@@ -1239,22 +1258,23 @@
         }
 
         function resetGame() {
-            const resetBtn = document.getElementById('reset-btn');
-            if (!resetBtn || resetBtn.style.display === 'none') return;
+            if (!myRoomCode) return;
             if (confirm(translations[currentLang].alert_reset)) {
                 const playerIds = playersData.map(p => p.id);
                 shuffleArray(playerIds);
                 const updates = {};
-                updates[`rooms/${myRoomCode}/gameState`] = 'setup';
-                updates[`rooms/${myRoomCode}/turnIndex`] = 0;
-                updates[`rooms/${myRoomCode}/history`] = null;
-                updates[`rooms/${myRoomCode}/currentQuestion`] = null;
-                updates[`rooms/${myRoomCode}/votes`] = null;
-                updates[`rooms/${myRoomCode}/winner`] = null;
-                updates[`rooms/${myRoomCode}/playerOrder`] = playerIds;
-                updates[`rooms/${myRoomCode}/assignments`] = null;
+                updates['gameState'] = 'setup';
+                updates['turnIndex'] = 0;
+                updates['history'] = null;
+                updates['currentQuestion'] = null;
+                updates['votes'] = null;
+                updates['winner'] = null;
+                updates['playerOrder'] = playerIds;
+                updates['assignments'] = null;
+                updates['processing'] = null;
+                updates['isGuess'] = null;
                 playersData.forEach(p => {
-                    updates[`rooms/${myRoomCode}/players/${p.id}`] = {
+                    updates[`players/${p.id}`] = {
                         name: p.name,
                         score: p.score || 0,
                         lives: 3,
@@ -1262,7 +1282,9 @@
                         hasSubmitted: false
                     };
                 });
-                update(ref(db), updates);
+                update(ref(db, `rooms/${myRoomCode}`), updates)
+                    .then(() => console.log("resetGame OK"))
+                    .catch(e => alert("Reset hatası: " + e.message));
             }
         }
 
