@@ -180,7 +180,7 @@
         <p id="lbl-subtitle" style="color: #aaa; margin-top: -10px;">Test Your Knowledge!</p>
     </div>
 
-    <div id="screen-welcome" class="screen active">
+    <div id="screen-welcome" class="screen">
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
             <button class="menu-btn" onclick="goToLogin(false)">
                 <div class="menu-icon">👥</div>
@@ -373,6 +373,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged }
+        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
         // --- FIREBASE CONFIG ---
         const firebaseConfig = {
@@ -386,10 +388,11 @@
             measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
         };
 
-        let app, db;
+        let app, db, auth;
         try {
             app = initializeApp(firebaseConfig);
             db = getDatabase(app);
+            auth = getAuth(app);
             console.log("Firebase connected.");
         } catch (e) {
             alert("Firebase Error: " + e.message);
@@ -653,19 +656,28 @@
             if (el && text) el.innerHTML = text; 
         }
 
-        window.setLanguage(currentLang);
-
         // --- GAME LOGIC ---
         let myRoomCode = "";
-        let myPlayerId = localStorage.getItem('whoami_pid');
-        if (!myPlayerId) {
-            myPlayerId = "p_" + Date.now() + "_" + Math.floor(Math.random()*1000);
-            localStorage.setItem('whoami_pid', myPlayerId);
-        }
-
+        let myPlayerId = "";
         let myName = "";
         let myTargetId = ""; 
-        let playersData = []; 
+        let playersData = [];
+
+        // Auth hazır olana kadar UI'ı blokla, sonra aç
+        let authReady = false;
+        signInAnonymously(auth).catch(e => alert("Auth Error: " + e.message));
+
+        onAuthStateChanged(auth, (user) => {
+            if (user && !authReady) {
+                authReady = true;
+                myPlayerId = user.uid;
+                // Eski localStorage pid'yi temizle (migration)
+                localStorage.removeItem('whoami_pid');
+                // Dil ayarını uygula ve UI'ı aktif et
+                window.setLanguage(currentLang);
+                document.getElementById('screen-welcome').classList.add('active');
+            }
+        }); 
         
         window.createRoom = createRoom;
         window.joinRoom = joinRoom;
