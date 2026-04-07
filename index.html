@@ -374,7 +374,7 @@
         import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         
-        // --- YENİ EKLENEN AUTHENTICATION MODÜLÜ ---
+        // --- FIREBASE AUTH MODÜLÜ ---
         import { getAuth, signInAnonymously, onAuthStateChanged } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -391,24 +391,22 @@
         };
 
         let app, db, auth;
-        let myPlayerId = null; // Artık localStorage'dan değil Firebase Auth'tan alıyoruz
+        let myPlayerId = null; // UID Firebase Auth'tan gelecek
 
         try {
             app = initializeApp(firebaseConfig);
             db = getDatabase(app);
-            auth = getAuth(app); // Auth başlatıldı
+            auth = getAuth(app);
             console.log("Firebase connected.");
 
-            // --- ANONİM GİRİŞ İŞLEMİ ---
+            // ANONİM KİMLİK DOĞRULAMA (Firebase Rules auth != null için gerekli)
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    myPlayerId = user.uid; // Güvenli Firebase ID'si
-                    console.log("Securely connected with ID:", myPlayerId);
+                    myPlayerId = user.uid;
+                    console.log("Güvenli bağlantı sağlandı. ID:", myPlayerId);
                 } else {
-                    // Kullanıcı yoksa, anonim olarak giriş yap
                     signInAnonymously(auth).catch((error) => {
                         console.error("Auth error:", error);
-                        alert("Güvenli bağlantı kurulamadı: " + error.message);
                     });
                 }
             });
@@ -451,7 +449,7 @@
                 txt_starting: "Starting...", txt_submit_wait: "Waiting...", txt_searching: "Searching for rooms...",
                 hist_yes: "YES", hist_no: "NO", hist_unsure: "?",
                 txt_online: "Online Searching: ",
-                alert_auth_wait: "Connecting to server securely... Please try again in a second."
+                alert_auth_wait: "Connecting securely to the server... Please wait a second and try again."
             },
             tr: {
                 flag: "🇹🇷", langName: "Türkçe",
@@ -485,7 +483,7 @@
                 txt_starting: "Başlatılıyor...", txt_submit_wait: "Bekleniyor...", txt_searching: "Oda aranıyor...",
                 hist_yes: "EVET", hist_no: "HAYIR", hist_unsure: "?",
                 txt_online: "Bu modda arayan: ",
-                alert_auth_wait: "Sunucuya güvenli bağlantı kuruluyor... Lütfen 1 saniye sonra tekrar dene."
+                alert_auth_wait: "Sunucuya güvenli bağlantı kuruluyor... Lütfen 1 saniye bekleyip tekrar dene."
             },
             de: {
                 flag: "🇩🇪", langName: "Deutsch",
@@ -519,7 +517,7 @@
                 txt_starting: "Startet...", txt_submit_wait: "Warten...", txt_searching: "Suche...",
                 hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?",
                 txt_online: "Online Suchen: ",
-                alert_auth_wait: "Sichere Verbindung zum Server wird hergestellt... Bitte versuchen Sie es in einer Sekunde noch einmal."
+                alert_auth_wait: "Sichere Verbindung zum Server wird hergestellt... Bitte warte eine Sekunde."
             },
             es: {
                 flag: "🇪🇸", langName: "Español",
@@ -553,7 +551,7 @@
                 txt_starting: "Iniciando...", txt_submit_wait: "Esperando...", txt_searching: "Buscando...",
                 hist_yes: "SÍ", hist_no: "NO", hist_unsure: "?",
                 txt_online: "Buscando en línea: ",
-                alert_auth_wait: "Conectando de forma segura al servidor... Por favor, inténtelo de nuevo en un segundo."
+                alert_auth_wait: "Conectando de forma segura al servidor... Por favor espera un segundo."
             }
         };
 
@@ -600,7 +598,8 @@
         window.goToMatchmakingSetup = function() {
             myName = document.getElementById('username').value.trim();
             if(!myName) return alert(translations[currentLang].alert_name);
-            if(!myPlayerId) return alert(translations[currentLang].alert_auth_wait); // Auth control
+            // Güvenlik: Auth ID yüklenmeden butonlara basılırsa uyarı ver
+            if(!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
             
             changeScreen('screen-matchmaking');
             updateOnlineCount(); 
@@ -666,7 +665,6 @@
             setText('lbl-game-over-title', t.lbl_game_over);
             setText('lbl-room-players', t.lbl_room_players);
             
-            // MM Texts
             setText('lbl-mm-title', t.lbl_mm_title);
             setText('lbl-mm-lang', t.lbl_mm_lang);
             setText('lbl-mm-size', t.lbl_mm_size);
@@ -698,11 +696,10 @@
         window.findPublicGame = findPublicGame;
         window.updateOnlineCount = updateOnlineCount;
 
-        // MATCHMAKING COUNTER LOGIC
         let currentSearchPath = null;
 
         function updateOnlineCount() {
-            if(!myPlayerId) return; // Auth control
+            if(!myPlayerId) return; 
             const lang = document.getElementById('mm-lang').value;
             const size = document.getElementById('mm-size').value;
             const newPath = `searching/${lang}_${size}`;
@@ -722,7 +719,7 @@
         }
 
         function findPublicGame() {
-            if(!myPlayerId) return alert(translations[currentLang].alert_auth_wait); // Auth control
+            if(!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
             const lang = document.getElementById('mm-lang').value;
             const size = parseInt(document.getElementById('mm-size').value);
             
@@ -760,7 +757,7 @@
         function createRoom(isPublic = false, lang = 'en', targetSize = 4) {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
-            if (!myPlayerId) return alert(translations[currentLang].alert_auth_wait); // Auth control
+            if (!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
             
             myRoomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
             
@@ -784,7 +781,7 @@
             myName = document.getElementById('username').value.trim();
             const code = document.getElementById('room-code-input').value.trim().toUpperCase();
             if (!myName || !code) return alert(translations[currentLang].alert_code);
-            if (!myPlayerId) return alert(translations[currentLang].alert_auth_wait); // Auth control
+            if (!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
 
             get(ref(db, `rooms/${code}`)).then(snap => {
                 if (snap.exists()) {
@@ -839,7 +836,6 @@
                     playersData.sort((a,b) => a.id.localeCompare(b.id));
                 }
 
-                // Arama listesinden çıkarma mantığı
                 if (data.isPublic && data.gameState === 'lobby') {
                     // Bekliyor
                 } else {
