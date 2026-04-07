@@ -114,11 +114,11 @@
         .status-won { background: #27ae60; color: white; content: '✓'; }
         .status-dead { background: #c0392b; color: white; content: 'X'; }
 
-        /* STATUS BAR (NEW) */
+        /* STATUS BAR */
         .status-bar { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
         .player-status-badge { background: #333; padding: 5px 10px; border-radius: 15px; font-size: 0.85em; border: 1px solid #555; display: flex; align-items: center; gap: 5px; }
-        .player-status-badge.waiting { border-color: #f1c40f; color: #f1c40f; } /* Hourglass style */
-        .player-status-badge.done { border-color: #27ae60; color: #27ae60; } /* Check style */
+        .player-status-badge.waiting { border-color: #f1c40f; color: #f1c40f; }
+        .player-status-badge.done { border-color: #27ae60; color: #27ae60; }
 
         /* SETUP LIST STYLES */
         .setup-list-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
@@ -368,7 +368,6 @@
         Designed & Developed by Batin Kaska
     </div>
 
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect } 
@@ -408,7 +407,6 @@
                 lbl_rules_title: "How to Play",
                 lbl_enter_details: "Enter Details", btn_back: "‹ Back",
                 lbl_rules_text: "1. <b>Assign Character:</b> At the start, you'll be given a friend's name. Write a challenging and fun <b>famous character</b> (Singer, Athlete, Movie Character, etc.) for them.<br><br>2. <b>Ask Questions:</b> When it's your turn, ask the group Yes/No questions to find out who you are (e.g. 'Am I real?', 'Am I a singer?', 'Am I male?'). Your friends will vote <b>Yes</b>, <b>No</b>, or <b>Unsure</b>.<br><br>3. <b>Voting Result:</b> The majority vote determines the answer.<br><br>4. <b>Guess & Lives:</b> If you know who you are, use the <b>'Guess'</b> button. Be careful! A wrong guess costs <b>1 Life (❤️)</b>.<br><br>5. <b>Jury Mode:</b> If you lose all 3 lives, you are out. But don't worry! You stay as a 'Jury' and continue voting on others' questions.<br><br>6. <b>Winning:</b> Players who guess correctly are ranked on the leaderboard by speed!",
-                
                 ph_name: "Enter your name", btn_create: "Create New Room", ph_room: "Room Code", btn_join: "Join",
                 lbl_room: "Room Code:", lbl_wait: "Waiting for players...", lbl_admin: "You are the Admin", btn_start: "Start Game",
                 lbl_wait_admin: "Waiting for admin to start...", lbl_assign_t: "Assign Character", lbl_assign_d: "Assign a character for:",
@@ -441,7 +439,6 @@
                 lbl_rules_title: "Nasıl Oynanır?",
                 lbl_enter_details: "Giriş Yap", btn_back: "‹ Geri",
                 lbl_rules_text: "1. <b>Karakter Atama:</b> Oyun başladığında ekranda sana, karakter belirlemen gereken arkadaşının ismi verilecek. O kişi için zorlu ve eğlenceli bir <b>ünlü karakter</b> (Şarkıcı, Sporcu, Film Karakteri vb.) yaz ve gönder.<br><br>2. <b>Soru Sorma:</b> Sıra sana geldiğinde kim olduğunu bulmak için gruba sorular sor (Örn: 'Gerçek biri miyim?', 'Şarkıcı mıyım?', 'Erkek miyim?'). Arkadaşların bu soruna <b>Evet</b>, <b>Hayır</b> veya <b>Emin Değilim</b> oyu vererek cevaplayacaklar.<br><br>3. <b>Oylama Sonucu:</b> Oyuncuların verdiği oyların çoğunluğu ne derse, sistem cevabı o şekilde kabul eder.<br><br>4. <b>Tahmin & Canlar:</b> Kim olduğunu anladıysan <b>'Tahmin Et'</b> butonunu kullan. Ama dikkatli ol! Yanlış tahmin yaparsan <b>1 Can (❤️)</b> kaybedersin.<br><br>5. <b>Jüri Modu:</b> Eğer 3 canın biterse elenirsin. Ama üzülme! Oyun bitmez, 'Jüri' olarak diğerlerinin sorularını oylamaya devam edersin.<br><br>6. <b>Kazanma:</b> Karakterini doğru bilen oyuncular, bilme sıralarına göre liderlik tablosuna yerleşir!",
-
                 ph_name: "Adını gir", btn_create: "Yeni Oda Kur", ph_room: "Oda Kodu", btn_join: "Katıl",
                 lbl_room: "Oda Kodu:", lbl_wait: "Oyuncular bekleniyor...", lbl_admin: "Yöneticisin", btn_start: "Oyunu Başlat",
                 lbl_wait_admin: "Yönetici bekleniyor...", lbl_assign_t: "Karakter Belirle", lbl_assign_d: "Şu kişi için bir karakter yaz:",
@@ -474,7 +471,6 @@
                 lbl_rules_title: "Spielregeln",
                 lbl_enter_details: "Details eingeben", btn_back: "‹ Zurück",
                 lbl_rules_text: "1. <b>Charakter zuweisen:</b> Zu Beginn wird dir der Name eines Freundes angezeigt. Schreibe einen schwierigen und lustigen <b>berühmten Charakter</b> (Sänger, Sportler, Filmfigur usw.) für ihn auf.<br><br>2. <b>Fragen stellen:</b> Wenn du dran bist, stelle der Gruppe Ja/Nein-Fragen (z. B. 'Bin ich real?', 'Bin ich ein Sänger?', 'Bin ich männlich?'). Deine Freunde stimmen mit <b>Ja</b>, <b>Nein</b> oder <b>Unsicher</b> ab.<br><br>3. <b>Abstimmungsergebnis:</b> Die Mehrheit der Stimmen bestimmt die Antwort.<br><br>4. <b>Raten & Leben:</b> Wenn du weißt, wer du bist, benutze den <b>'Raten'</b>-Button. Vorsicht! Ein falscher Tipp kostet <b>1 Leben (❤️)</b>.<br><br>5. <b>Jury-Modus:</b> Wenn alle 3 Leben weg sind, bist du raus. Aber keine Sorge! Du bleibst als 'Jury' und stimmst weiter ab.<br><br>6. <b>Gewinnen:</b> Wer seinen Charakter errät, landet auf der Bestenliste!",
-
                 ph_name: "Namen eingeben", btn_create: "Raum erstellen", ph_room: "Raumcode", btn_join: "Beitreten",
                 lbl_room: "Raumcode:", lbl_wait: "Warte auf Spieler...", lbl_admin: "Du bist Admin", btn_start: "Spiel starten",
                 lbl_wait_admin: "Warte auf Admin...", lbl_assign_t: "Charakter wählen", lbl_assign_d: "Wähle einen Charakter für:",
@@ -507,7 +503,6 @@
                 lbl_rules_title: "Cómo Jugar",
                 lbl_enter_details: "Ingresar Datos", btn_back: "‹ Volver",
                 lbl_rules_text: "1. <b>Asignar Personaje:</b> Al inicio, verás el nombre de un amigo. Escribe un <b>personaje famoso</b> difícil y divertido (Cantante, Deportista, Personaje de Película, etc.) para él.<br><br>2. <b>Hacer Preguntas:</b> En tu turno, haz preguntas de Sí/No al grupo (Ej. '¿Soy real?', '¿Soy cantante?', '¿Soy hombre?'). Tus amigos votarán <b>Sí</b>, <b>No</b> o <b>No sé</b>.<br><br>3. <b>Resultado de Votación:</b> La mayoría de los votos determina la respuesta.<br><br>4. <b>Adivinar y Vidas:</b> Si sabes quién eres, usa el botón <b>'Adivinar'</b>. ¡Cuidado! Una suposición incorrecta cuesta <b>1 Vida (❤️)</b>.<br><br>5. <b>Modo Jurado:</b> Si pierdes tus 3 vidas, estás eliminado. ¡Pero no te preocupes! Sigues como 'Jurado' votando las preguntas de los demás.<br><br>6. <b>Ganar:</b> ¡Los jugadores que adivinen correctamente aparecerán en la tabla de clasificación!",
-
                 ph_name: "Introduce tu nombre", btn_create: "Crear Nueva Sala", ph_room: "Código de Sala", btn_join: "Unirse",
                 lbl_room: "Código de Sala:", lbl_wait: "Esperando jugadores...", lbl_admin: "Eres el Administrador", btn_start: "Iniciar Juego",
                 lbl_wait_admin: "Esperando al administrador...", lbl_assign_t: "Asignar Personaje", lbl_assign_d: "Asigna un personaje para:",
@@ -550,7 +545,6 @@
             currentLang = lang;
             localStorage.setItem('whoami_lang', lang);
             updateUITexts();
-            // Also update MM counter if on MM screen
             if(document.getElementById('screen-matchmaking').classList.contains('active')){
                 updateOnlineCount();
             }
@@ -562,10 +556,8 @@
         window.goToLogin = function(isPublic) {
             isPublicMode = isPublic;
             changeScreen('screen-login');
-            
             const privateDiv = document.getElementById('private-controls');
             const publicDiv = document.getElementById('public-controls');
-            
             if (isPublic) {
                 privateDiv.style.display = 'none';
                 publicDiv.style.display = 'block';
@@ -578,7 +570,6 @@
         window.goToMatchmakingSetup = function() {
             myName = document.getElementById('username').value.trim();
             if(!myName) return alert(translations[currentLang].alert_name);
-            
             changeScreen('screen-matchmaking');
             updateOnlineCount(); 
         }
@@ -591,13 +582,11 @@
             const t = translations[currentLang];
             const langBtn = document.getElementById('lang-btn-display');
             if(langBtn) langBtn.innerHTML = `${t.flag} ${t.langName} ▾`;
-
             if(document.getElementById('username')) document.getElementById('username').placeholder = t.ph_name;
             if(document.getElementById('room-code-input')) document.getElementById('room-code-input').placeholder = t.ph_room;
             if(document.getElementById('character-input')) document.getElementById('character-input').placeholder = t.ph_char;
             if(document.getElementById('question-input')) document.getElementById('question-input').placeholder = t.ph_q;
             if(document.getElementById('guess-input')) document.getElementById('guess-input').placeholder = t.ph_guess;
-
             setText('btn-menu-play', t.btn_menu_play);
             setText('btn-menu-play-sub', t.btn_menu_play_sub);
             setText('btn-menu-find', t.btn_menu_find);
@@ -607,11 +596,9 @@
             setText('btn-menu-lang-sub', t.btn_menu_lang_sub);
             setText('lbl-rules-title', t.lbl_rules_title);
             setText('lbl-rules-text', t.lbl_rules_text);
-            
             const backs = document.querySelectorAll('.btn-back');
             backs.forEach(b => b.innerText = t.btn_back);
             setText('lbl-enter-details', t.lbl_enter_details);
-
             setText('btn-create', t.btn_create);
             setText('btn-join', t.btn_join);
             setText('lbl-room-code', t.lbl_room);
@@ -642,8 +629,6 @@
             setText('lbl-history', t.lbl_hist);
             setText('lbl-game-over-title', t.lbl_game_over);
             setText('lbl-room-players', t.lbl_room_players);
-            
-            // MM Texts
             setText('lbl-mm-title', t.lbl_mm_title);
             setText('lbl-mm-lang', t.lbl_mm_lang);
             setText('lbl-mm-size', t.lbl_mm_size);
@@ -663,7 +648,6 @@
         let myTargetId = ""; 
         let playersData = [];
 
-        // Auth hazır olana kadar UI'ı blokla, sonra aç
         let authReady = false;
         signInAnonymously(auth).catch(e => alert("Auth Error: " + e.message));
 
@@ -671,13 +655,11 @@
             if (user && !authReady) {
                 authReady = true;
                 myPlayerId = user.uid;
-                // Eski localStorage pid'yi temizle (migration)
                 localStorage.removeItem('whoami_pid');
-                // Dil ayarını uygula ve UI'ı aktif et
                 window.setLanguage(currentLang);
                 document.getElementById('screen-welcome').classList.add('active');
             }
-        }); 
+        });
         
         window.createRoom = createRoom;
         window.joinRoom = joinRoom;
@@ -691,25 +673,18 @@
         window.findPublicGame = findPublicGame;
         window.updateOnlineCount = updateOnlineCount;
 
-        // MATCHMAKING COUNTER LOGIC
         let currentSearchPath = null;
 
         function updateOnlineCount() {
             const lang = document.getElementById('mm-lang').value;
             const size = document.getElementById('mm-size').value;
             const newPath = `searching/${lang}_${size}`;
-
-            // Remove from old path if changed
             if (currentSearchPath && currentSearchPath !== newPath) {
                 remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
             }
-            
-            // Add to new path
             currentSearchPath = newPath;
             set(ref(db, `${newPath}/${myPlayerId}`), true);
             onDisconnect(ref(db, `${newPath}/${myPlayerId}`)).remove();
-
-            // Listen for count
             onValue(ref(db, newPath), (snap) => {
                 const count = snap.exists() ? Object.keys(snap.val()).length : 0;
                 document.getElementById('mm-online-count').innerText = translations[currentLang].txt_online + count;
@@ -719,27 +694,20 @@
         function findPublicGame() {
             const lang = document.getElementById('mm-lang').value;
             const size = parseInt(document.getElementById('mm-size').value);
-            
             document.getElementById('btn-mm-search').disabled = true;
             document.getElementById('mm-status').style.display = 'block';
-
             get(ref(db, 'rooms')).then(snap => {
                 let foundRoom = null;
-                
                 if (snap.exists()) {
                     const rooms = snap.val();
                     for (const code in rooms) {
                         const r = rooms[code];
                         if (r.isPublic && r.lang === lang && r.targetSize === size && r.gameState === 'lobby') {
                             const playerCount = Object.keys(r.players || {}).length;
-                            if (playerCount < size) {
-                                foundRoom = code;
-                                break;
-                            }
+                            if (playerCount < size) { foundRoom = code; break; }
                         }
                     }
                 }
-
                 if (foundRoom) {
                     myRoomCode = foundRoom;
                     update(ref(db, `rooms/${foundRoom}/players/${myPlayerId}`), {
@@ -754,9 +722,7 @@
         function createRoom(isPublic = false, lang = 'en', targetSize = 4) {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
-            
             myRoomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-            
             const roomData = {
                 gameState: 'lobby',
                 admin: myPlayerId,
@@ -766,10 +732,7 @@
                 lang: isPublic ? lang : null,
                 targetSize: isPublic ? targetSize : null
             };
-
-            set(ref(db, `rooms/${myRoomCode}`), roomData)
-                .catch(e => alert("Error: " + e.message));
-            
+            set(ref(db, `rooms/${myRoomCode}`), roomData).catch(e => alert("Error: " + e.message));
             listenRoom();
         }
 
@@ -777,7 +740,6 @@
             myName = document.getElementById('username').value.trim();
             const code = document.getElementById('room-code-input').value.trim().toUpperCase();
             if (!myName || !code) return alert(translations[currentLang].alert_code);
-
             get(ref(db, `rooms/${code}`)).then(snap => {
                 if (snap.exists()) {
                     myRoomCode = code;
@@ -793,76 +755,60 @@
         function startSetup() {
             if (!myRoomCode) return;
             if (playersData.length < 2) return alert(translations[currentLang].alert_min_pl);
-
             const btn = document.querySelector('#admin-panel button');
             if(btn) { btn.innerText = translations[currentLang].txt_starting; btn.disabled = true; }
-
             const playerIds = playersData.map(p => p.id);
             shuffleArray(playerIds);
-
             const updates = {};
             updates[`rooms/${myRoomCode}/gameState`] = 'setup';
-            updates[`rooms/${myRoomCode}/playerOrder`] = playerIds; 
-
-            update(ref(db), updates)
-            .catch((error) => {
+            updates[`rooms/${myRoomCode}/playerOrder`] = playerIds;
+            update(ref(db), updates).catch((error) => {
                 alert("Error: " + error.message);
                 if(btn) { btn.innerText = translations[currentLang].btn_start; btn.disabled = false; }
             });
         }
 
         function listenRoom() {
-            // Remove from search queue if we entered a room
             if (currentSearchPath) {
                 remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
                 currentSearchPath = null;
             }
-
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
-
             onValue(ref(db, `rooms/${myRoomCode}`), (snap) => {
                 const data = snap.val();
                 if (!data || !data.players || !data.players[myPlayerId]) return;
 
                 playersData = Object.keys(data.players || {}).map(key => ({
-                    id: key, ...data.players[key]
+                    id: key,
+                    ...data.players[key],
+                    assignedChar: (data.assignments && data.assignments[key]) || null
                 }));
 
                 if (data.playerOrder && Array.isArray(data.playerOrder)) {
-                    playersData.sort((a, b) => {
-                        return data.playerOrder.indexOf(a.id) - data.playerOrder.indexOf(b.id);
-                    });
+                    playersData.sort((a, b) => data.playerOrder.indexOf(a.id) - data.playerOrder.indexOf(b.id));
                 } else {
                     playersData.sort((a,b) => a.id.localeCompare(b.id));
                 }
 
-                // Check for Admin Rights
                 const resetBtn = document.getElementById('reset-btn');
                 if(resetBtn) resetBtn.style.display = (data.admin === myPlayerId) ? 'block' : 'none';
 
                 updateUITexts();
 
-                // LOBBY STATE
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
                     playersData.forEach(p => ul.innerHTML += `<li>${p.name}</li>`);
-                    
-                    // Public Room Logic: Auto Start
                     if (data.isPublic) {
                         document.getElementById('admin-panel').style.display = 'none';
                         document.getElementById('waiting-msg').style.display = 'none';
                         document.getElementById('public-wait-msg').style.display = 'block';
                         document.getElementById('public-wait-msg').innerText = `Waiting for players... (${playersData.length}/${data.targetSize})`;
-
-                        // If I am admin AND room is full, start it automatically
                         if (data.admin === myPlayerId && playersData.length >= data.targetSize) {
                             startSetup();
                         }
-                    } 
-                    // Private Room Logic
-                    else {
+                    } else {
                         document.getElementById('public-wait-msg').style.display = 'none';
                         if (data.admin === myPlayerId) document.getElementById('admin-panel').style.display = 'block';
                         else document.getElementById('waiting-msg').style.display = 'block';
@@ -871,17 +817,14 @@
 
                 if (data.gameState === 'setup') {
                     changeScreen('screen-setup');
-                    document.getElementById('character-input').value = ""; 
-                    
+                    document.getElementById('character-input').value = "";
                     const myIndex = playersData.findIndex(p => p.id === myPlayerId);
                     const me = playersData.find(p => p.id === myPlayerId);
-
                     if (myIndex !== -1) {
                         const targetPlayer = playersData[(myIndex + 1) % playersData.length];
                         myTargetId = targetPlayer.id;
                         document.getElementById('target-player-name').innerText = targetPlayer.name;
                     }
-
                     if (me && me.hasSubmitted) {
                         document.getElementById('btn-submit-char').disabled = true;
                         document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
@@ -889,7 +832,6 @@
                         document.getElementById('btn-submit-char').disabled = false;
                         document.getElementById('btn-submit-char').innerText = translations[currentLang].btn_submit;
                     }
-
                     const setupList = document.getElementById('setup-player-list');
                     setupList.innerHTML = "";
                     playersData.forEach(p => {
@@ -897,7 +839,6 @@
                         const doneClass = p.hasSubmitted ? "done" : "";
                         setupList.innerHTML += `<div class="setup-player-badge ${doneClass}">${p.name} ${statusIcon}</div>`;
                     });
-
                     if (playersData.every(p => p.hasSubmitted) && data.admin === myPlayerId) {
                         update(ref(db, `rooms/${myRoomCode}`), { gameState: 'game' });
                     }
@@ -916,87 +857,55 @@
             });
         }
 
-        // --- NEW STATUS BAR FUNCTION ---
         function updateTurnStatus(data) {
             const bar = document.getElementById('turn-status-bar');
             bar.innerHTML = "";
-            
             const currentPlayer = playersData[data.turnIndex % playersData.length];
             if (!currentPlayer) return;
             const currentPlayerId = currentPlayer.id;
             const isVotingPhase = !!data.currentQuestion;
-
             playersData.forEach(p => {
-                let icon = "";
-                let statusClass = "";
-
+                let icon = "", statusClass = "";
                 if (!isVotingPhase) {
-                    // ASK PHASE: Turn player is thinking (⏳), others are waiting (✅)
-                    if (p.id === currentPlayerId) {
-                        icon = "⏳"; 
-                        statusClass = "waiting";
-                    } else {
-                        icon = "✅"; 
-                        statusClass = "done";
-                    }
+                    if (p.id === currentPlayerId) { icon = "⏳"; statusClass = "waiting"; }
+                    else { icon = "✅"; statusClass = "done"; }
                 } else {
-                    // VOTE PHASE: Turn player asked (✅), others voting
-                    if (p.id === currentPlayerId) {
-                        icon = "✅";
-                        statusClass = "done";
-                    } else {
+                    if (p.id === currentPlayerId) { icon = "✅"; statusClass = "done"; }
+                    else {
                         const hasVoted = data.votes && data.votes[p.id];
-                        if (hasVoted) {
-                            icon = "✅";
-                            statusClass = "done";
-                        } else {
-                            icon = "⏳";
-                            statusClass = "waiting";
-                        }
+                        if (hasVoted) { icon = "✅"; statusClass = "done"; }
+                        else { icon = "⏳"; statusClass = "waiting"; }
                     }
                 }
-
-                bar.innerHTML += `<div class="player-status-badge ${statusClass}">
-                    ${p.name} ${icon}
-                </div>`;
+                bar.innerHTML += `<div class="player-status-badge ${statusClass}">${p.name} ${icon}</div>`;
             });
         }
 
         function renderGame(data) {
             if (!playersData.length) return;
             const t = translations[currentLang];
-            
-            // Call the status bar update
             updateTurnStatus(data);
-
             const currentPlayer = playersData[data.turnIndex % playersData.length];
             document.getElementById('current-turn-name').innerText = currentPlayer.name;
-
             const me = playersData.find(p => p.id === myPlayerId);
             const lives = me.lives !== undefined ? me.lives : 3;
             document.getElementById('my-lives').innerText = "❤️".repeat(lives);
-
             const charListEl = document.getElementById('characters-list');
-            charListEl.innerHTML = ""; 
+            charListEl.innerHTML = "";
             playersData.forEach(p => {
                 const isMe = p.id === myPlayerId;
                 const isFinished = p.finishedRank > 0;
-                
                 const charVal = (isMe && !isFinished) ? "???" : (p.assignedChar || "...");
-                const hiddenClass = (isMe && !isFinished) ? "hidden" : ""; 
-                const meClass = isMe ? "is-me" : "";     
-
+                const hiddenClass = (isMe && !isFinished) ? "hidden" : "";
+                const meClass = isMe ? "is-me" : "";
                 const cardDiv = document.createElement("div");
-                cardDiv.className = `char-card ${meClass}`; 
-
+                cardDiv.className = `char-card ${meClass}`;
                 const nameDiv = document.createElement("div");
                 nameDiv.className = "char-card-name";
-                nameDiv.textContent = p.name; 
-
+                nameDiv.textContent = p.name;
                 const valDiv = document.createElement("div");
                 valDiv.className = `char-card-val ${hiddenClass}`;
-                valDiv.textContent = charVal; 
-
+                valDiv.textContent = charVal;
                 if (p.finishedRank > 0) {
                     const badge = document.createElement("div");
                     badge.className = "status-badge status-won";
@@ -1008,32 +917,25 @@
                     badge.innerText = "X";
                     cardDiv.appendChild(badge);
                 }
-
                 cardDiv.appendChild(nameDiv);
                 cardDiv.appendChild(valDiv);
                 charListEl.appendChild(cardDiv);
             });
-
             const amIDead = (lives <= 0);
             const amIWon = (me.finishedRank > 0);
-
             document.getElementById('eliminated-msg').style.display = 'none';
             document.getElementById('success-msg').style.display = 'none';
             document.getElementById('my-turn-area').style.display = 'none';
             document.getElementById('voting-area').style.display = 'none';
             document.getElementById('waiting-vote-msg').style.display = 'none';
-
             if (amIWon) {
                 document.getElementById('success-msg').style.display = 'block';
                 document.getElementById('reveal-char-win').innerText = me.assignedChar;
-            } 
-            else if (amIDead) {
+            } else if (amIDead) {
                 document.getElementById('eliminated-msg').style.display = 'block';
                 document.getElementById('reveal-char').innerText = me.assignedChar;
             }
-
             const currentIsDone = (currentPlayer.lives <= 0) || (currentPlayer.finishedRank > 0);
-            
             if (data.admin === myPlayerId && currentIsDone && !data.currentQuestion && data.gameState === 'game') {
                 const activePlayers = playersData.filter(p => p.lives > 0 && p.finishedRank === 0);
                 if (activePlayers.length === 0) {
@@ -1045,21 +947,16 @@
                 }
                 return;
             }
-
             const isMyTurn = (currentPlayer.id === myPlayerId);
             const activeQuestion = data.currentQuestion;
             const isGuessAction = data.isGuess === true;
-
             if (isMyTurn && !activeQuestion && !amIDead && !amIWon) {
                 document.getElementById('my-turn-area').style.display = 'block';
-            } 
-            else if (!isMyTurn && activeQuestion) {
+            } else if (!isMyTurn && activeQuestion) {
                 const titleEl = document.getElementById('vote-title');
                 titleEl.innerText = isGuessAction ? t.lbl_guess_alert : t.lbl_q;
                 titleEl.style.color = isGuessAction ? "#8e44ad" : "#fff";
-
                 const myVote = data.votes ? data.votes[myPlayerId] : null;
-                
                 if (!myVote) {
                     document.getElementById('voting-area').style.display = 'block';
                     document.getElementById('voting-question').innerText = activeQuestion;
@@ -1067,23 +964,18 @@
                     document.getElementById('waiting-vote-msg').style.display = 'block';
                     document.getElementById('waiting-vote-msg').innerText = t.msg_wait_vote;
                 }
-            } 
-            else if (isMyTurn && activeQuestion) {
+            } else if (isMyTurn && activeQuestion) {
                 document.getElementById('waiting-vote-msg').style.display = 'block';
                 document.getElementById('waiting-vote-msg').innerText = t.msg_friends_vote;
             }
-
             if (activeQuestion && data.votes && data.admin === myPlayerId && !data.processing) {
                 const totalPlayers = playersData.length;
                 const voteCount = Object.keys(data.votes).length;
-                
                 if (voteCount >= totalPlayers - 1) {
                     update(ref(db, `rooms/${myRoomCode}`), { processing: true });
-
                     const yes = Object.values(data.votes).filter(v => v === 'yes').length;
                     const no = Object.values(data.votes).filter(v => v === 'no').length;
                     let result = yes > no ? 'yes' : (no > yes ? 'no' : 'unsure');
-
                     if (isGuessAction) {
                         if (result === 'yes') {
                             const alreadyWon = playersData.filter(p => p.finishedRank > 0).length;
@@ -1145,7 +1037,7 @@
 
         function renderHistoryBoard(historyData, players) {
             const board = document.getElementById('history-board');
-            board.innerHTML = ""; 
+            board.innerHTML = "";
             const historyList = historyData ? Object.values(historyData) : [];
             const t = translations[currentLang];
             players.forEach(player => {
@@ -1198,22 +1090,18 @@
         function submitCharacter() {
             const charName = document.getElementById('character-input').value.trim();
             if (!charName) return;
-            
             const updates = {};
-            updates[`rooms/${myRoomCode}/players/${myTargetId}/assignedChar`] = charName;
-            updates[`rooms/${myRoomCode}/players/${myPlayerId}/hasSubmitted`] = true; 
-
+            updates[`rooms/${myRoomCode}/assignments/${myTargetId}`] = charName;
+            updates[`rooms/${myRoomCode}/players/${myPlayerId}/hasSubmitted`] = true;
             update(ref(db), updates);
             document.getElementById('btn-submit-char').disabled = true;
             document.getElementById('btn-submit-char').innerText = translations[currentLang].txt_submit_wait;
-            
             document.getElementById('character-input').value = "";
         }
 
         function changeScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            
             const header = document.getElementById('main-header');
             if (screenId === 'screen-welcome' || screenId === 'screen-howtoplay' || screenId === 'screen-languages' || screenId === 'screen-login' || screenId === 'screen-matchmaking') {
                 header.style.display = 'none';
@@ -1225,7 +1113,6 @@
         function leaveRoom() {
             if (!myRoomCode || !myPlayerId) return location.reload();
             if (confirm(translations[currentLang].alert_leave)) {
-                // Ensure removed from searching list if leaving
                 if (currentSearchPath) {
                     remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
                 }
@@ -1245,12 +1132,12 @@
                 updates[`rooms/${myRoomCode}/currentQuestion`] = null;
                 updates[`rooms/${myRoomCode}/votes`] = null;
                 updates[`rooms/${myRoomCode}/winner`] = null;
-                updates[`rooms/${myRoomCode}/playerOrder`] = playerIds; 
+                updates[`rooms/${myRoomCode}/playerOrder`] = playerIds;
+                updates[`rooms/${myRoomCode}/assignments`] = null;
                 playersData.forEach(p => {
                     updates[`rooms/${myRoomCode}/players/${p.id}/lives`] = 3;
                     updates[`rooms/${myRoomCode}/players/${p.id}/finishedRank`] = 0;
-                    updates[`rooms/${myRoomCode}/players/${p.id}/assignedChar`] = null;
-                    updates[`rooms/${myRoomCode}/players/${p.id}/hasSubmitted`] = false; 
+                    updates[`rooms/${myRoomCode}/players/${p.id}/hasSubmitted`] = false;
                 });
                 update(ref(db), updates);
             }
