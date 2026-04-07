@@ -220,7 +220,7 @@
             <input type="text" id="username" placeholder="Enter your name">
             
             <div id="private-controls">
-                <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
+                <button id="btn-create" class="btn-green" onclick="createRoom(false)">Create New Room</button>
                 <div style="display: flex; gap: 5px; margin-top: 10px;">
                     <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
                     <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
@@ -371,14 +371,13 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect } 
+        import { getDatabase, ref, set, onValue, update, get, remove, push, onDisconnect } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         
-        // --- FIREBASE AUTH MODÜLÜ ---
+        // --- FIREBASE AUTHENTICATION (KİMLİK DOĞRULAMA) ---
         import { getAuth, signInAnonymously, onAuthStateChanged } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: import.meta.env.VITE_FIREBASE_API_KEY, 
             authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -391,7 +390,7 @@
         };
 
         let app, db, auth;
-        let myPlayerId = null; // UID Firebase Auth'tan gelecek
+        let myPlayerId = null; // Bu artık Firebase tarafından otomatik verilecek
 
         try {
             app = initializeApp(firebaseConfig);
@@ -399,14 +398,15 @@
             auth = getAuth(app);
             console.log("Firebase connected.");
 
-            // ANONİM KİMLİK DOĞRULAMA (Firebase Rules auth != null için gerekli)
+            // KİMLİK DOĞRULAMA İŞLEMİ
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     myPlayerId = user.uid;
-                    console.log("Güvenli bağlantı sağlandı. ID:", myPlayerId);
+                    console.log("Güvenli giriş yapıldı UID:", myPlayerId);
                 } else {
                     signInAnonymously(auth).catch((error) => {
                         console.error("Auth error:", error);
+                        alert("Firebase Hatası: " + error.message + "\n\nLütfen Firebase Console'dan 'Anonymous (Anonim)' girişi açtığınızdan emin olun!");
                     });
                 }
             });
@@ -517,7 +517,7 @@
                 txt_starting: "Startet...", txt_submit_wait: "Warten...", txt_searching: "Suche...",
                 hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?",
                 txt_online: "Online Suchen: ",
-                alert_auth_wait: "Sichere Verbindung zum Server wird hergestellt... Bitte warte eine Sekunde."
+                alert_auth_wait: "Sichere Verbindung zum Server wird hergestellt... Bitte versuchen Sie es in einer Sekunde noch einmal."
             },
             es: {
                 flag: "🇪🇸", langName: "Español",
@@ -576,13 +576,9 @@
             }
         };
 
-        // NAVIGATION FUNCTIONS
-        let isPublicMode = false;
-
+        // --- NAVIGATION FUNCTIONS ---
         window.goToLogin = function(isPublic) {
-            isPublicMode = isPublic;
             changeScreen('screen-login');
-            
             const privateDiv = document.getElementById('private-controls');
             const publicDiv = document.getElementById('public-controls');
             
@@ -598,7 +594,6 @@
         window.goToMatchmakingSetup = function() {
             myName = document.getElementById('username').value.trim();
             if(!myName) return alert(translations[currentLang].alert_name);
-            // Güvenlik: Auth ID yüklenmeden butonlara basılırsa uyarı ver
             if(!myPlayerId) return alert(translations[currentLang].alert_auth_wait); 
             
             changeScreen('screen-matchmaking');
@@ -679,10 +674,11 @@
 
         window.setLanguage(currentLang);
 
-        // --- GAME LOGIC ---
+        // --- GAME LOGIC & EXPORTED FUNCTIONS ---
         let myRoomCode = "";
         let myTargetId = ""; 
         let playersData = []; 
+        let currentSearchPath = null;
         
         window.createRoom = createRoom;
         window.joinRoom = joinRoom;
@@ -695,8 +691,6 @@
         window.leaveRoom = leaveRoom;
         window.findPublicGame = findPublicGame;
         window.updateOnlineCount = updateOnlineCount;
-
-        let currentSearchPath = null;
 
         function updateOnlineCount() {
             if(!myPlayerId) return; 
@@ -754,6 +748,7 @@
             });
         }
 
+        // isPublic parametresi ile çalışır (Özel oda için false)
         function createRoom(isPublic = false, lang = 'en', targetSize = 4) {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
@@ -771,8 +766,7 @@
                 targetSize: isPublic ? targetSize : null
             };
 
-            set(ref(db, `rooms/${myRoomCode}`), roomData)
-                .catch(e => alert("Error: " + e.message));
+            set(ref(db, `rooms/${myRoomCode}`), roomData).catch(e => alert("Error: " + e.message));
             
             listenRoom();
         }
@@ -809,8 +803,7 @@
             updates[`rooms/${myRoomCode}/gameState`] = 'setup';
             updates[`rooms/${myRoomCode}/playerOrder`] = playerIds; 
 
-            update(ref(db), updates)
-            .catch((error) => {
+            update(ref(db), updates).catch((error) => {
                 alert("Error: " + error.message);
                 if(btn) { btn.innerText = translations[currentLang].btn_start; btn.disabled = false; }
             });
