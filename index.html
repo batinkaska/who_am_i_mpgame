@@ -203,7 +203,6 @@
         <div class="right-controls">
             <button id="reset-btn" class="control-btn" style="display:none; color:#f39c12; border-color:#f39c12;" onclick="resetGame()">🔄 Reset</button>
             <button id="btn-sound-toggle" class="ctrl-icon-btn active" onclick="toggleSoundBtn()" title="Sound">🔊</button>
-            <button id="btn-vibration-toggle" class="ctrl-icon-btn active" onclick="toggleVibrationBtn()" title="Vibration">📳</button>
             <div class="dropdown">
                 <button onclick="toggleLang()" class="control-btn" id="lang-btn-display">🇺🇸 English ▾</button>
                 <div id="langDropdown" class="dropdown-content">
@@ -262,16 +261,7 @@
                     <span class="toggle-slider"></span>
                 </label>
             </div>
-            <div class="settings-row">
-                <div class="settings-row-label">
-                    <span class="settings-row-icon">📳</span>
-                    <span id="lbl-vibration">Vibration</span>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="toggle-vibration" checked onchange="saveSoundSettings()">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
+
         </div>
     </div>
 
@@ -480,7 +470,7 @@
                 flag: "🇺🇸", langName: "English",
                 btn_menu_play: "Play with Friends", btn_menu_play_sub: "Create or Join a Private Room",
                 btn_menu_find: "Find Game", btn_menu_find_sub: "Match with Random Players",
-                btn_menu_rules: "How to Play", btn_menu_lang: "Language", btn_menu_lang_sub: "Change Language",
+                btn_menu_rules: "How to Play", lbl_sound: "Sound", btn_menu_lang: "Language", btn_menu_lang_sub: "Change Language",
                 lbl_rules_title: "How to Play",
                 lbl_enter_details: "Enter Details", btn_back: "‹ Back",
                 lbl_rules_text: "1. <b>Assign Character:</b> At the start, you'll be given a friend's name. Write a challenging and fun <b>famous character</b> (Singer, Athlete, Movie Character, etc.) for them.<br><br>2. <b>Ask Questions:</b> When it's your turn, ask the group Yes/No questions to find out who you are (e.g. 'Am I real?', 'Am I a singer?', 'Am I male?'). Your friends will vote <b>Yes</b>, <b>No</b>, or <b>Unsure</b>.<br><br>3. <b>Voting Result:</b> The majority vote determines the answer.<br><br>4. <b>Guess & Lives:</b> If you know who you are, use the <b>'Guess'</b> button. Be careful! A wrong guess costs <b>1 Life (❤️)</b>.<br><br>5. <b>Jury Mode:</b> If you lose all 3 lives, you are out. But don't worry! You stay as a 'Jury' and continue voting on others' questions.<br><br>6. <b>Winning:</b> Players who guess correctly are ranked on the leaderboard by speed!",
@@ -515,7 +505,7 @@
                 flag: "🇹🇷", langName: "Türkçe",
                 btn_menu_play: "Arkadaşlarla Oyna", btn_menu_play_sub: "Özel Oda Kur veya Katıl",
                 btn_menu_find: "Oyun Ara", btn_menu_find_sub: "Rastgele Eşleşme",
-                btn_menu_rules: "Nasıl Oynanır?", btn_menu_lang: "Dil", btn_menu_lang_sub: "Dili Değiştir",
+                btn_menu_rules: "Nasıl Oynanır?", lbl_sound: "Ses", btn_menu_lang: "Dil", btn_menu_lang_sub: "Dili Değiştir",
                 lbl_rules_title: "Nasıl Oynanır?",
                 lbl_enter_details: "Giriş Yap", btn_back: "‹ Geri",
                 lbl_rules_text: "1. <b>Karakter Atama:</b> Oyun başladığında ekranda sana, karakter belirlemen gereken arkadaşının ismi verilecek. O kişi için zorlu ve eğlenceli bir <b>ünlü karakter</b> (Şarkıcı, Sporcu, Film Karakteri vb.) yaz ve gönder.<br><br>2. <b>Soru Sorma:</b> Sıra sana geldiğinde kim olduğunu bulmak için gruba sorular sor (Örn: 'Gerçek biri miyim?', 'Şarkıcı mıyım?', 'Erkek miyim?'). Arkadaşların bu soruna <b>Evet</b>, <b>Hayır</b> veya <b>Emin Değilim</b> oyu vererek cevaplayacaklar.<br><br>3. <b>Oylama Sonucu:</b> Oyuncuların verdiği oyların çoğunluğu ne derse, sistem cevabı o şekilde kabul eder.<br><br>4. <b>Tahmin & Canlar:</b> Kim olduğunu anladıysan <b>'Tahmin Et'</b> butonunu kullan. Ama dikkatli ol! Yanlış tahmin yaparsan <b>1 Can (❤️)</b> kaybedersin.<br><br>5. <b>Jüri Modu:</b> Eğer 3 canın biterse elenirsin. Ama üzülme! Oyun bitmez, 'Jüri' olarak diğerlerinin sorularını oylamaya devam edersin.<br><br>6. <b>Kazanma:</b> Karakterini doğru bilen oyuncular, bilme sıralarına göre liderlik tablosuna yerleşir!",
@@ -550,7 +540,7 @@
                 flag: "🇩🇪", langName: "Deutsch",
                 btn_menu_play: "Mit Freunden", btn_menu_play_sub: "Privaten Raum erstellen",
                 btn_menu_find: "Spiel Suchen", btn_menu_find_sub: "Zufällige Spieler",
-                btn_menu_rules: "Spielregeln", btn_menu_lang: "Sprache", btn_menu_lang_sub: "Sprache ändern",
+                btn_menu_rules: "Spielregeln", lbl_sound: "Ton", btn_menu_lang: "Sprache", btn_menu_lang_sub: "Sprache ändern",
                 lbl_rules_title: "Spielregeln",
                 lbl_enter_details: "Details eingeben", btn_back: "‹ Zurück",
                 lbl_rules_text: "1. <b>Charakter zuweisen:</b> Zu Beginn wird dir der Name eines Freundes angezeigt. Schreibe einen schwierigen und lustigen <b>berühmten Charakter</b> (Sänger, Sportler, Filmfigur usw.) für ihn auf.<br><br>2. <b>Fragen stellen:</b> Wenn du dran bist, stelle der Gruppe Ja/Nein-Fragen (z. B. 'Bin ich real?', 'Bin ich ein Sänger?', 'Bin ich männlich?'). Deine Freunde stimmen mit <b>Ja</b>, <b>Nein</b> oder <b>Unsicher</b> ab.<br><br>3. <b>Abstimmungsergebnis:</b> Die Mehrheit der Stimmen bestimmt die Antwort.<br><br>4. <b>Raten & Leben:</b> Wenn du weißt, wer du bist, benutze den <b>'Raten'</b>-Button. Vorsicht! Ein falscher Tipp kostet <b>1 Leben (❤️)</b>.<br><br>5. <b>Jury-Modus:</b> Wenn alle 3 Leben weg sind, bist du raus. Aber keine Sorge! Du bleibst als 'Jury' und stimmst weiter ab.<br><br>6. <b>Gewinnen:</b> Wer seinen Charakter errät, landet auf der Bestenliste!",
@@ -585,7 +575,7 @@
                 flag: "🇪🇸", langName: "Español",
                 btn_menu_play: "Con Amigos", btn_menu_play_sub: "Sala Privada",
                 btn_menu_find: "Buscar Partida", btn_menu_find_sub: "Jugadores Aleatorios",
-                btn_menu_rules: "Cómo Jugar", btn_menu_lang: "Idioma", btn_menu_lang_sub: "Cambiar Idioma",
+                btn_menu_rules: "Cómo Jugar", lbl_sound: "Sonido", btn_menu_lang: "Idioma", btn_menu_lang_sub: "Cambiar Idioma",
                 lbl_rules_title: "Cómo Jugar",
                 lbl_enter_details: "Ingresar Datos", btn_back: "‹ Volver",
                 lbl_rules_text: "1. <b>Asignar Personaje:</b> Al inicio, verás el nombre de un amigo. Escribe un <b>personaje famoso</b> difícil y divertido (Cantante, Deportista, Personaje de Película, etc.) para él.<br><br>2. <b>Hacer Preguntas:</b> En tu turno, haz preguntas de Sí/No al grupo (Ej. '¿Soy real?', '¿Soy cantante?', '¿Soy hombre?'). Tus amigos votarán <b>Sí</b>, <b>No</b> o <b>No sé</b>.<br><br>3. <b>Resultado de Votación:</b> La mayoría de los votos determina la respuesta.<br><br>4. <b>Adivinar y Vidas:</b> Si sabes quién eres, usa el botón <b>'Adivinar'</b>. ¡Cuidado! Una suposición incorrecta cuesta <b>1 Vida (❤️)</b>.<br><br>5. <b>Modo Jurado:</b> Si pierdes tus 3 vidas, estás eliminado. ¡Pero no te preocupes! Sigues como 'Jurado' votando las preguntas de los demás.<br><br>6. <b>Ganar:</b> ¡Los jugadores que adivinen correctamente aparecerán en la tabla de clasificación!",
@@ -620,7 +610,7 @@
                 flag: "🇸🇦", langName: "العربية",
                 btn_menu_play: "العب مع الأصدقاء", btn_menu_play_sub: "إنشاء أو الانضمام إلى غرفة خاصة",
                 btn_menu_find: "إيجاد لعبة", btn_menu_find_sub: "مطابقة مع لاعبين عشوائيين",
-                btn_menu_rules: "كيفية اللعب", btn_menu_lang: "اللغة", btn_menu_lang_sub: "تغيير اللغة",
+                btn_menu_rules: "كيفية اللعب", lbl_sound: "الصوت", btn_menu_lang: "اللغة", btn_menu_lang_sub: "تغيير اللغة",
                 lbl_rules_title: "كيفية اللعب",
                 lbl_enter_details: "أدخل التفاصيل", btn_back: "‹ رجوع",
                 lbl_rules_text: "1. <b>تعيين الشخصية:</b> في البداية ستُعطى اسم أحد أصدقائك. اكتب له شخصية مشهورة وممتعة (مغني، رياضي، شخصية من فيلم، إلخ).<br><br>2. <b>طرح الأسئلة:</b> عندما يأتي دورك، اسأل المجموعة أسئلة بنعم/لا لاكتشاف هويتك. سيصوّت أصدقاؤك بـ <b>نعم</b> أو <b>لا</b> أو <b>غير متأكد</b>.<br><br>3. <b>نتيجة التصويت:</b> تحدد الأغلبية الإجابة.<br><br>4. <b>التخمين والأرواح:</b> إذا عرفت هويتك استخدم زر <b>تخمين</b>. احذر! التخمين الخاطئ يكلفك <b>حياة واحدة (❤️)</b>.<br><br>5. <b>وضع هيئة المحلفين:</b> إذا فقدت أرواحك الثلاث ستُطرد. لكن تبقى كـ'محلف' وتستمر في التصويت.<br><br>6. <b>الفوز:</b> يُصنَّف اللاعبون الذين يخمنون بشكل صحيح في لوحة المتصدرين!",
@@ -722,6 +712,7 @@
             setText('btn-menu-find', t.btn_menu_find);
             setText('btn-menu-find-sub', t.btn_menu_find_sub);
             setText('btn-menu-rules', t.btn_menu_rules);
+            setText('lbl-sound', t.lbl_sound);
             setText('btn-menu-lang', t.btn_menu_lang);
             setText('btn-menu-lang-sub', t.btn_menu_lang_sub);
             setText('lbl-rules-title', t.lbl_rules_title);
@@ -1375,7 +1366,9 @@
                 if (!myVote) {
                     document.getElementById('voting-area').style.display = 'block';
                     document.getElementById('voting-question').innerText = activeQuestion;
+                    if (!window._wasVoting) { notifyVoteTurn(); window._wasVoting = true; }
                 } else {
+                    window._wasVoting = false;
                     document.getElementById('waiting-vote-msg').style.display = 'block';
                     document.getElementById('waiting-vote-msg').innerText = t.msg_wait_vote;
                 }
@@ -1475,6 +1468,7 @@
         }
 
         function passTurn(currentIndex) {
+            window._wasVoting = false;
             update(ref(db, `rooms/${myRoomCode}`), {
                 turnIndex: currentIndex + 1,
                 currentQuestion: null,
@@ -1686,32 +1680,23 @@
 
         // --- SOUND & VIBRATION ---
         let soundEnabled = localStorage.getItem('whoami_sound') !== 'false';
-        let vibrationEnabled = localStorage.getItem('whoami_vibration') !== 'false';
 
         function initSoundSettings() {
             document.getElementById('toggle-sound').checked = soundEnabled;
-            document.getElementById('toggle-vibration').checked = vibrationEnabled;
             updateSoundBtns();
         }
 
         window.saveSoundSettings = function() {
             soundEnabled = document.getElementById('toggle-sound').checked;
-            vibrationEnabled = document.getElementById('toggle-vibration').checked;
             localStorage.setItem('whoami_sound', soundEnabled);
-            localStorage.setItem('whoami_vibration', vibrationEnabled);
             updateSoundBtns();
         };
 
         function updateSoundBtns() {
             const sb = document.getElementById('btn-sound-toggle');
-            const vb = document.getElementById('btn-vibration-toggle');
             if (sb) {
                 sb.textContent = soundEnabled ? '🔊' : '🔇';
                 sb.classList.toggle('active', soundEnabled);
-            }
-            if (vb) {
-                vb.textContent = vibrationEnabled ? '📳' : '📴';
-                vb.classList.toggle('active', vibrationEnabled);
             }
         }
 
@@ -1722,42 +1707,41 @@
             updateSoundBtns();
         };
 
-        window.toggleVibrationBtn = function() {
-            vibrationEnabled = !vibrationEnabled;
-            document.getElementById('toggle-vibration').checked = vibrationEnabled;
-            localStorage.setItem('whoami_vibration', vibrationEnabled);
-            updateSoundBtns();
-        };
-
-        function playTurnSound() {
+        // type: 'my-turn' (soru/tahmin sırası) veya 'vote' (oy verme sırası)
+        function playSound(type) {
             if (!soundEnabled) return;
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                // İki kısa bip sesi
-                [0, 0.15].forEach((delay, i) => {
+                if (type === 'my-turn') {
+                    // Soru/tahmin sırası: iki yükselen bip — enerjik
+                    [[0, 660], [0.18, 990]].forEach(([delay, freq]) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.connect(gain); gain.connect(ctx.destination);
+                        osc.type = 'triangle';
+                        osc.frequency.value = freq;
+                        gain.gain.setValueAtTime(0.35, ctx.currentTime + delay);
+                        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.2);
+                        osc.start(ctx.currentTime + delay);
+                        osc.stop(ctx.currentTime + delay + 0.2);
+                    });
+                } else if (type === 'vote') {
+                    // Oy verme sırası: tek yumuşak tok ses
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.frequency.value = i === 0 ? 880 : 1100;
+                    osc.connect(gain); gain.connect(ctx.destination);
                     osc.type = 'sine';
-                    gain.gain.setValueAtTime(0.3, ctx.currentTime + delay);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
-                    osc.start(ctx.currentTime + delay);
-                    osc.stop(ctx.currentTime + delay + 0.15);
-                });
+                    osc.frequency.value = 440;
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.35);
+                }
             } catch(e) {}
         }
 
-        function triggerVibration() {
-            if (!vibrationEnabled) return;
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-        }
-
-        function notifyMyTurn() {
-            playTurnSound();
-            triggerVibration();
-        }
+        function notifyMyTurn() { playSound('my-turn'); }
+        function notifyVoteTurn() { playSound('vote'); }
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
