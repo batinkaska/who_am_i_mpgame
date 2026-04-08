@@ -1042,7 +1042,11 @@
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
-                    playersData.forEach(p => ul.innerHTML += `<li>${p.name}</li>`);
+                    playersData.forEach(p => {
+                        const li = document.createElement('li');
+                        li.textContent = p.name;
+                        ul.appendChild(li);
+                    });
                     
                     // Public Room Logic: Auto Start
                     if (data.isPublic) {
@@ -1090,8 +1094,10 @@
                     setupList.innerHTML = "";
                     playersData.forEach(p => {
                         const statusIcon = p.hasSubmitted ? "✅" : "⏳";
-                        const doneClass = p.hasSubmitted ? "done" : "";
-                        setupList.innerHTML += `<div class="setup-player-badge ${doneClass}">${p.name} ${statusIcon}</div>`;
+                        const badge = document.createElement('div');
+                        badge.className = `setup-player-badge ${p.hasSubmitted ? 'done' : ''}`;
+                        badge.textContent = `${p.name} ${statusIcon}`;
+                        setupList.appendChild(badge);
                     });
 
                     if (playersData.every(p => p.hasSubmitted) && data.admin === myPlayerId) {
@@ -1154,9 +1160,10 @@
                     }
                 }
 
-                bar.innerHTML += `<div class="player-status-badge ${statusClass}">
-                    ${p.name} ${icon}
-                </div>`;
+                const badge = document.createElement('div');
+                badge.className = `player-status-badge ${statusClass}`;
+                badge.textContent = `${p.name} ${icon}`;
+                bar.appendChild(badge);
             });
         }
 
@@ -1407,7 +1414,24 @@
                 else if (p.finishedRank === 3) { rankDisplay = "3."; medalClass = "lb-medal-3"; }
                 else if (p.finishedRank > 3) { rankDisplay = p.finishedRank + "."; }
                 else { rankDisplay = "-"; }
-                list.innerHTML += `<div class="lb-row"><div class="lb-rank ${medalClass}">${rankDisplay}</div><div class="lb-info"><div class="lb-name">${p.name}</div><div class="lb-char">${p.assignedChar}</div></div></div>`;
+                const row = document.createElement('div');
+                row.className = 'lb-row';
+                const rank = document.createElement('div');
+                rank.className = `lb-rank ${medalClass}`;
+                rank.textContent = rankDisplay;
+                const info = document.createElement('div');
+                info.className = 'lb-info';
+                const nameEl = document.createElement('div');
+                nameEl.className = 'lb-name';
+                nameEl.textContent = p.name;
+                const charEl = document.createElement('div');
+                charEl.className = 'lb-char';
+                charEl.textContent = p.assignedChar || '';
+                info.appendChild(nameEl);
+                info.appendChild(charEl);
+                row.appendChild(rank);
+                row.appendChild(info);
+                list.appendChild(row);
             });
         }
 
@@ -1455,35 +1479,47 @@
             }).catch(e => alert('Hata: ' + e.message));
         };
 
+        function makeQItem(question) {
+            const div = document.createElement('div');
+            div.className = `q-item ${question.startsWith('[HINT]') ? 'hint-item' : question.startsWith('[GUESS]') || question.includes('[') ? 'guess-item' : ''}`;
+            div.textContent = question;
+            return div;
+        }
+
+        function makeGroup(groupClass, titleText, titleColor, questions) {
+            const group = document.createElement('div');
+            group.className = `result-group ${groupClass}`;
+            const title = document.createElement('div');
+            title.className = 'res-title';
+            title.style.color = titleColor;
+            title.textContent = titleText;
+            group.appendChild(title);
+            questions.forEach(q => group.appendChild(makeQItem(q.question)));
+            return group;
+        }
+
         function renderHistoryBoard(historyData, players) {
             const board = document.getElementById('history-board');
-            board.innerHTML = ""; 
+            board.innerHTML = "";
             const historyList = historyData ? Object.values(historyData) : [];
             const t = translations[currentLang];
             players.forEach(player => {
                 const col = document.createElement('div');
                 col.className = 'player-column';
+
+                const header = document.createElement('div');
+                header.className = 'player-col-header';
+                header.textContent = `${player.name} (${player.lives}❤️)`;
+                col.appendChild(header);
+
                 const playerQuestions = historyList.filter(h => h.playerId === player.id);
                 const yesQs = playerQuestions.filter(h => h.result === 'yes');
                 const noQs = playerQuestions.filter(h => h.result === 'no');
                 const unsureQs = playerQuestions.filter(h => h.result === 'unsure');
-                let htmlContent = `<div class="player-col-header">${player.name} (${player.lives}❤️)</div>`;
-                if(yesQs.length > 0) {
-                    htmlContent += `<div class="result-group group-yes"><div class="res-title" style="color:#2ecc71">${t.hist_yes}</div>`;
-                    yesQs.forEach(q => htmlContent += `<div class="q-item ${q.question.startsWith('[HINT]') ? 'hint-item' : q.question.includes('[') ? 'guess-item' : ''}">${q.question}</div>`);
-                    htmlContent += `</div>`;
-                }
-                if(noQs.length > 0) {
-                    htmlContent += `<div class="result-group group-no"><div class="res-title" style="color:#e74c3c">${t.hist_no}</div>`;
-                    noQs.forEach(q => htmlContent += `<div class="q-item ${q.question.startsWith('[HINT]') ? 'hint-item' : q.question.includes('[') ? 'guess-item' : ''}">${q.question}</div>`);
-                    htmlContent += `</div>`;
-                }
-                if(unsureQs.length > 0) {
-                    htmlContent += `<div class="result-group group-unsure"><div class="res-title" style="color:#f39c12">${t.hist_unsure}</div>`;
-                    unsureQs.forEach(q => htmlContent += `<div class="q-item">${q.question}</div>`);
-                    htmlContent += `</div>`;
-                }
-                col.innerHTML = htmlContent;
+
+                if (yesQs.length > 0) col.appendChild(makeGroup('group-yes', t.hist_yes, '#2ecc71', yesQs));
+                if (noQs.length > 0) col.appendChild(makeGroup('group-no', t.hist_no, '#e74c3c', noQs));
+                if (unsureQs.length > 0) col.appendChild(makeGroup('group-unsure', t.hist_unsure, '#f39c12', unsureQs));
                 board.appendChild(col);
             });
         }
