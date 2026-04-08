@@ -319,7 +319,7 @@
         <div class="box">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                 <p id="lbl-players-chars" style="margin:0; font-size: 0.9em; color:#888;">PLAYERS & CHARACTERS</p>
-                <button onclick="toggleCharList()" id="btn-toggle-chars" style="width:auto; padding:4px 10px; margin:0; font-size:0.8em; background:#35354a; border:1px solid #555; border-radius:6px; color:#aaa;">🙈 Gizle</button>
+                <button id="btn-toggle-chars" style="width:auto; padding:4px 10px; margin:0; font-size:0.8em; background:#35354a; border:1px solid #555; border-radius:6px; color:#aaa;">🙈 Gizle</button>
             </div>
             <div id="characters-list" class="char-grid"></div>
         </div>
@@ -679,6 +679,17 @@
                 // Dil ayarını uygula ve UI'ı aktif et
                 window.setLanguage(currentLang);
                 document.getElementById('screen-welcome').classList.add('active');
+
+                document.getElementById('btn-toggle-chars').addEventListener('click', function() {
+                    const list = document.getElementById('characters-list');
+                    if (list.style.display === 'none') {
+                        list.style.display = 'grid';
+                        this.textContent = '🙈 Gizle';
+                    } else {
+                        list.style.display = 'none';
+                        this.textContent = '👁 Göster';
+                    }
+                });
             }
         }); 
         
@@ -1291,18 +1302,6 @@
                 update(ref(db, `rooms/${myRoomCode}`), updates)
                     .then(() => console.log("resetGame OK"))
                     .catch(e => alert("Reset hatası: " + e.message));
-            }
-        }
-
-        window.toggleCharList = function() {
-            const list = document.getElementById('characters-list');
-            const btn = document.getElementById('btn-toggle-chars');
-            if (list.style.display === 'none') {
-                list.style.display = 'grid';
-                btn.textContent = '🙈 Gizle';
-            } else {
-                list.style.display = 'none';
-                btn.textContent = '👁 Göster';
             }
         }
 
