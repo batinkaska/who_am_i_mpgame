@@ -434,7 +434,8 @@
                 alert_reset: "Restart game for everyone?", alert_guess_confirm: "If wrong, you lose a life! Are you sure?",
                 txt_starting: "Starting...", txt_submit_wait: "Waiting...", txt_searching: "Searching for rooms...",
                 hist_yes: "YES", hist_no: "NO", hist_unsure: "?",
-                txt_online: "Online Searching: "
+                txt_online: "Online Searching: ",
+                btn_hide: "🙈 Hide", btn_show: "👁 Show"
             },
             tr: {
                 flag: "🇹🇷", langName: "Türkçe",
@@ -467,7 +468,8 @@
                 alert_reset: "Oyunu herkes için sıfırlamak istiyor musun?", alert_guess_confirm: "Yanlışsa 1 canın gider! Emin misin?",
                 txt_starting: "Başlatılıyor...", txt_submit_wait: "Bekleniyor...", txt_searching: "Oda aranıyor...",
                 hist_yes: "EVET", hist_no: "HAYIR", hist_unsure: "?",
-                txt_online: "Bu modda arayan: "
+                txt_online: "Bu modda arayan: ",
+                btn_hide: "🙈 Gizle", btn_show: "👁 Göster"
             },
             de: {
                 flag: "🇩🇪", langName: "Deutsch",
@@ -500,7 +502,8 @@
                 alert_reset: "Spiel für alle neu starten?", alert_guess_confirm: "Bei Fehler verlierst du ein Leben! Sicher?",
                 txt_starting: "Startet...", txt_submit_wait: "Warten...", txt_searching: "Suche...",
                 hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?",
-                txt_online: "Online Suchen: "
+                txt_online: "Online Suchen: ",
+                btn_hide: "🙈 Verbergen", btn_show: "👁 Anzeigen"
             },
             es: {
                 flag: "🇪🇸", langName: "Español",
@@ -533,7 +536,8 @@
                 alert_reset: "¿Reiniciar el juego para todos?", alert_guess_confirm: "¡Si fallas pierdes una vida! ¿Seguro?",
                 txt_starting: "Iniciando...", txt_submit_wait: "Esperando...", txt_searching: "Buscando...",
                 hist_yes: "SÍ", hist_no: "NO", hist_unsure: "?",
-                txt_online: "Buscando en línea: "
+                txt_online: "Buscando en línea: ",
+                btn_hide: "🙈 Ocultar", btn_show: "👁 Mostrar"
             }
         };
 
@@ -652,6 +656,12 @@
             setText('lbl-mm-size', t.lbl_mm_size);
             setText('btn-mm-search', t.btn_mm_search);
             setText('mm-status', t.txt_searching);
+
+            const toggleBtn = document.getElementById('btn-toggle-chars');
+            if (toggleBtn) {
+                const list = document.getElementById('characters-list');
+                toggleBtn.textContent = (list && list.style.display === 'none') ? t.btn_show : t.btn_hide;
+            }
         }
 
         function setText(id, text) {
@@ -682,12 +692,13 @@
 
                 document.getElementById('btn-toggle-chars').addEventListener('click', function() {
                     const list = document.getElementById('characters-list');
+                    const t = translations[currentLang];
                     if (list.style.display === 'none') {
                         list.style.display = 'grid';
-                        this.textContent = '🙈 Gizle';
+                        this.textContent = t.btn_hide;
                     } else {
                         list.style.display = 'none';
-                        this.textContent = '👁 Göster';
+                        this.textContent = t.btn_show;
                     }
                 });
             }
@@ -1033,7 +1044,14 @@
                 charListEl.appendChild(cardDiv);
             });
 
-            if (charListHidden) charListEl.style.display = 'none';
+            if (charListHidden) {
+                charListEl.style.display = 'none';
+                const tb = document.getElementById('btn-toggle-chars');
+                if (tb) tb.textContent = translations[currentLang].btn_show;
+            } else {
+                const tb = document.getElementById('btn-toggle-chars');
+                if (tb) tb.textContent = translations[currentLang].btn_hide;
+            }
 
             const amIDead = (lives <= 0);
             const amIWon = (me.finishedRank > 0);
