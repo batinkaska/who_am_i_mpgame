@@ -317,7 +317,10 @@
             <small id="lbl-jury-mode">You can still vote as a Jury!</small>
         </div>
         <div class="box">
-            <p id="lbl-players-chars" style="margin:0; font-size: 0.9em; color:#888;">PLAYERS & CHARACTERS</p>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <p id="lbl-players-chars" style="margin:0; font-size: 0.9em; color:#888;">PLAYERS & CHARACTERS</p>
+                <button onclick="toggleCharList()" id="btn-toggle-chars" style="width:auto; padding:4px 10px; margin:0; font-size:0.8em; background:#35354a; border:1px solid #555; border-radius:6px; color:#aaa;">🙈 Gizle</button>
+            </div>
             <div id="characters-list" class="char-grid"></div>
         </div>
         <div class="lives-display" id="my-lives">❤️❤️❤️</div>
@@ -981,7 +984,8 @@
             document.getElementById('my-lives').innerText = "❤️".repeat(lives);
 
             const charListEl = document.getElementById('characters-list');
-            charListEl.innerHTML = ""; 
+            const charListHidden = charListEl.style.display === 'none';
+            charListEl.innerHTML = "";
             playersData.forEach(p => {
                 const isMe = p.id === myPlayerId;
                 const isFinished = p.finishedRank > 0;
@@ -1017,6 +1021,8 @@
                 cardDiv.appendChild(valDiv);
                 charListEl.appendChild(cardDiv);
             });
+
+            if (charListHidden) charListEl.style.display = 'none';
 
             const amIDead = (lives <= 0);
             const amIWon = (me.finishedRank > 0);
@@ -1285,6 +1291,18 @@
                 update(ref(db, `rooms/${myRoomCode}`), updates)
                     .then(() => console.log("resetGame OK"))
                     .catch(e => alert("Reset hatası: " + e.message));
+            }
+        }
+
+        function toggleCharList() {
+            const list = document.getElementById('characters-list');
+            const btn = document.getElementById('btn-toggle-chars');
+            if (list.style.display === 'none') {
+                list.style.display = 'grid';
+                btn.textContent = '🙈 Gizle';
+            } else {
+                list.style.display = 'none';
+                btn.textContent = '👁 Göster';
             }
         }
 
