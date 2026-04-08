@@ -1367,8 +1367,10 @@
                     document.getElementById('voting-area').style.display = 'block';
                     document.getElementById('voting-question').innerText = activeQuestion;
                     // Yeni soru geldiyse ses çal
+                    console.log('[SOUND] vote check - lastQ:', window._lastVotedQuestion, 'activeQ:', activeQuestion);
                     if (window._lastVotedQuestion !== activeQuestion) {
                         window._lastVotedQuestion = activeQuestion;
+                        console.log('[SOUND] calling notifyVoteTurn');
                         notifyVoteTurn();
                     }
                 } else {
@@ -1713,9 +1715,11 @@
         // AudioContext — her ses çağrısında fresh context aç (en güvenilir yöntem)
         // type: 'my-turn' (soru/tahmin sırası) veya 'vote' (oy verme sırası)
         function playSound(type) {
+            console.log('[SOUND] playSound called:', type, 'soundEnabled:', soundEnabled);
             if (!soundEnabled) return;
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('[SOUND] AudioContext state:', ctx.state);
                 const now = ctx.currentTime;
                 if (type === 'my-turn') {
                     // Soru/tahmin sırası: iki yükselen bip — enerjik
