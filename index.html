@@ -174,6 +174,19 @@
         #connection-banner.offline { background: #c0392b; color: #fff; }
         #connection-banner.reconnecting { background: #f39c12; color: #222; }
         #connection-banner.online { background: #27ae60; color: #fff; }
+        /* SOUND/VIBRATION TOGGLES */
+        .settings-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: #2b2b40; border-radius: 12px; margin-bottom: 10px; border: 1px solid #444; }
+        .settings-row-label { display: flex; align-items: center; gap: 10px; font-size: 1em; color: #fff; }
+        .settings-row-icon { font-size: 1.3em; }
+        .toggle-switch { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+        .toggle-slider { position: absolute; inset: 0; background: #444; border-radius: 26px; cursor: pointer; transition: background 0.2s; }
+        .toggle-slider:before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform 0.2s; }
+        .toggle-switch input:checked + .toggle-slider { background: #f1c40f; }
+        .toggle-switch input:checked + .toggle-slider:before { transform: translateX(22px); }
+        /* SMALL CONTROL BTNS IN HEADER */
+        .ctrl-icon-btn { background: #333; border: 1px solid #555; border-radius: 6px; color: #fff; width: auto; padding: 6px 9px; margin: 0; font-size: 1.1em; cursor: pointer; line-height: 1; }
+        .ctrl-icon-btn.active { border-color: #f1c40f; color: #f1c40f; }
     </style>
 </head>
 <body>
@@ -189,6 +202,8 @@
         <button id="btn-leave" class="control-btn" onclick="leaveRoom()">🚪 Leave</button>
         <div class="right-controls">
             <button id="reset-btn" class="control-btn" style="display:none; color:#f39c12; border-color:#f39c12;" onclick="resetGame()">🔄 Reset</button>
+            <button id="btn-sound-toggle" class="ctrl-icon-btn active" onclick="toggleSoundBtn()" title="Sound">🔊</button>
+            <button id="btn-vibration-toggle" class="ctrl-icon-btn active" onclick="toggleVibrationBtn()" title="Vibration">📳</button>
             <div class="dropdown">
                 <button onclick="toggleLang()" class="control-btn" id="lang-btn-display">🇺🇸 English ▾</button>
                 <div id="langDropdown" class="dropdown-content">
@@ -237,6 +252,26 @@
                     <span id="btn-menu-lang-sub" style="font-size:0.8em; color:#aaa;">Change App Language</span>
                 </div>
             </button>
+            <div class="settings-row">
+                <div class="settings-row-label">
+                    <span class="settings-row-icon">🔊</span>
+                    <span id="lbl-sound">Sound</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-sound" checked onchange="saveSoundSettings()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="settings-row">
+                <div class="settings-row-label">
+                    <span class="settings-row-icon">📳</span>
+                    <span id="lbl-vibration">Vibration</span>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="toggle-vibration" checked onchange="saveSoundSettings()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
         </div>
     </div>
 
@@ -795,6 +830,7 @@
                 document.getElementById('screen-welcome').classList.add('active');
                 const loadingEl = document.getElementById('loading-screen');
                 if (loadingEl) loadingEl.style.display = 'none';
+                initSoundSettings();
 
                 // Bağlantı durumu banner'ı
                 let wasConnected = true;
@@ -1317,6 +1353,9 @@
 
             if (isMyTurn && !activeQuestion && !amIDead && !amIWon) {
                 document.getElementById('my-turn-area').style.display = 'block';
+                // Sıra yeni bana geldiyse bildir (önceki render'da benim sıram değildi)
+                if (!window._wasMyTurn) notifyMyTurn();
+                window._wasMyTurn = true;
                 // ipucu butonu: 2 veya daha fazla can gittiyse (başlangıç 3, 1 kalınca devre dışı)
                 const hintBtn = document.getElementById('btn-hint');
                 if (hintBtn) {
@@ -1533,6 +1572,7 @@
             const q = document.getElementById('question-input').value.trim();
             if (!q) return;
             // Optimistic UI: Firebase'den geri okumayı beklemeden anında göster
+            window._wasMyTurn = false;
             document.getElementById('my-turn-area').style.display = 'none';
             document.getElementById('waiting-vote-msg').style.display = 'block';
             document.getElementById('waiting-vote-msg').innerText = translations[currentLang].msg_friends_vote;
@@ -1642,6 +1682,81 @@
                     .then(() => console.log("resetGame OK"))
                     .catch(e => alert("Reset hatası: " + e.message));
             }
+        }
+
+        // --- SOUND & VIBRATION ---
+        let soundEnabled = localStorage.getItem('whoami_sound') !== 'false';
+        let vibrationEnabled = localStorage.getItem('whoami_vibration') !== 'false';
+
+        function initSoundSettings() {
+            document.getElementById('toggle-sound').checked = soundEnabled;
+            document.getElementById('toggle-vibration').checked = vibrationEnabled;
+            updateSoundBtns();
+        }
+
+        window.saveSoundSettings = function() {
+            soundEnabled = document.getElementById('toggle-sound').checked;
+            vibrationEnabled = document.getElementById('toggle-vibration').checked;
+            localStorage.setItem('whoami_sound', soundEnabled);
+            localStorage.setItem('whoami_vibration', vibrationEnabled);
+            updateSoundBtns();
+        };
+
+        function updateSoundBtns() {
+            const sb = document.getElementById('btn-sound-toggle');
+            const vb = document.getElementById('btn-vibration-toggle');
+            if (sb) {
+                sb.textContent = soundEnabled ? '🔊' : '🔇';
+                sb.classList.toggle('active', soundEnabled);
+            }
+            if (vb) {
+                vb.textContent = vibrationEnabled ? '📳' : '📴';
+                vb.classList.toggle('active', vibrationEnabled);
+            }
+        }
+
+        window.toggleSoundBtn = function() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('toggle-sound').checked = soundEnabled;
+            localStorage.setItem('whoami_sound', soundEnabled);
+            updateSoundBtns();
+        };
+
+        window.toggleVibrationBtn = function() {
+            vibrationEnabled = !vibrationEnabled;
+            document.getElementById('toggle-vibration').checked = vibrationEnabled;
+            localStorage.setItem('whoami_vibration', vibrationEnabled);
+            updateSoundBtns();
+        };
+
+        function playTurnSound() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                // İki kısa bip sesi
+                [0, 0.15].forEach((delay, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = i === 0 ? 880 : 1100;
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.15);
+                    osc.start(ctx.currentTime + delay);
+                    osc.stop(ctx.currentTime + delay + 0.15);
+                });
+            } catch(e) {}
+        }
+
+        function triggerVibration() {
+            if (!vibrationEnabled) return;
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        }
+
+        function notifyMyTurn() {
+            playTurnSound();
+            triggerVibration();
         }
 
         function shuffleArray(array) {
