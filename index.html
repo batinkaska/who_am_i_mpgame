@@ -157,9 +157,31 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* CONNECTION BANNER */
+        #connection-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.85em;
+            font-weight: bold;
+            z-index: 9998;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+            box-sizing: border-box;
+        }
+        #connection-banner.show { transform: translateY(0); }
+        #connection-banner.offline { background: #c0392b; color: #fff; }
+        #connection-banner.reconnecting { background: #f39c12; color: #222; }
+        #connection-banner.online { background: #27ae60; color: #fff; }
     </style>
 </head>
 <body>
+
+    <div id="connection-banner"></div>
 
     <div id="loading-screen" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#1e1e2e;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;">
         <h1 style="font-size:2.5em;letter-spacing:2px;color:#f1c40f;margin-bottom:30px;">WHO AM I?</h1>
@@ -776,6 +798,41 @@
                 document.getElementById('screen-welcome').classList.add('active');
                 const loadingEl = document.getElementById('loading-screen');
                 if (loadingEl) loadingEl.style.display = 'none';
+
+                // Bağlantı durumu banner'ı
+                let wasConnected = true;
+                let reconnectTimer = null;
+                const banner = document.getElementById('connection-banner');
+
+                onValue(ref(db, '.info/connected'), (snap) => {
+                    const connected = snap.val() === true;
+
+                    if (connected) {
+                        if (!wasConnected) {
+                            // Yeniden bağlandı — kısa süre yeşil göster, sonra gizle
+                            banner.textContent = '✓ Back online';
+                            banner.className = 'online show';
+                            clearTimeout(reconnectTimer);
+                            reconnectTimer = setTimeout(() => {
+                                banner.className = 'online';
+                            }, 2500);
+                        }
+                        wasConnected = true;
+                    } else {
+                        // Bağlantı kesildi
+                        wasConnected = false;
+                        clearTimeout(reconnectTimer);
+                        banner.textContent = '● Connection lost — reconnecting...';
+                        banner.className = 'offline show';
+                        // 4 saniye sonra hala bağlı değilse rengi değiştir
+                        reconnectTimer = setTimeout(() => {
+                            if (!wasConnected) {
+                                banner.textContent = '↻ Reconnecting...';
+                                banner.className = 'reconnecting show';
+                            }
+                        }, 4000);
+                    }
+                });
 
                 document.getElementById('btn-toggle-chars').addEventListener('click', function() {
                     const list = document.getElementById('characters-list');
