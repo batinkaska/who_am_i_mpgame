@@ -222,7 +222,8 @@
             
             <div id="private-controls">
                 <button id="btn-create" class="btn-green" onclick="createRoom()">Create New Room</button>
-                <div style="display: flex; gap: 5px; margin-top: 10px;">
+                <p id="lbl-or-join" style="color:#888; font-size:0.85em; margin:12px 0 0;">— ya da oda kodunu gir —</p>
+                <div style="display: flex; gap: 5px; margin-top: 6px;">
                     <input type="text" id="room-code-input" placeholder="Room Code" style="margin:0; text-transform:uppercase;">
                     <button id="btn-join" class="btn-blue" onclick="joinRoom()" style="margin:0; width: 40%;">Join</button>
                 </div>
@@ -414,7 +415,7 @@
                 lbl_enter_details: "Enter Details", btn_back: "‹ Back",
                 lbl_rules_text: "1. <b>Assign Character:</b> At the start, you'll be given a friend's name. Write a challenging and fun <b>famous character</b> (Singer, Athlete, Movie Character, etc.) for them.<br><br>2. <b>Ask Questions:</b> When it's your turn, ask the group Yes/No questions to find out who you are (e.g. 'Am I real?', 'Am I a singer?', 'Am I male?'). Your friends will vote <b>Yes</b>, <b>No</b>, or <b>Unsure</b>.<br><br>3. <b>Voting Result:</b> The majority vote determines the answer.<br><br>4. <b>Guess & Lives:</b> If you know who you are, use the <b>'Guess'</b> button. Be careful! A wrong guess costs <b>1 Life (❤️)</b>.<br><br>5. <b>Jury Mode:</b> If you lose all 3 lives, you are out. But don't worry! You stay as a 'Jury' and continue voting on others' questions.<br><br>6. <b>Winning:</b> Players who guess correctly are ranked on the leaderboard by speed!",
                 
-                ph_name: "Enter your name", btn_create: "Create New Room", ph_room: "Room Code", btn_join: "Join",
+                ph_name: "Enter your name", btn_create: "Create New Room", lbl_or_join: "— or enter a room code —", ph_room: "Room Code", btn_join: "Join",
                 lbl_room: "Room Code:", lbl_wait: "Waiting for players...", lbl_admin: "You are the Admin", btn_start: "Start Game",
                 lbl_wait_admin: "Waiting for admin to start...", lbl_assign_t: "Assign Character", lbl_assign_d: "Assign a character for:",
                 ph_char: "E.g. Elvis, Batman...", btn_submit: "Submit", msg_wait_others: "Waiting for others...",
@@ -449,7 +450,7 @@
                 lbl_enter_details: "Giriş Yap", btn_back: "‹ Geri",
                 lbl_rules_text: "1. <b>Karakter Atama:</b> Oyun başladığında ekranda sana, karakter belirlemen gereken arkadaşının ismi verilecek. O kişi için zorlu ve eğlenceli bir <b>ünlü karakter</b> (Şarkıcı, Sporcu, Film Karakteri vb.) yaz ve gönder.<br><br>2. <b>Soru Sorma:</b> Sıra sana geldiğinde kim olduğunu bulmak için gruba sorular sor (Örn: 'Gerçek biri miyim?', 'Şarkıcı mıyım?', 'Erkek miyim?'). Arkadaşların bu soruna <b>Evet</b>, <b>Hayır</b> veya <b>Emin Değilim</b> oyu vererek cevaplayacaklar.<br><br>3. <b>Oylama Sonucu:</b> Oyuncuların verdiği oyların çoğunluğu ne derse, sistem cevabı o şekilde kabul eder.<br><br>4. <b>Tahmin & Canlar:</b> Kim olduğunu anladıysan <b>'Tahmin Et'</b> butonunu kullan. Ama dikkatli ol! Yanlış tahmin yaparsan <b>1 Can (❤️)</b> kaybedersin.<br><br>5. <b>Jüri Modu:</b> Eğer 3 canın biterse elenirsin. Ama üzülme! Oyun bitmez, 'Jüri' olarak diğerlerinin sorularını oylamaya devam edersin.<br><br>6. <b>Kazanma:</b> Karakterini doğru bilen oyuncular, bilme sıralarına göre liderlik tablosuna yerleşir!",
 
-                ph_name: "Adını gir", btn_create: "Yeni Oda Kur", ph_room: "Oda Kodu", btn_join: "Katıl",
+                ph_name: "Adını gir", btn_create: "Yeni Oda Kur", lbl_or_join: "— ya da oda kodunu gir —", ph_room: "Oda Kodu", btn_join: "Katıl",
                 lbl_room: "Oda Kodu:", lbl_wait: "Oyuncular bekleniyor...", lbl_admin: "Yöneticisin", btn_start: "Oyunu Başlat",
                 lbl_wait_admin: "Yönetici bekleniyor...", lbl_assign_t: "Karakter Belirle", lbl_assign_d: "Şu kişi için bir karakter yaz:",
                 ph_char: "Örn: Tarkan, Batman...", btn_submit: "Gönder", msg_wait_others: "Diğerleri bekleniyor...",
@@ -484,7 +485,7 @@
                 lbl_enter_details: "Details eingeben", btn_back: "‹ Zurück",
                 lbl_rules_text: "1. <b>Charakter zuweisen:</b> Zu Beginn wird dir der Name eines Freundes angezeigt. Schreibe einen schwierigen und lustigen <b>berühmten Charakter</b> (Sänger, Sportler, Filmfigur usw.) für ihn auf.<br><br>2. <b>Fragen stellen:</b> Wenn du dran bist, stelle der Gruppe Ja/Nein-Fragen (z. B. 'Bin ich real?', 'Bin ich ein Sänger?', 'Bin ich männlich?'). Deine Freunde stimmen mit <b>Ja</b>, <b>Nein</b> oder <b>Unsicher</b> ab.<br><br>3. <b>Abstimmungsergebnis:</b> Die Mehrheit der Stimmen bestimmt die Antwort.<br><br>4. <b>Raten & Leben:</b> Wenn du weißt, wer du bist, benutze den <b>'Raten'</b>-Button. Vorsicht! Ein falscher Tipp kostet <b>1 Leben (❤️)</b>.<br><br>5. <b>Jury-Modus:</b> Wenn alle 3 Leben weg sind, bist du raus. Aber keine Sorge! Du bleibst als 'Jury' und stimmst weiter ab.<br><br>6. <b>Gewinnen:</b> Wer seinen Charakter errät, landet auf der Bestenliste!",
 
-                ph_name: "Namen eingeben", btn_create: "Raum erstellen", ph_room: "Raumcode", btn_join: "Beitreten",
+                ph_name: "Namen eingeben", btn_create: "Raum erstellen", lbl_or_join: "— oder Raumcode eingeben —", ph_room: "Raumcode", btn_join: "Beitreten",
                 lbl_room: "Raumcode:", lbl_wait: "Warte auf Spieler...", lbl_admin: "Du bist Admin", btn_start: "Spiel starten",
                 lbl_wait_admin: "Warte auf Admin...", lbl_assign_t: "Charakter wählen", lbl_assign_d: "Wähle einen Charakter für:",
                 ph_char: "z.B. Einstein, Batman...", btn_submit: "Senden", msg_wait_others: "Warte auf andere...",
@@ -519,7 +520,7 @@
                 lbl_enter_details: "Ingresar Datos", btn_back: "‹ Volver",
                 lbl_rules_text: "1. <b>Asignar Personaje:</b> Al inicio, verás el nombre de un amigo. Escribe un <b>personaje famoso</b> difícil y divertido (Cantante, Deportista, Personaje de Película, etc.) para él.<br><br>2. <b>Hacer Preguntas:</b> En tu turno, haz preguntas de Sí/No al grupo (Ej. '¿Soy real?', '¿Soy cantante?', '¿Soy hombre?'). Tus amigos votarán <b>Sí</b>, <b>No</b> o <b>No sé</b>.<br><br>3. <b>Resultado de Votación:</b> La mayoría de los votos determina la respuesta.<br><br>4. <b>Adivinar y Vidas:</b> Si sabes quién eres, usa el botón <b>'Adivinar'</b>. ¡Cuidado! Una suposición incorrecta cuesta <b>1 Vida (❤️)</b>.<br><br>5. <b>Modo Jurado:</b> Si pierdes tus 3 vidas, estás eliminado. ¡Pero no te preocupes! Sigues como 'Jurado' votando las preguntas de los demás.<br><br>6. <b>Ganar:</b> ¡Los jugadores que adivinen correctamente aparecerán en la tabla de clasificación!",
 
-                ph_name: "Introduce tu nombre", btn_create: "Crear Nueva Sala", ph_room: "Código de Sala", btn_join: "Unirse",
+                ph_name: "Introduce tu nombre", btn_create: "Crear Nueva Sala", lbl_or_join: "— o ingresa el código —", ph_room: "Código de Sala", btn_join: "Unirse",
                 lbl_room: "Código de Sala:", lbl_wait: "Esperando jugadores...", lbl_admin: "Eres el Administrador", btn_start: "Iniciar Juego",
                 lbl_wait_admin: "Esperando al administrador...", lbl_assign_t: "Asignar Personaje", lbl_assign_d: "Asigna un personaje para:",
                 ph_char: "Ej. Elvis, Batman...", btn_submit: "Enviar", msg_wait_others: "Esperando a otros...",
@@ -553,7 +554,7 @@
                 lbl_rules_title: "كيفية اللعب",
                 lbl_enter_details: "أدخل التفاصيل", btn_back: "‹ رجوع",
                 lbl_rules_text: "1. <b>تعيين الشخصية:</b> في البداية ستُعطى اسم أحد أصدقائك. اكتب له شخصية مشهورة وممتعة (مغني، رياضي، شخصية من فيلم، إلخ).<br><br>2. <b>طرح الأسئلة:</b> عندما يأتي دورك، اسأل المجموعة أسئلة بنعم/لا لاكتشاف هويتك. سيصوّت أصدقاؤك بـ <b>نعم</b> أو <b>لا</b> أو <b>غير متأكد</b>.<br><br>3. <b>نتيجة التصويت:</b> تحدد الأغلبية الإجابة.<br><br>4. <b>التخمين والأرواح:</b> إذا عرفت هويتك استخدم زر <b>تخمين</b>. احذر! التخمين الخاطئ يكلفك <b>حياة واحدة (❤️)</b>.<br><br>5. <b>وضع هيئة المحلفين:</b> إذا فقدت أرواحك الثلاث ستُطرد. لكن تبقى كـ'محلف' وتستمر في التصويت.<br><br>6. <b>الفوز:</b> يُصنَّف اللاعبون الذين يخمنون بشكل صحيح في لوحة المتصدرين!",
-                ph_name: "أدخل اسمك", btn_create: "إنشاء غرفة جديدة", ph_room: "رمز الغرفة", btn_join: "انضمام",
+                ph_name: "أدخل اسمك", btn_create: "إنشاء غرفة جديدة", lbl_or_join: "— أو أدخل رمز الغرفة —", ph_room: "رمز الغرفة", btn_join: "انضمام",
                 lbl_room: "رمز الغرفة:", lbl_wait: "في انتظار اللاعبين...", lbl_admin: "أنت المسؤول", btn_start: "بدء اللعبة",
                 lbl_wait_admin: "في انتظار المسؤول...", lbl_assign_t: "تعيين شخصية", lbl_assign_d: "عيّن شخصية لـ:",
                 ph_char: "مثال: محمد علي، باتمان...", btn_submit: "إرسال", msg_wait_others: "في انتظار الآخرين...",
@@ -661,6 +662,7 @@
             setText('lbl-enter-details', t.lbl_enter_details);
 
             setText('btn-create', t.btn_create);
+            setText('lbl-or-join', t.lbl_or_join);
             setText('btn-join', t.btn_join);
             setText('lbl-room-code', t.lbl_room);
             setText('lbl-waiting-players', t.lbl_wait);
