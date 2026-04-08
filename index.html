@@ -1344,6 +1344,7 @@
 
             if (isMyTurn && !activeQuestion && !amIDead && !amIWon) {
                 document.getElementById('my-turn-area').style.display = 'block';
+                if (!window._wasMyTurn) { notifyMyTurn(); }
                 window._wasMyTurn = true;
                 // ipucu butonu: 2 veya daha fazla can gittiyse (başlangıç 3, 1 kalınca devre dışı)
                 const hintBtn = document.getElementById('btn-hint');
@@ -1364,8 +1365,10 @@
                 if (!myVote) {
                     document.getElementById('voting-area').style.display = 'block';
                     document.getElementById('voting-question').innerText = activeQuestion;
-                    // Yeni soru geldiyse ses çal
-
+                    if (window._lastVotedQuestion !== activeQuestion) {
+                        window._lastVotedQuestion = activeQuestion;
+                        notifyVoteTurn();
+                    }
                 } else {
                     document.getElementById('waiting-vote-msg').style.display = 'block';
                     document.getElementById('waiting-vote-msg').innerText = t.msg_wait_vote;
@@ -1557,14 +1560,12 @@
 
         function vote(val) {
             if (!myRoomCode || !myPlayerId) return;
-            playSound('vote');
             set(ref(db, `rooms/${myRoomCode}/votes/${myPlayerId}`), val);
         }
 
         function askQuestion() {
             const q = document.getElementById('question-input').value.trim();
             if (!q) return;
-            playSound('my-turn');
             // Optimistic UI: Firebase'den geri okumayı beklemeden anında göster
             window._wasMyTurn = false;
             document.getElementById('my-turn-area').style.display = 'none';
@@ -1577,7 +1578,6 @@
         function makeGuess() {
             const guess = document.getElementById('guess-input').value.trim();
             if (!guess) return;
-            playSound('my-turn');
             // Optimistic UI
             document.getElementById('my-turn-area').style.display = 'none';
             document.getElementById('waiting-vote-msg').style.display = 'block';
@@ -1708,19 +1708,39 @@
             updateSoundBtns();
         };
 
-        // AudioContext — her ses çağrısında fresh context aç (en güvenilir yöntem)
-        // type: 'my-turn' (soru/tahmin sırası) veya 'vote' (oy verme sırası)
+        // AudioContext — bir kez unlock, sonra hep kullan
+        let _audioCtx = null;
+        let _audioUnlocked = false;
+
+        function unlockAudio() {
+            if (_audioUnlocked) return;
+            try {
+                _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                // Sessiz bir ses çal — bu context'i unlock eder
+                const buf = _audioCtx.createBuffer(1, 1, 22050);
+                const src = _audioCtx.createBufferSource();
+                src.buffer = buf;
+                src.connect(_audioCtx.destination);
+                src.start(0);
+                _audioUnlocked = true;
+            } catch(e) {}
+        }
+
+        // Kullanıcı sayfaya ilk dokunduğunda/tıkladığında unlock et
+        document.addEventListener('touchstart', unlockAudio, { once: false, capture: true });
+        document.addEventListener('click', unlockAudio, { once: false, capture: true });
+
         function playSound(type) {
             if (!soundEnabled) return;
+            if (!_audioUnlocked || !_audioCtx) return;
             try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const now = ctx.currentTime;
+                if (_audioCtx.state === 'suspended') _audioCtx.resume();
+                const now = _audioCtx.currentTime;
                 if (type === 'my-turn') {
-                    // Soru/tahmin sırası: iki yükselen bip — enerjik
                     [[0, 660], [0.18, 990]].forEach(([delay, freq]) => {
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain); gain.connect(ctx.destination);
+                        const osc = _audioCtx.createOscillator();
+                        const gain = _audioCtx.createGain();
+                        osc.connect(gain); gain.connect(_audioCtx.destination);
                         osc.type = 'triangle';
                         osc.frequency.value = freq;
                         gain.gain.setValueAtTime(0.35, now + delay);
@@ -1729,11 +1749,10 @@
                         osc.stop(now + delay + 0.25);
                     });
                 } else if (type === 'vote') {
-                    // Oy verme sırası: üç kısa alçalan bip — dikkat çekici ama farklı
                     [[0, 523], [0.14, 440], [0.28, 349]].forEach(([delay, freq]) => {
-                        const osc = ctx.createOscillator();
-                        const gain = ctx.createGain();
-                        osc.connect(gain); gain.connect(ctx.destination);
+                        const osc = _audioCtx.createOscillator();
+                        const gain = _audioCtx.createGain();
+                        osc.connect(gain); gain.connect(_audioCtx.destination);
                         osc.type = 'sine';
                         osc.frequency.value = freq;
                         gain.gain.setValueAtTime(0.25, now + delay);
@@ -1742,8 +1761,6 @@
                         osc.stop(now + delay + 0.15);
                     });
                 }
-                // Ses bittikten sonra context'i kapat
-                setTimeout(() => { try { ctx.close(); } catch(e) {} }, 1000);
             } catch(e) {}
         }
 
