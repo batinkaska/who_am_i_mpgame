@@ -323,8 +323,6 @@
             </div>
             <div id="characters-list" class="char-grid"></div>
         </div>
-        <div class="lives-display" id="my-lives">❤️❤️❤️</div>
-        
         <div class="box">
             <p id="lbl-whose-turn">Whose Turn?</p>
             <h2 id="current-turn-name" style="color: #27ae60;">...</h2>
@@ -352,6 +350,7 @@
                 </div>
             </div>
         </div>
+        <div class="lives-display" id="my-lives">❤️❤️❤️</div>
         <div class="box" style="text-align: left; background: #1a1a25;">
             <h4 id="lbl-history" style="border-bottom: 1px solid #444; padding-bottom:5px;">Game History</h4>
             <div id="history-board" class="history-board"></div>
@@ -665,6 +664,12 @@
             if (toggleBtn) {
                 const list = document.getElementById('characters-list');
                 toggleBtn.textContent = (list && list.style.display === 'none') ? t.btn_show : t.btn_hide;
+            }
+
+            const livesEl = document.getElementById('my-lives');
+            if (livesEl && livesEl.textContent) {
+                const hearts = (livesEl.textContent.match(/\u2764\uFE0F/g) || []).length;
+                if (hearts > 0) livesEl.innerText = "\u2764\uFE0F".repeat(hearts) + "  " + hearts + " " + t.lbl_lives;
             }
         }
 
