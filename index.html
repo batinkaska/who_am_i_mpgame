@@ -749,9 +749,22 @@
             if (user && !authReady) {
                 authReady = true;
                 myPlayerId = user.uid;
-                // Eski localStorage pid'yi temizle (migration)
                 localStorage.removeItem('whoami_pid');
-                // Dil ayarını uygula ve UI'ı aktif et
+
+                // Sayfa yeniden yüklenince searching kuyruklarından eski kaydı temizle
+                const searchingRef = ref(db, 'searching');
+                get(searchingRef).then(snap => {
+                    if (!snap.exists()) return;
+                    const queues = snap.val();
+                    const cleanups = [];
+                    for (const queue in queues) {
+                        if (queues[queue][user.uid]) {
+                            cleanups.push(remove(ref(db, `searching/${queue}/${user.uid}`)));
+                        }
+                    }
+                    return Promise.all(cleanups);
+                });
+
                 document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
                 window.setLanguage(currentLang);
                 document.getElementById('screen-welcome').classList.add('active');
@@ -1471,11 +1484,27 @@
         function leaveRoom() {
             if (!myRoomCode || !myPlayerId) return location.reload();
             if (confirm(translations[currentLang].alert_leave)) {
-                // Ensure removed from searching list if leaving
                 if (currentSearchPath) {
                     remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
                 }
+
+                const wasAdmin = playersData.length > 0 &&
+                    window._lastRoomData && window._lastRoomData.admin === myPlayerId;
+
                 remove(ref(db, `rooms/${myRoomCode}/players/${myPlayerId}`))
+                .then(() => {
+                    // Admin ayrılıyorsa: kalan oyunculardan en eski (ilk) kişiye yetki devret
+                    if (wasAdmin) {
+                        const remaining = playersData.filter(p => p.id !== myPlayerId);
+                        if (remaining.length > 0) {
+                            return update(ref(db, `rooms/${myRoomCode}`), {
+                                admin: remaining[0].id
+                            });
+                        }
+                        // Kimse kalmadıysa odayı sil
+                        return remove(ref(db, `rooms/${myRoomCode}`));
+                    }
+                })
                 .then(() => location.reload());
             }
         }
