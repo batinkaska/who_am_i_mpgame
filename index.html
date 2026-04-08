@@ -1265,6 +1265,12 @@
             document.getElementById('voting-area').style.display = 'none';
             document.getElementById('waiting-vote-msg').style.display = 'none';
 
+            // Soru yoksa bayrakları sıfırla — her cihazda çalışır
+            if (!data.currentQuestion) {
+                window._lastVotedQuestion = null;
+                window._wasMyTurn = false;
+            }
+
             if (amIWon) {
                 document.getElementById('success-msg').style.display = 'block';
                 document.getElementById('reveal-char-win').innerText = me.assignedChar;
@@ -1469,7 +1475,6 @@
         }
 
         function passTurn(currentIndex) {
-            window._lastVotedQuestion = null;
             update(ref(db, `rooms/${myRoomCode}`), {
                 turnIndex: currentIndex + 1,
                 currentQuestion: null,
