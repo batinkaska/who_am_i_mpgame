@@ -1344,8 +1344,6 @@
 
             if (isMyTurn && !activeQuestion && !amIDead && !amIWon) {
                 document.getElementById('my-turn-area').style.display = 'block';
-                // Sıra yeni bana geldiyse bildir (önceki render'da benim sıram değildi)
-                if (!window._wasMyTurn) notifyMyTurn();
                 window._wasMyTurn = true;
                 // ipucu butonu: 2 veya daha fazla can gittiyse (başlangıç 3, 1 kalınca devre dışı)
                 const hintBtn = document.getElementById('btn-hint');
@@ -1367,12 +1365,7 @@
                     document.getElementById('voting-area').style.display = 'block';
                     document.getElementById('voting-question').innerText = activeQuestion;
                     // Yeni soru geldiyse ses çal
-                    console.log('[SOUND] vote check - lastQ:', window._lastVotedQuestion, 'activeQ:', activeQuestion);
-                    if (window._lastVotedQuestion !== activeQuestion) {
-                        window._lastVotedQuestion = activeQuestion;
-                        console.log('[SOUND] calling notifyVoteTurn');
-                        notifyVoteTurn();
-                    }
+
                 } else {
                     document.getElementById('waiting-vote-msg').style.display = 'block';
                     document.getElementById('waiting-vote-msg').innerText = t.msg_wait_vote;
@@ -1564,12 +1557,14 @@
 
         function vote(val) {
             if (!myRoomCode || !myPlayerId) return;
+            playSound('vote');
             set(ref(db, `rooms/${myRoomCode}/votes/${myPlayerId}`), val);
         }
 
         function askQuestion() {
             const q = document.getElementById('question-input').value.trim();
             if (!q) return;
+            playSound('my-turn');
             // Optimistic UI: Firebase'den geri okumayı beklemeden anında göster
             window._wasMyTurn = false;
             document.getElementById('my-turn-area').style.display = 'none';
@@ -1582,6 +1577,7 @@
         function makeGuess() {
             const guess = document.getElementById('guess-input').value.trim();
             if (!guess) return;
+            playSound('my-turn');
             // Optimistic UI
             document.getElementById('my-turn-area').style.display = 'none';
             document.getElementById('waiting-vote-msg').style.display = 'block';
@@ -1715,11 +1711,9 @@
         // AudioContext — her ses çağrısında fresh context aç (en güvenilir yöntem)
         // type: 'my-turn' (soru/tahmin sırası) veya 'vote' (oy verme sırası)
         function playSound(type) {
-            console.log('[SOUND] playSound called:', type, 'soundEnabled:', soundEnabled);
             if (!soundEnabled) return;
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                console.log('[SOUND] AudioContext state:', ctx.state);
                 const now = ctx.currentTime;
                 if (type === 'my-turn') {
                     // Soru/tahmin sırası: iki yükselen bip — enerjik
