@@ -435,6 +435,7 @@
                 txt_starting: "Starting...", txt_submit_wait: "Waiting...", txt_searching: "Searching for rooms...",
                 hist_yes: "YES", hist_no: "NO", hist_unsure: "?",
                 txt_online: "Online Searching: ",
+                lbl_lives: "guess remaining",
                 btn_hide: "🙈 Hide", btn_show: "👁 Show"
             },
             tr: {
@@ -469,6 +470,7 @@
                 txt_starting: "Başlatılıyor...", txt_submit_wait: "Bekleniyor...", txt_searching: "Oda aranıyor...",
                 hist_yes: "EVET", hist_no: "HAYIR", hist_unsure: "?",
                 txt_online: "Bu modda arayan: ",
+                lbl_lives: "tahmin hakkı kaldı",
                 btn_hide: "🙈 Gizle", btn_show: "👁 Göster"
             },
             de: {
@@ -503,6 +505,7 @@
                 txt_starting: "Startet...", txt_submit_wait: "Warten...", txt_searching: "Suche...",
                 hist_yes: "JA", hist_no: "NEIN", hist_unsure: "?",
                 txt_online: "Online Suchen: ",
+                lbl_lives: "Versuche übrig",
                 btn_hide: "🙈 Verbergen", btn_show: "👁 Anzeigen"
             },
             es: {
@@ -537,6 +540,7 @@
                 txt_starting: "Iniciando...", txt_submit_wait: "Esperando...", txt_searching: "Buscando...",
                 hist_yes: "SÍ", hist_no: "NO", hist_unsure: "?",
                 txt_online: "Buscando en línea: ",
+                lbl_lives: "intentos restantes",
                 btn_hide: "🙈 Ocultar", btn_show: "👁 Mostrar"
             }
         };
@@ -1004,7 +1008,7 @@
 
             const me = playersData.find(p => p.id === myPlayerId);
             const lives = me.lives !== undefined ? me.lives : 3;
-            document.getElementById('my-lives').innerText = "❤️".repeat(lives);
+            document.getElementById('my-lives').innerText = "❤️".repeat(lives) + "  " + lives + " " + translations[currentLang].lbl_lives;
 
             const charListEl = document.getElementById('characters-list');
             const charListHidden = charListEl.style.display === 'none';
