@@ -387,7 +387,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect } 
+        import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect, runTransaction } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import { getAuth, signInAnonymously, onAuthStateChanged }
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -814,14 +814,21 @@
             document.getElementById('btn-mm-search').disabled = true;
             document.getElementById('mm-status').style.display = 'block';
 
-            get(ref(db, 'rooms')).then(snap => {
+            // Sadece isPublic:true odaları çek — tüm rooms değil
+            const publicRoomsQuery = query(
+                ref(db, 'rooms'),
+                orderByChild('isPublic'),
+                equalTo(true)
+            );
+
+            get(publicRoomsQuery).then(snap => {
                 let foundRoom = null;
                 
                 if (snap.exists()) {
                     const rooms = snap.val();
                     for (const code in rooms) {
                         const r = rooms[code];
-                        if (r.isPublic && r.lang === lang && r.targetSize === size && r.gameState === 'lobby') {
+                        if (r.lang === lang && r.targetSize === size && r.gameState === 'lobby') {
                             const playerCount = Object.keys(r.players || {}).length;
                             if (playerCount < size) {
                                 foundRoom = code;
@@ -842,26 +849,47 @@
             });
         }
 
+        function generateCode() {
+            return Math.random().toString(36).substring(2, 6).toUpperCase();
+        }
+
         function createRoom(isPublic = false, lang = 'en', targetSize = 4) {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
-            
-            myRoomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-            
+
             const roomData = {
                 gameState: 'lobby',
                 admin: myPlayerId,
                 turnIndex: 0,
+                createdAt: Date.now(),
                 players: { [myPlayerId]: { name: myName, score: 0, lives: 3, finishedRank: 0, hasSubmitted: false } },
                 isPublic: isPublic,
                 lang: isPublic ? lang : null,
                 targetSize: isPublic ? targetSize : null
             };
 
-            set(ref(db, `rooms/${myRoomCode}`), roomData)
-                .catch(e => alert("Error: " + e.message));
-            
-            listenRoom();
+            function tryCreate() {
+                const code = generateCode();
+                const roomRef = ref(db, `rooms/${code}`);
+                runTransaction(roomRef, (currentData) => {
+                    if (currentData === null) {
+                        // Oda yok, güvenle oluştur
+                        return roomData;
+                    }
+                    // Oda zaten var, transaction'ı iptal et (undefined döndür)
+                    return undefined;
+                }).then((result) => {
+                    if (result.committed) {
+                        myRoomCode = code;
+                        listenRoom();
+                    } else {
+                        // Çakışma oldu, yeni kod ile tekrar dene
+                        tryCreate();
+                    }
+                }).catch(e => alert("Error: " + e.message));
+            }
+
+            tryCreate();
         }
 
         function joinRoom() {
