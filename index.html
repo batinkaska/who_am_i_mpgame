@@ -170,6 +170,7 @@
                     <div onclick="setLanguage('tr')">🇹🇷 Türkçe</div>
                     <div onclick="setLanguage('de')">🇩🇪 Deutsch</div>
                     <div onclick="setLanguage('es')">🇪🇸 Español</div>
+                    <div onclick="setLanguage('ar')">🇸🇦 العربية</div>
                 </div>
             </div>
         </div>
@@ -243,6 +244,7 @@
                 <option value="tr">🇹🇷 Türkçe</option>
                 <option value="de">🇩🇪 Deutsch</option>
                 <option value="es">🇪🇸 Español</option>
+                <option value="ar">🇸🇦 العربية</option>
             </select>
             <label id="lbl-mm-size" style="font-size:0.9em; color:#aaa; display:block; text-align:left; margin-top:10px;">Players Count</label>
             <select id="mm-size" onchange="updateOnlineCount()">
@@ -272,6 +274,7 @@
             <button class="menu-btn" onclick="setLanguage('tr'); goBackToWelcome()">🇹🇷 Türkçe</button>
             <button class="menu-btn" onclick="setLanguage('de'); goBackToWelcome()">🇩🇪 Deutsch</button>
             <button class="menu-btn" onclick="setLanguage('es'); goBackToWelcome()">🇪🇸 Español</button>
+            <button class="menu-btn" onclick="setLanguage('ar'); goBackToWelcome()">🇸🇦 العربية</button>
         </div>
     </div>
 
@@ -541,6 +544,40 @@
                 txt_online: "Buscando en línea: ",
                 lbl_lives: "intentos restantes",
                 btn_hide: "🙈 Ocultar", btn_show: "👁 Mostrar"
+            },
+            ar: {
+                flag: "🇸🇦", langName: "العربية",
+                btn_menu_play: "العب مع الأصدقاء", btn_menu_play_sub: "إنشاء أو الانضمام إلى غرفة خاصة",
+                btn_menu_find: "إيجاد لعبة", btn_menu_find_sub: "مطابقة مع لاعبين عشوائيين",
+                btn_menu_rules: "كيفية اللعب", btn_menu_lang: "اللغة", btn_menu_lang_sub: "تغيير اللغة",
+                lbl_rules_title: "كيفية اللعب",
+                lbl_enter_details: "أدخل التفاصيل", btn_back: "‹ رجوع",
+                lbl_rules_text: "1. <b>تعيين الشخصية:</b> في البداية ستُعطى اسم أحد أصدقائك. اكتب له شخصية مشهورة وممتعة (مغني، رياضي، شخصية من فيلم، إلخ).<br><br>2. <b>طرح الأسئلة:</b> عندما يأتي دورك، اسأل المجموعة أسئلة بنعم/لا لاكتشاف هويتك. سيصوّت أصدقاؤك بـ <b>نعم</b> أو <b>لا</b> أو <b>غير متأكد</b>.<br><br>3. <b>نتيجة التصويت:</b> تحدد الأغلبية الإجابة.<br><br>4. <b>التخمين والأرواح:</b> إذا عرفت هويتك استخدم زر <b>تخمين</b>. احذر! التخمين الخاطئ يكلفك <b>حياة واحدة (❤️)</b>.<br><br>5. <b>وضع هيئة المحلفين:</b> إذا فقدت أرواحك الثلاث ستُطرد. لكن تبقى كـ'محلف' وتستمر في التصويت.<br><br>6. <b>الفوز:</b> يُصنَّف اللاعبون الذين يخمنون بشكل صحيح في لوحة المتصدرين!",
+                ph_name: "أدخل اسمك", btn_create: "إنشاء غرفة جديدة", ph_room: "رمز الغرفة", btn_join: "انضمام",
+                lbl_room: "رمز الغرفة:", lbl_wait: "في انتظار اللاعبين...", lbl_admin: "أنت المسؤول", btn_start: "بدء اللعبة",
+                lbl_wait_admin: "في انتظار المسؤول...", lbl_assign_t: "تعيين شخصية", lbl_assign_d: "عيّن شخصية لـ:",
+                ph_char: "مثال: محمد علي، باتمان...", btn_submit: "إرسال", msg_wait_others: "في انتظار الآخرين...",
+                btn_leave: "🚪 مغادرة", btn_reset: "🔄 إعادة تعيين",
+                lbl_out: "💀 لقد خرجت!", lbl_was: "كانت شخصيتك:", lbl_jury: "لا يزال بإمكانك التصويت كمحلف!",
+                lbl_congrats: "🎉 صحيح!", lbl_wait_end: "في انتظار انتهاء الآخرين...",
+                lbl_all_chars: "اللاعبون والشخصيات", lbl_turn: "دور من؟",
+                ph_q: "اطرح سؤالاً (مثال: هل أنا مغني؟)", btn_ask: "إرسال السؤال",
+                ph_guess: "خمّن (مثال: أنا محمد علي!)", btn_guess: "تخمين (تخاطر بحياة)",
+                lbl_q: "السؤال الحالي:", lbl_guess_alert: "⚠️ تنبيه تخمين!",
+                btn_yes: "نعم", btn_no: "لا", btn_unsure: "غير متأكد", lbl_hist: "سجل اللعبة",
+                msg_wait_vote: "تم استلام التصويت. جارٍ الانتظار...", msg_friends_vote: "الأصدقاء يصوّتون...",
+                lbl_game_over: "🏆 انتهت اللعبة!", btn_new_game: "🔄 لعبة جديدة",
+                lbl_room_players: "اللاعبون في الغرفة",
+                lbl_mm_title: "مطابقة اللاعبين", lbl_mm_lang: "اللغة", lbl_mm_size: "عدد اللاعبين",
+                btn_mm_search: "🔍 بحث عن لعبة",
+                alert_name: "الرجاء إدخال اسم!", alert_code: "الرجاء إدخال التفاصيل!", alert_room404: "الغرفة غير موجودة!",
+                alert_min_pl: "تحتاج إلى لاعبَين على الأقل!", alert_leave: "هل أنت متأكد أنك تريد المغادرة؟",
+                alert_reset: "إعادة تشغيل اللعبة للجميع؟", alert_guess_confirm: "إذا أخطأت ستفقد حياة! هل أنت متأكد؟",
+                txt_starting: "جارٍ البدء...", txt_submit_wait: "جارٍ الانتظار...", txt_searching: "جارٍ البحث عن غرف...",
+                hist_yes: "نعم", hist_no: "لا", hist_unsure: "؟",
+                txt_online: "يبحث الآن: ",
+                lbl_lives: "تخمين متبقٍ",
+                btn_hide: "🙈 إخفاء", btn_show: "👁 إظهار"
             }
         };
 
@@ -559,6 +596,7 @@
         window.setLanguage = function(lang) {
             currentLang = lang;
             localStorage.setItem('whoami_lang', lang);
+            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
             updateUITexts();
             // Also update MM counter if on MM screen
             if(document.getElementById('screen-matchmaking').classList.contains('active')){
@@ -696,6 +734,7 @@
                 // Eski localStorage pid'yi temizle (migration)
                 localStorage.removeItem('whoami_pid');
                 // Dil ayarını uygula ve UI'ı aktif et
+                document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
                 window.setLanguage(currentLang);
                 document.getElementById('screen-welcome').classList.add('active');
 
