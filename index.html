@@ -1139,6 +1139,43 @@
                 document.getElementById('reveal-char').innerText = me.assignedChar;
             }
 
+            // Admin: pendingHint.hintText geldi mi? İşle
+            if (data.admin === myPlayerId && data.pendingHint && data.pendingHint.hintText && !data.processing) {
+                update(ref(db, `rooms/${myRoomCode}`), { processing: true });
+                const requesterId = data.pendingHint.requesterId;
+                const requester = playersData.find(p => p.id === requesterId);
+                if (requester) {
+                    const newLives = (requester.lives !== undefined ? requester.lives : 3) - 1;
+                    const pUpdates = {};
+                    pUpdates[`players/${requesterId}`] = {
+                        name: requester.name,
+                        score: requester.score || 0,
+                        lives: newLives,
+                        finishedRank: requester.finishedRank || 0,
+                        hasSubmitted: requester.hasSubmitted || false
+                    };
+                    pUpdates['pendingHint'] = null;
+                    pUpdates['processing'] = null;
+                    update(ref(db, `rooms/${myRoomCode}`), pUpdates).then(() => {
+                        push(ref(db, `rooms/${myRoomCode}/history`), {
+                            playerId: requesterId,
+                            question: '[HINT] ' + data.pendingHint.hintText,
+                            result: 'yes',
+                            timestamp: Date.now()
+                        });
+                        setTimeout(() => {
+                            const actives = playersData.filter(p => (p.id === requesterId ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0);
+                            if (actives.length === 0) {
+                                update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
+                            } else {
+                                passTurn(data.turnIndex);
+                            }
+                        }, 1500);
+                    });
+                }
+                return;
+            }
+
             const currentIsDone = (currentPlayer.lives <= 0) || (currentPlayer.finishedRank > 0);
             
             if (data.admin === myPlayerId && currentIsDone && !data.currentQuestion && data.gameState === 'game') {
@@ -1305,42 +1342,16 @@
             const data_pendingHint = window._lastRoomData && window._lastRoomData.pendingHint;
             if (!data_pendingHint) return;
 
-            const requesterId = data_pendingHint.requesterId;
-            const requester = playersData.find(p => p.id === requesterId);
-            if (!requester) return;
-
-            const newLives = (requester.lives !== undefined ? requester.lives : 3) - 1;
-
-            const updates = {};
-            updates[`players/${requesterId}`] = {
-                name: requester.name,
-                score: requester.score || 0,
-                lives: newLives,
-                finishedRank: requester.finishedRank || 0,
-                hasSubmitted: requester.hasSubmitted || false
-            };
-            updates['pendingHint'] = null;
-
-            update(ref(db, `rooms/${myRoomCode}`), updates).then(() => {
-                push(ref(db, `rooms/${myRoomCode}/history`), {
-                    playerId: requesterId,
-                    question: '[HINT] ' + hintText,
-                    result: 'yes',
-                    timestamp: Date.now()
-                });
+            // Sadece hintText'i pendingHint içine yaz — admin işleyecek
+            update(ref(db, `rooms/${myRoomCode}`), {
+                pendingHint: {
+                    requesterId: data_pendingHint.requesterId,
+                    giverId: data_pendingHint.giverId,
+                    hintText: hintText
+                }
+            }).then(() => {
                 document.getElementById('hint-input').value = '';
-
-                // Sıra ipucu isteyen oyuncudan sonrakine geçsin
-                const currentIndex = window._lastRoomData ? window._lastRoomData.turnIndex : 0;
-                setTimeout(() => {
-                    const actives = playersData.filter(p => (p.id === requesterId ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0);
-                    if (actives.length === 0) {
-                        update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
-                    } else {
-                        passTurn(currentIndex);
-                    }
-                }, 1500);
-            });
+            }).catch(e => alert('Hata: ' + e.message));
         };
 
         function renderHistoryBoard(historyData, players) {
