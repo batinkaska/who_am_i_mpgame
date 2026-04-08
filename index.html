@@ -897,8 +897,9 @@
                 }
 
                 if (data.gameState === 'setup') {
+                    const wasOnSetup = document.getElementById('screen-setup').classList.contains('active');
                     changeScreen('screen-setup');
-                    document.getElementById('character-input').value = ""; 
+                    if (!wasOnSetup) document.getElementById('character-input').value = "";
                     
                     const myIndex = playersData.findIndex(p => p.id === myPlayerId);
                     const me = playersData.find(p => p.id === myPlayerId);
