@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Who Am I?</title>
     <link rel="icon" href="https://fav.farm/❓" />
     <style>
@@ -14,7 +14,10 @@
             text-align: center; 
             margin: 0; 
             padding: 10px; 
-            padding-bottom: 70px; 
+            padding-top: max(10px, env(safe-area-inset-top));
+            padding-bottom: max(70px, env(safe-area-inset-bottom));
+            padding-left: max(10px, env(safe-area-inset-left));
+            padding-right: max(10px, env(safe-area-inset-right));
             display: flex; 
             flex-direction: column; 
             align-items: center; 
@@ -797,12 +800,52 @@
 
         // Auth hazır olana kadar UI'ı blokla, sonra aç
         let authReady = false;
-        signInAnonymously(auth).catch(e => alert("Auth Error: " + e.message));
+
+        // 5 saniye içinde auth gelmezse localStorage ID ile devam et
+        const fallbackTimer = setTimeout(() => {
+            if (!authReady) {
+                authReady = true;
+                let pid = localStorage.getItem('whoami_player_id');
+                if (!pid) {
+                    pid = 'p_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+                    localStorage.setItem('whoami_player_id', pid);
+                }
+                myPlayerId = pid;
+                document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+                window.setLanguage(currentLang);
+                document.getElementById('screen-welcome').classList.add('active');
+                const loadingElFb = document.getElementById('loading-screen');
+                if (loadingElFb) loadingElFb.style.display = 'none';
+                initSoundSettings();
+            }
+        }, 5000);
+
+        signInAnonymously(auth).catch(e => {
+            clearTimeout(fallbackTimer);
+            // Auth hata verirse yine fallback
+            if (!authReady) {
+                authReady = true;
+                let pid = localStorage.getItem('whoami_player_id');
+                if (!pid) {
+                    pid = 'p_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
+                    localStorage.setItem('whoami_player_id', pid);
+                }
+                myPlayerId = pid;
+                document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+                window.setLanguage(currentLang);
+                document.getElementById('screen-welcome').classList.add('active');
+                const loadingElFb = document.getElementById('loading-screen');
+                if (loadingElFb) loadingElFb.style.display = 'none';
+                initSoundSettings();
+            }
+        });
 
         onAuthStateChanged(auth, (user) => {
             if (user && !authReady) {
+                clearTimeout(fallbackTimer);
                 authReady = true;
                 myPlayerId = user.uid;
+                localStorage.setItem('whoami_player_id', user.uid);
                 localStorage.removeItem('whoami_pid');
 
                 // Sayfa yeniden yüklenince searching kuyruklarından eski kaydı temizle
@@ -961,6 +1004,7 @@
         function createRoom(isPublic = false, lang = 'en', targetSize = 4) {
             myName = document.getElementById('username').value.trim();
             if (!myName) return alert(translations[currentLang].alert_name);
+            if (!myPlayerId) return alert("Still connecting... please try again in a moment.");
 
             const roomData = {
                 gameState: 'lobby',
@@ -1001,6 +1045,7 @@
             myName = document.getElementById('username').value.trim();
             const code = document.getElementById('room-code-input').value.trim().toUpperCase();
             if (!myName || !code) return alert(translations[currentLang].alert_code);
+            if (!myPlayerId) return alert("Still connecting... please try again in a moment.");
 
             get(ref(db, `rooms/${code}`)).then(snap => {
                 if (snap.exists()) {
