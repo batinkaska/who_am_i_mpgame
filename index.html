@@ -113,7 +113,6 @@
         .status-badge { position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 12px; }
         .status-won { background: #27ae60; color: white; content: '✓'; }
         .status-dead { background: #c0392b; color: white; content: 'X'; }
-        .status-left { background: #555; color: #aaa; content: '→'; }
 
         /* STATUS BAR (NEW) */
         .status-bar { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
@@ -1070,7 +1069,7 @@
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
-                    playersData.filter(p => p.finishedRank !== -1).forEach(p => {
+                    playersData.forEach(p => {
                         const li = document.createElement('li');
                         li.textContent = p.name;
                         ul.appendChild(li);
@@ -1159,7 +1158,6 @@
             const isVotingPhase = !!data.currentQuestion;
 
             playersData.forEach(p => {
-                if (p.finishedRank === -1) return;
                 let icon = "";
                 let statusClass = "";
 
@@ -1232,13 +1230,7 @@
                 valDiv.className = `char-card-val ${hiddenClass}`;
                 valDiv.textContent = charVal; 
 
-                if (p.finishedRank === -1) {
-                    const badge = document.createElement("div");
-                    badge.className = "status-badge status-left";
-                    badge.innerText = "→";
-                    cardDiv.style.opacity = "0.4";
-                    cardDiv.appendChild(badge);
-                } else if (p.finishedRank > 0) {
+                if (p.finishedRank > 0) {
                     const badge = document.createElement("div");
                     badge.className = "status-badge status-won";
                     badge.innerText = "✓";
@@ -1315,7 +1307,7 @@
                             timestamp: Date.now()
                         });
                         setTimeout(() => {
-                            const actives = playersData.filter(p => (p.id === requesterId ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0 && p.finishedRank !== -1);
+                            const actives = playersData.filter(p => (p.id === requesterId ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0);
                             if (actives.length === 0) {
                                 update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
                             } else {
@@ -1327,10 +1319,10 @@
                 return;
             }
 
-            const currentIsDone = (currentPlayer.lives <= 0) || (currentPlayer.finishedRank > 0) || (currentPlayer.finishedRank === -1);
+            const currentIsDone = (currentPlayer.lives <= 0) || (currentPlayer.finishedRank > 0);
             
             if (data.admin === myPlayerId && currentIsDone && !data.currentQuestion && data.gameState === 'game') {
-                const activePlayers = playersData.filter(p => p.lives > 0 && p.finishedRank === 0 && p.finishedRank !== -1);
+                const activePlayers = playersData.filter(p => p.lives > 0 && p.finishedRank === 0);
                 if (activePlayers.length === 0) {
                     update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
                 } else {
@@ -1396,9 +1388,7 @@
             }
 
             if (activeQuestion && data.votes && data.admin === myPlayerId && !data.processing) {
-                // Ayrılan (finishedRank: -1) ve soru soran oyuncu hariç aktif oyuncu sayısı
-                const activePlayers = playersData.filter(p => p.finishedRank !== -1);
-                const totalPlayers = activePlayers.length;
+                const totalPlayers = playersData.length;
                 const voteCount = Object.keys(data.votes).length;
                 
                 if (voteCount >= totalPlayers - 1) {
@@ -1421,7 +1411,7 @@
                             });
                             push(ref(db, `rooms/${myRoomCode}/history`), { playerId: currentPlayer.id, question: "[GUESS] " + activeQuestion, result: 'yes', timestamp: Date.now() });
                             setTimeout(() => {
-                                const actives = playersData.filter(p => p.id !== currentPlayer.id && p.lives > 0 && p.finishedRank === 0 && p.finishedRank !== -1);
+                                const actives = playersData.filter(p => p.id !== currentPlayer.id && p.lives > 0 && p.finishedRank === 0);
                                 if(actives.length === 0) update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
                                 else passTurn(data.turnIndex);
                             }, 2000);
@@ -1436,7 +1426,7 @@
                             });
                             push(ref(db, `rooms/${myRoomCode}/history`), { playerId: currentPlayer.id, question: "[GUESS] " + activeQuestion, result: 'no', timestamp: Date.now() });
                             setTimeout(() => {
-                                const actives = playersData.filter(p => (p.id === currentPlayer.id ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0 && p.finishedRank !== -1);
+                                const actives = playersData.filter(p => (p.id === currentPlayer.id ? newLives > 0 : true) && p.lives > 0 && p.finishedRank === 0);
                                 if(actives.length === 0) update(ref(db, `rooms/${myRoomCode}`), { gameState: 'leaderboard' });
                                 else passTurn(data.turnIndex);
                             }, 2000);
@@ -1644,38 +1634,24 @@
                     remove(ref(db, `${currentSearchPath}/${myPlayerId}`));
                 }
 
-                const roomData = window._lastRoomData;
-                const wasAdmin = roomData && roomData.admin === myPlayerId;
-                const gameInProgress = roomData && (roomData.gameState === 'game' || roomData.gameState === 'setup');
-                const me = playersData.find(p => p.id === myPlayerId);
+                const wasAdmin = playersData.length > 0 &&
+                    window._lastRoomData && window._lastRoomData.admin === myPlayerId;
 
-                const doLeave = () => {
+                remove(ref(db, `rooms/${myRoomCode}/players/${myPlayerId}`))
+                .then(() => {
+                    // Admin ayrılıyorsa: kalan oyunculardan en eski (ilk) kişiye yetki devret
                     if (wasAdmin) {
-                        const remaining = playersData.filter(p => p.id !== myPlayerId && p.finishedRank !== -1);
+                        const remaining = playersData.filter(p => p.id !== myPlayerId);
                         if (remaining.length > 0) {
-                            update(ref(db, `rooms/${myRoomCode}`), { admin: remaining[0].id });
-                        } else {
-                            remove(ref(db, `rooms/${myRoomCode}`));
-                            return location.reload();
+                            return update(ref(db, `rooms/${myRoomCode}`), {
+                                admin: remaining[0].id
+                            });
                         }
+                        // Kimse kalmadıysa odayı sil
+                        return remove(ref(db, `rooms/${myRoomCode}`));
                     }
-                    location.reload();
-                };
-
-                if (gameInProgress && me) {
-                    // Oyun sırasında: silmek yerine elenmiş olarak işaretle
-                    update(ref(db, `rooms/${myRoomCode}/players/${myPlayerId}`), {
-                        name: me.name,
-                        score: me.score || 0,
-                        lives: 0,
-                        finishedRank: -1,
-                        hasSubmitted: me.hasSubmitted || false
-                    }).then(doLeave);
-                } else {
-                    // Lobi/setup: normal sil
-                    remove(ref(db, `rooms/${myRoomCode}/players/${myPlayerId}`))
-                    .then(doLeave);
-                }
+                })
+                .then(() => location.reload());
             }
         }
 
@@ -1696,7 +1672,6 @@
                 updates['processing'] = null;
                 updates['isGuess'] = null;
                 playersData.forEach(p => {
-                    if (p.finishedRank === -1) return; // Ayrılan oyuncuları sıfırlama
                     updates[`players/${p.id}`] = {
                         name: p.name,
                         score: p.score || 0,
