@@ -1070,7 +1070,7 @@
                 if (data.gameState === 'lobby') {
                     const ul = document.getElementById('player-list');
                     ul.innerHTML = "";
-                    playersData.forEach(p => {
+                    playersData.filter(p => p.finishedRank !== -1).forEach(p => {
                         const li = document.createElement('li');
                         li.textContent = p.name;
                         ul.appendChild(li);
@@ -1396,7 +1396,9 @@
             }
 
             if (activeQuestion && data.votes && data.admin === myPlayerId && !data.processing) {
-                const totalPlayers = playersData.length;
+                // Ayrılan (finishedRank: -1) ve soru soran oyuncu hariç aktif oyuncu sayısı
+                const activePlayers = playersData.filter(p => p.finishedRank !== -1);
+                const totalPlayers = activePlayers.length;
                 const voteCount = Object.keys(data.votes).length;
                 
                 if (voteCount >= totalPlayers - 1) {
