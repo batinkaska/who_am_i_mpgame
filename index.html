@@ -1274,10 +1274,12 @@
             if (amIWon) {
                 document.getElementById('success-msg').style.display = 'block';
                 document.getElementById('reveal-char-win').innerText = me.assignedChar;
+                if (!window._playedWinSound) { window._playedWinSound = true; playSound('win'); }
             } 
             else if (amIDead) {
                 document.getElementById('eliminated-msg').style.display = 'block';
                 document.getElementById('reveal-char').innerText = me.assignedChar;
+                if (!window._playedLoseSound) { window._playedLoseSound = true; playSound('lose'); }
             }
 
             // Admin: pendingHint.hintText geldi mi? İşle
@@ -1678,6 +1680,8 @@
                         hasSubmitted: false
                     };
                 });
+                window._playedWinSound = false;
+                window._playedLoseSound = false;
                 update(ref(db, `rooms/${myRoomCode}`), updates)
                     .then(() => console.log("resetGame OK"))
                     .catch(e => alert("Reset hatası: " + e.message));
@@ -1769,6 +1773,32 @@
                             gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.13);
                             osc.start(now + delay);
                             osc.stop(now + delay + 0.15);
+                        });
+                    } else if (type === 'win') {
+                        // Kazanma: yükselen üçlü arpej — zafer hissi
+                        [[0, 523], [0.15, 659], [0.30, 784], [0.50, 1047]].forEach(([delay, freq]) => {
+                            const osc = _audioCtx.createOscillator();
+                            const gain = _audioCtx.createGain();
+                            osc.connect(gain); gain.connect(_audioCtx.destination);
+                            osc.type = 'triangle';
+                            osc.frequency.value = freq;
+                            gain.gain.setValueAtTime(0.4, now + delay);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.35);
+                            osc.start(now + delay);
+                            osc.stop(now + delay + 0.4);
+                        });
+                    } else if (type === 'lose') {
+                        // Kaybetme: alçalan iki nota — hüzünlü
+                        [[0, 392], [0.25, 262]].forEach(([delay, freq]) => {
+                            const osc = _audioCtx.createOscillator();
+                            const gain = _audioCtx.createGain();
+                            osc.connect(gain); gain.connect(_audioCtx.destination);
+                            osc.type = 'sine';
+                            osc.frequency.value = freq;
+                            gain.gain.setValueAtTime(0.3, now + delay);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.4);
+                            osc.start(now + delay);
+                            osc.stop(now + delay + 0.45);
                         });
                     }
                 } catch(e) {}
