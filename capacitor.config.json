@@ -1,0 +1,12 @@
+{
+  "appId": "com.batinkaska.whoami",
+  "appName": "Who Am I",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "scheme": "App",
+    "limitsNavigationsToAppBoundDomains": true
+  }
+}
