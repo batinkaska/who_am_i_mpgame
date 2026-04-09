@@ -1713,60 +1713,71 @@
             updateSoundBtns();
         };
 
-        // AudioContext — bir kez unlock, sonra hep kullan
+        // AudioContext — Safari dahil tüm tarayıcılarda çalışan unlock pattern
         let _audioCtx = null;
         let _audioUnlocked = false;
 
         function unlockAudio() {
-            if (_audioUnlocked) return;
+            if (_audioUnlocked && _audioCtx && _audioCtx.state === 'running') return;
             try {
-                _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                // Sessiz bir ses çal — bu context'i unlock eder
-                const buf = _audioCtx.createBuffer(1, 1, 22050);
-                const src = _audioCtx.createBufferSource();
-                src.buffer = buf;
-                src.connect(_audioCtx.destination);
-                src.start(0);
-                _audioUnlocked = true;
+                if (!_audioCtx) {
+                    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                // Safari için: resume promise'i bekle
+                const resumePromise = _audioCtx.state === 'suspended' ? _audioCtx.resume() : Promise.resolve();
+                resumePromise.then(() => {
+                    // Sessiz buffer çal — Safari'yi tam olarak unlock eder
+                    const buf = _audioCtx.createBuffer(1, 1, _audioCtx.sampleRate);
+                    const src = _audioCtx.createBufferSource();
+                    src.buffer = buf;
+                    src.connect(_audioCtx.destination);
+                    src.start(0);
+                    src.onended = () => { _audioUnlocked = true; };
+                });
             } catch(e) {}
         }
 
-        // Kullanıcı sayfaya ilk dokunduğunda/tıkladığında unlock et
-        document.addEventListener('touchstart', unlockAudio, { once: false, capture: true });
-        document.addEventListener('click', unlockAudio, { once: false, capture: true });
+        document.addEventListener('touchstart', unlockAudio, { capture: true });
+        document.addEventListener('mousedown', unlockAudio, { capture: true });
 
         function playSound(type) {
             if (!soundEnabled) return;
-            if (!_audioUnlocked || !_audioCtx) return;
-            try {
-                if (_audioCtx.state === 'suspended') _audioCtx.resume();
-                const now = _audioCtx.currentTime;
-                if (type === 'my-turn') {
-                    [[0, 660], [0.18, 990]].forEach(([delay, freq]) => {
-                        const osc = _audioCtx.createOscillator();
-                        const gain = _audioCtx.createGain();
-                        osc.connect(gain); gain.connect(_audioCtx.destination);
-                        osc.type = 'triangle';
-                        osc.frequency.value = freq;
-                        gain.gain.setValueAtTime(0.35, now + delay);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.2);
-                        osc.start(now + delay);
-                        osc.stop(now + delay + 0.25);
-                    });
-                } else if (type === 'vote') {
-                    [[0, 523], [0.14, 440], [0.28, 349]].forEach(([delay, freq]) => {
-                        const osc = _audioCtx.createOscillator();
-                        const gain = _audioCtx.createGain();
-                        osc.connect(gain); gain.connect(_audioCtx.destination);
-                        osc.type = 'sine';
-                        osc.frequency.value = freq;
-                        gain.gain.setValueAtTime(0.25, now + delay);
-                        gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.13);
-                        osc.start(now + delay);
-                        osc.stop(now + delay + 0.15);
-                    });
-                }
-            } catch(e) {}
+            if (!_audioCtx) return;
+            const doPlay = () => {
+                try {
+                    const now = _audioCtx.currentTime;
+                    if (type === 'my-turn') {
+                        [[0, 660], [0.18, 990]].forEach(([delay, freq]) => {
+                            const osc = _audioCtx.createOscillator();
+                            const gain = _audioCtx.createGain();
+                            osc.connect(gain); gain.connect(_audioCtx.destination);
+                            osc.type = 'triangle';
+                            osc.frequency.value = freq;
+                            gain.gain.setValueAtTime(0.35, now + delay);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.2);
+                            osc.start(now + delay);
+                            osc.stop(now + delay + 0.25);
+                        });
+                    } else if (type === 'vote') {
+                        [[0, 523], [0.14, 440], [0.28, 349]].forEach(([delay, freq]) => {
+                            const osc = _audioCtx.createOscillator();
+                            const gain = _audioCtx.createGain();
+                            osc.connect(gain); gain.connect(_audioCtx.destination);
+                            osc.type = 'sine';
+                            osc.frequency.value = freq;
+                            gain.gain.setValueAtTime(0.25, now + delay);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.13);
+                            osc.start(now + delay);
+                            osc.stop(now + delay + 0.15);
+                        });
+                    }
+                } catch(e) {}
+            };
+            if (_audioCtx.state === 'suspended') {
+                _audioCtx.resume().then(doPlay);
+            } else {
+                doPlay();
+            }
         }
 
         function notifyMyTurn() { playSound('my-turn'); }
