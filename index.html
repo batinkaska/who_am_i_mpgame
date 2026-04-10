@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Who Am I?</title>
-    <link rel="icon" href="https://fav.farm/❓" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231e1e2e'/%3E%3Ccircle cx='50' cy='45' r='32' fill='%232d2d50'/%3E%3Ctext x='50' y='45' font-family='Arial' font-size='52' font-weight='900' text-anchor='middle' dominant-baseline='central' fill='%23f1c40f'%3E%3F%3C/text%3E%3C/svg%3E" />
     <style>
         /* --- GENERAL STYLES --- */
         body { 
@@ -445,8 +445,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, update, get, remove, push, query, orderByChild, equalTo, onDisconnect, runTransaction } 
         from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged }
-        from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        // Firebase Auth kaldırıldı — localStorage ID kullanılıyor
 
         // --- FIREBASE CONFIG ---
         const firebaseConfig = {
@@ -460,11 +459,10 @@
             measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
         };
 
-        let app, db, auth;
+        let app, db;
         try {
             app = initializeApp(firebaseConfig);
             db = getDatabase(app);
-            auth = getAuth(app);
             console.log("Firebase connected.");
         } catch (e) {
             alert("Firebase Error: " + e.message);
@@ -798,137 +796,80 @@
         let myTargetId = ""; 
         let playersData = [];
 
-        // Auth hazır olana kadar UI'ı blokla, sonra aç
-        let authReady = false;
-
-        // 5 saniye içinde auth gelmezse localStorage ID ile devam et
-        const fallbackTimer = setTimeout(() => {
-            if (!authReady) {
-                authReady = true;
-                let pid = localStorage.getItem('whoami_player_id');
-                if (!pid) {
-                    pid = 'p_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-                    localStorage.setItem('whoami_player_id', pid);
-                }
-                myPlayerId = pid;
-                document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-                window.setLanguage(currentLang);
-                document.getElementById('screen-welcome').classList.add('active');
-                const loadingElFb = document.getElementById('loading-screen');
-                if (loadingElFb) loadingElFb.style.display = 'none';
-                initSoundSettings();
+        // localStorage tabanlı player ID — Firebase Auth yok
+        // initApp fonksiyonu tüm fonksiyonlar tanımlandıktan sonra çağrılacak
+        function initApp() {
+            let pid = localStorage.getItem('whoami_player_id');
+            if (!pid) {
+                pid = 'p_' + Date.now() + '_' + Math.random().toString(36).substring(2, 12);
+                localStorage.setItem('whoami_player_id', pid);
             }
-        }, 5000);
+            myPlayerId = pid;
 
-        signInAnonymously(auth).catch(e => {
-            clearTimeout(fallbackTimer);
-            // Auth hata verirse yine fallback
-            if (!authReady) {
-                authReady = true;
-                let pid = localStorage.getItem('whoami_player_id');
-                if (!pid) {
-                    pid = 'p_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8);
-                    localStorage.setItem('whoami_player_id', pid);
-                }
-                myPlayerId = pid;
-                document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-                window.setLanguage(currentLang);
-                document.getElementById('screen-welcome').classList.add('active');
-                const loadingElFb = document.getElementById('loading-screen');
-                if (loadingElFb) loadingElFb.style.display = 'none';
-                initSoundSettings();
-            }
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            if (user && !authReady) {
-                clearTimeout(fallbackTimer);
-                authReady = true;
-                myPlayerId = user.uid;
-                localStorage.setItem('whoami_player_id', user.uid);
-                localStorage.removeItem('whoami_pid');
-
-                // Sayfa yeniden yüklenince searching kuyruklarından eski kaydı temizle
-                const searchingRef = ref(db, 'searching');
-                get(searchingRef).then(snap => {
-                    if (!snap.exists()) return;
-                    const queues = snap.val();
-                    const cleanups = [];
-                    for (const queue in queues) {
-                        if (queues[queue][user.uid]) {
-                            cleanups.push(remove(ref(db, `searching/${queue}/${user.uid}`)));
-                        }
+            // Sayfa yeniden yüklenince searching kuyruklarından eski kaydı temizle
+            const searchingRef = ref(db, 'searching');
+            get(searchingRef).then(snap => {
+                if (!snap.exists()) return;
+                const queues = snap.val();
+                const cleanups = [];
+                for (const queue in queues) {
+                    if (queues[queue][pid]) {
+                        cleanups.push(remove(ref(db, `searching/${queue}/${pid}`)));
                     }
-                    return Promise.all(cleanups);
-                });
+                }
+                return Promise.all(cleanups);
+            });
 
-                document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-                window.setLanguage(currentLang);
-                document.getElementById('screen-welcome').classList.add('active');
-                const loadingEl = document.getElementById('loading-screen');
-                if (loadingEl) loadingEl.style.display = 'none';
-                initSoundSettings();
+            document.body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            window.setLanguage(currentLang);
+            document.getElementById('screen-welcome').classList.add('active');
+            const loadingEl = document.getElementById('loading-screen');
+            if (loadingEl) loadingEl.style.display = 'none';
+            initSoundSettings();
 
-                // Bağlantı durumu banner'ı
-                let wasConnected = true;
-                let reconnectTimer = null;
-                const banner = document.getElementById('connection-banner');
+            // Bağlantı durumu banner'ı
+            let wasConnected = true;
+            let reconnectTimer = null;
+            const banner = document.getElementById('connection-banner');
 
-                onValue(ref(db, '.info/connected'), (snap) => {
-                    const connected = snap.val() === true;
-
-                    if (connected) {
-                        if (!wasConnected) {
-                            // Yeniden bağlandı — kısa süre yeşil göster, sonra gizle
-                            banner.textContent = '✓ Back online';
-                            banner.className = 'online show';
-                            clearTimeout(reconnectTimer);
-                            reconnectTimer = setTimeout(() => {
-                                banner.className = 'online';
-                            }, 2500);
-                        }
-                        wasConnected = true;
-                    } else {
-                        // Bağlantı kesildi
-                        wasConnected = false;
+            onValue(ref(db, '.info/connected'), (snap) => {
+                const connected = snap.val() === true;
+                if (connected) {
+                    if (!wasConnected) {
+                        banner.textContent = '✓ Back online';
+                        banner.className = 'online show';
                         clearTimeout(reconnectTimer);
-                        banner.textContent = '● Connection lost — reconnecting...';
-                        banner.className = 'offline show';
-                        // 4 saniye sonra hala bağlı değilse rengi değiştir
                         reconnectTimer = setTimeout(() => {
-                            if (!wasConnected) {
-                                banner.textContent = '↻ Reconnecting...';
-                                banner.className = 'reconnecting show';
-                            }
-                        }, 4000);
+                            banner.className = 'online';
+                        }, 2500);
                     }
-                });
+                    wasConnected = true;
+                } else {
+                    wasConnected = false;
+                    clearTimeout(reconnectTimer);
+                    banner.textContent = '● Connection lost — reconnecting...';
+                    banner.className = 'offline show';
+                    reconnectTimer = setTimeout(() => {
+                        if (!wasConnected) {
+                            banner.textContent = '↻ Reconnecting...';
+                            banner.className = 'reconnecting show';
+                        }
+                    }, 4000);
+                }
+            });
 
-                document.getElementById('btn-toggle-chars').addEventListener('click', function() {
-                    const list = document.getElementById('characters-list');
-                    const t = translations[currentLang];
-                    if (list.style.display === 'none') {
-                        list.style.display = 'grid';
-                        this.textContent = t.btn_hide;
-                    } else {
-                        list.style.display = 'none';
-                        this.textContent = t.btn_show;
-                    }
-                });
-            }
-        }); 
-        
-        window.createRoom = createRoom;
-        window.joinRoom = joinRoom;
-        window.startSetup = startSetup;
-        window.submitCharacter = submitCharacter;
-        window.askQuestion = askQuestion;
-        window.vote = vote;
-        window.makeGuess = makeGuess;
-        window.resetGame = resetGame;
-        window.leaveRoom = leaveRoom;
-        window.findPublicGame = findPublicGame;
-        window.updateOnlineCount = updateOnlineCount;
+            document.getElementById('btn-toggle-chars').addEventListener('click', function() {
+                const list = document.getElementById('characters-list');
+                const t = translations[currentLang];
+                if (list.style.display === 'none') {
+                    list.style.display = 'grid';
+                    this.textContent = t.btn_hide;
+                } else {
+                    list.style.display = 'none';
+                    this.textContent = t.btn_show;
+                }
+            });
+        } // initApp sonu
 
         // MATCHMAKING COUNTER LOGIC
         let currentSearchPath = null;
@@ -1891,6 +1832,21 @@
                 [array[i], array[j]] = [array[j], array[i]];
             }
         }
+
+        window.createRoom = createRoom;
+        window.joinRoom = joinRoom;
+        window.startSetup = startSetup;
+        window.submitCharacter = submitCharacter;
+        window.askQuestion = askQuestion;
+        window.vote = vote;
+        window.makeGuess = makeGuess;
+        window.resetGame = resetGame;
+        window.leaveRoom = leaveRoom;
+        window.findPublicGame = findPublicGame;
+        window.updateOnlineCount = updateOnlineCount;
+
+        // Tüm fonksiyonlar tanımlandıktan sonra başlat
+        initApp();
     </script>
 </body>
 </html>

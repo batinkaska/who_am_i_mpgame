@@ -3,10 +3,12 @@
   "appName": "Who Am I",
   "webDir": "dist",
   "server": {
-    "androidScheme": "https"
-  },
-  "ios": {
-    "scheme": "App",
-    "limitsNavigationsToAppBoundDomains": true
+    "androidScheme": "https",
+    "allowNavigation": [
+      "*.googleapis.com",
+      "*.firebaseapp.com",
+      "*.firebase.com",
+      "*.firebaseio.com"
+    ]
   }
 }
