@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Who Am I</string>
+    <string name="title_activity_main">Who Am I</string>
+    <string name="package_name">com.batinkaska.whoami</string>
+    <string name="custom_url_scheme">com.batinkaska.whoami</string>
+</resources>
