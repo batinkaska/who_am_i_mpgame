@@ -21,6 +21,24 @@ exports.markRoomClosed = onValueWritten(
   }
 );
 
+exports.cleanupEmptyRoom = onValueWritten(
+  {
+    ref: "/rooms/{roomCode}/players/{playerId}",
+    region: "us-central1",
+    instance: "whoami-game-f9e1c-default-rtdb",
+  },
+  async (event) => {
+    if (event.data.after.exists()) return; // sadece bir oyuncu silindiğinde çalış
+    const db = getDatabase();
+    const playersSnap = await db
+      .ref(`rooms/${event.params.roomCode}/players`)
+      .once("value");
+    if (!playersSnap.exists()) {
+      await db.ref(`rooms/${event.params.roomCode}`).remove();
+    }
+  }
+);
+
 exports.cleanupOldRooms = onSchedule(
   {
     schedule: "0 3 * * *",

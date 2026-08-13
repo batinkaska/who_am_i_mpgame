@@ -1061,6 +1061,8 @@
             });
         }
 
+        let lobbyDisconnectActive = false;
+
         function listenRoom() {
             // Remove from search queue if we entered a room
             if (currentSearchPath) {
@@ -1070,11 +1072,36 @@
 
             changeScreen('screen-lobby');
             document.getElementById('lobby-code').innerText = myRoomCode;
+            lobbyDisconnectActive = false;
 
             onValue(ref(db, `rooms/${myRoomCode}`), (snap) => {
                 const data = snap.val();
                 if (!data || !data.players || !data.players[myPlayerId]) return;
                 window._lastRoomData = data;
+
+                const myPlayerRef = ref(db, `rooms/${myRoomCode}/players/${myPlayerId}`);
+                if (data.gameState === 'lobby') {
+                    // Bağlantı beklenmedik şekilde koparsa (Leave'e basmadan kapatma vb.)
+                    // odada hayalet oyuncu/oda kalmasın diye kendi node'umuzu sil.
+                    if (!lobbyDisconnectActive) {
+                        onDisconnect(myPlayerRef).remove();
+                        lobbyDisconnectActive = true;
+                    }
+
+                    // Self-healing: admin artık odada değilse (sessizce düştüyse),
+                    // deterministik olarak (en küçük id) tek bir client admin'i devralır.
+                    if (data.admin && !data.players[data.admin]) {
+                        const sortedIds = Object.keys(data.players).sort();
+                        if (sortedIds[0] === myPlayerId) {
+                            update(ref(db, `rooms/${myRoomCode}`), { admin: myPlayerId });
+                        }
+                    }
+                } else if (lobbyDisconnectActive) {
+                    // Oyun başladı: mid-game disconnect'i leaveRoom() gibi
+                    // finishedRank:-1 ile ele alıyoruz, node'u tamamen silmeyelim.
+                    onDisconnect(myPlayerRef).cancel();
+                    lobbyDisconnectActive = false;
+                }
 
                 playersData = Object.keys(data.players || {}).map(key => ({
                     id: key,
@@ -1148,7 +1175,7 @@
 
                     const setupList = document.getElementById('setup-player-list');
                     setupList.innerHTML = "";
-                    playersData.forEach(p => {
+                    playersData.filter(p => p.finishedRank !== -1).forEach(p => {
                         const statusIcon = p.hasSubmitted ? "✅" : "⏳";
                         const badge = document.createElement('div');
                         badge.className = `setup-player-badge ${p.hasSubmitted ? 'done' : ''}`;
